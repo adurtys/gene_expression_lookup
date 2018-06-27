@@ -6,8 +6,31 @@
 
 #!/usr/bin/env python
 
-# read in the GTF file
-	# file is tab-separated, header = True
+# read in the GTF file (tab-separated, header = true)
+inFilename = "gencode.v19.annotation.gtf"
+outFilename = "gene_annotations.txt"
+
+inFile = open(inFilename, 'r')
+outFile = open(outFilename, 'w')
+
+inFile.readline() # skip header line
+
+for line in inFile:
+	line = line.rstrip('\r\n')
+	columns = line.split() # split line on whitespace (tab), returns list of columns
+
+	geneStart = columns[3] + "\t"
+	geneEnd = columns[4] + "\t"
+	otherInfo = columns[8] + "\n"
+
+	outFile.write(geneStart)
+	outFile.write(geneEnd)
+	outFile.write(otherInfo)
+	
+	# process other info for gene_id and gene_name given that gene_type is protein-coding
+	# otherInfo = otherInfo.split(';')
+
+
 
 # parse file for protein-coding genes
 
@@ -24,3 +47,6 @@
 			
 			# check end position
 			# if GTF_end > newFile_end, then newFile_end == GTF_end
+
+outFile.close()
+inFile.close()
