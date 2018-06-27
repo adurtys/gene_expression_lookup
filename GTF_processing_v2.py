@@ -23,19 +23,27 @@ for line in inFile:
 	# split line on tab, return list of columns
 	columns = line.split('\t')
         
-	geneStart = columns[3] + "\t"
-	geneEnd = columns[4] + "\t"
-	otherInfo = columns[8] + "\n"
+	geneStart = int(columns[3])
+	geneEnd = int(columns[4])
+	
+	# process other info for gene_id and gene_name given that gene_type is protein-coding
+	otherInfo = columns[8]
+	otherInfo = otherInfo.split(';')
+
+	geneId = otherInfo[0] + "\t"
+	geneName = otherInfo[4] " \t"
+	
+	# parse file for protein-coding genes
+	geneType = otherInfo[2]
+	# if geneType == "gene_type "protein_coding"":
+
 
 	# write new tab-separated file
-	outFile.write(geneStart)
-	outFile.write(geneEnd)
-	outFile.write(otherInfo)
+	# TODO: add in \t or \n when doing this
+	# outFile.write(geneStart)
+	# outFile.write(geneEnd)
+	# outFile.write(otherInfo)
 
-	# process other info for gene_id and gene_name given that gene_type is protein-coding
-	# otherInfo = otherInfo.split(';')
-
-# parse file for protein-coding genes
 
 # for each line: 
 	# determine whether gene already has start and end specified in new file
