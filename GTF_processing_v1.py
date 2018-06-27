@@ -11,7 +11,7 @@ inFilename = "gencode.v19.annotation.gtf"
 outFilename = "gene_annotations.txt"
 
 inFile = open(inFilename, 'r')
-outFile = open(outFilename, 'w')
+# outFile = open(outFilename, 'w')
 
 inFile.readline() # skip header line
 
@@ -23,10 +23,12 @@ for line in inFile:
 	geneEnd = columns[4] + "\t"
 	otherInfo = columns[8] + "\n"
 
-	outFile.write(geneStart)
-	outFile.write(geneEnd)
-	outFile.write(otherInfo)
-	
+	print geneStart, geneEnd, otherInfo
+
+	# outFile.write(geneStart)
+	# outFile.write(geneEnd)
+	# outFile.write(otherInfo)
+
 	# process other info for gene_id and gene_name given that gene_type is protein-coding
 	# otherInfo = otherInfo.split(';')
 
@@ -48,5 +50,5 @@ for line in inFile:
 			# check end position
 			# if GTF_end > newFile_end, then newFile_end == GTF_end
 
-outFile.close()
+# outFile.close()
 inFile.close()
