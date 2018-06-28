@@ -47,7 +47,7 @@ for line in inFile:
 
 	# parse file and extract information for protein-coding genes
 	if geneType == "protein_coding":
-		print "the gene ", geneType, " is a ", geneType, " gene."
+		print "the gene ", geneId, " is a ", geneType, " gene."
 
 		# create list of unique protein-coding genes
 		if geneId not in uniqGenes:
