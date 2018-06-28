@@ -47,7 +47,8 @@ for line in inFile:
 
 	# parse file and extract information for protein-coding genes
 	if geneType == "protein_coding":
-		
+		print "the gene ", geneType, " is a ", geneType, " gene."
+
 		# create list of unique protein-coding genes
 		if geneId not in uniqGenes:
 			uniqGenes.append(geneType)
@@ -68,6 +69,7 @@ for line in inFile:
 		elif (geneId in geneEndDict) and (geneEnd > geneEndDict[geneId]):
 			geneEndDict[geneId] = geneEnd
 
+print "finished reading in file!"
 inFile.close()
 
 # create a new file for start and end positions of only protein-coding genes
@@ -83,6 +85,7 @@ for geneId in geneStartDict:
 for geneId in geneEndDict:
 	geneEndDict[geneId] = str(geneEndDict[geneId])
 
+print "writing file now"
 for geneId in uniqGenes:
 	 outFile.write(geneId)
 	 outFile.write(tab)
