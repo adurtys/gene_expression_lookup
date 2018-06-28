@@ -35,17 +35,17 @@ for line in inFile:
 	otherInfo = otherInfo.split(';')
 
 	geneId = otherInfo[0]
-	geneId = [id.strip('gene_id ') for id in geneId]
-	geneId = [id.strip() for id in geneId]
+	geneId = geneId.strip('gene_id ')
+	geneId = geneId.strip()
 	print(geneId)
 
 	geneName = otherInfo[4]
-	geneName = [name.strip('gene_name ') for name in geneName]
-	geneName = [name.strip() for name in geneName]
+	# geneName = [name.strip('gene_name ') for name in geneName]
+	# geneName = [name.strip() for name in geneName]
 
 	geneType = otherInfo[2]
-	geneType = [type.strip('gene_type ') for type in geneType]
-	geneType = [type.strip() for type in geneType]
+	# geneType = [type.strip('gene_type ') for type in geneType]
+	# geneType = [type.strip() for type in geneType]
 	
 	outFile.write(geneId)
 	outFile.write(tab)
