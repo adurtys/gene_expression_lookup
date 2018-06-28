@@ -6,8 +6,8 @@
 
 #!/usr/bin/env python
 
-# read in the GTF file
-inFilename = "gencode.v19.annotation.gtf"
+# read in the GTF file (TODO: for now, it is the shortened version)
+inFilename = "firstLines.txt"
 inFile = open(inFilename, 'r')
 
 # create data structures to hold information pertaining to each gene
@@ -21,7 +21,6 @@ geneEndDict = {}
 for i in range(5):
         inFile.readline()
 
-lineNum = 0
 for line in inFile:
    	line = line.rstrip('\r\n')
 	
@@ -48,15 +47,14 @@ for line in inFile:
 	geneType = geneType.strip('gene_type ')
 	geneType = geneType.strip('"')
 
+	# print "Finished processing the columns. Now, parsing for protein-coding genes. "
+
 	if geneType == "protein_coding":
 		# create list of unique protein-coding genes
 		if geneId not in uniqGenes:
 			uniqGenes.append(geneId)
 
-print "There are ", len(geneStart), " total genes and ", len(uniqGenes), " unique genes in the file."
-for gene in len(uniqGenes):
-	print "The gene name is ", uniqGenes[gene], ", and it can be found on the chromosome ",
-	 chromosome[gene], " at the ", geneStart[gene], " starting position."
+print "There are ", len(uniqGenes), "unique protein-coding genes in this file."
 
 inFile.close()	
 
