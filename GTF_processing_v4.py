@@ -12,6 +12,7 @@ inFile = open(inFilename, 'r')
 
 # create data structures to hold information pertaining to each gene
 uniqGenes = []
+chromosomeDict = {}
 geneNameDict = {}
 geneStartDict = {}
 geneEndDict = {}
@@ -25,7 +26,8 @@ for line in inFile:
 	
 	# split line on tab, return list of columns
 	columns = line.split('\t')
-        
+    
+    chromosome = columns[0]    
 	geneStart = int(columns[3])
 	geneEnd = int(columns[4])
 	
@@ -47,13 +49,15 @@ for line in inFile:
 
 	# parse file and extract information for protein-coding genes
 	if geneType == "protein_coding":
-		print "the gene ", geneId, " is a ", geneType, " gene."
-
 		# create list of unique protein-coding genes
 		if geneId not in uniqGenes:
+			print "a unique gene, ", geneId, ", has been found."
 			uniqGenes.append(geneType)
 
 		# edit dictionaries containing gene information using uniqGenes list as keys
+		if geneId not in chromosomeDict:
+			chromosomeDict[geneId] = chromosome
+
 		if geneId not in geneNameDict:
 			geneNameDict[geneId] = geneName
 		
