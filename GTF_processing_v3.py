@@ -26,8 +26,8 @@ for line in inFile:
 	# split line on tab, return list of columns
 	columns = line.split('\t')
         
-	geneStart = int(columns[3])
-	geneEnd = int(columns[4])
+	geneStart = columns[3]
+	geneEnd = columns[4]
 	
 	# process other info for gene_id and gene_name given that gene_type is protein-coding
 	otherInfo = columns[8]
@@ -48,6 +48,8 @@ for line in inFile:
 	outFile.write(tab)
 	outFile.write(geneEnd)
 	outFile.write(newline)
+
+	# TODO: convert geneStart and geneEnd columns to int before processing
 
 # for each line: 
 	# determine whether gene already has start and end specified in new file
