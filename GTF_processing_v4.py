@@ -59,13 +59,13 @@ for line in inFile:
 		if geneId not in geneStartDict:
 			geneStartDict[geneId] = geneStart
 		# only modify geneStart if new starting position is smaller than current one
-		elif (geneId in geneStartDict) && (geneStart < geneStartDict[geneId]):
+		elif (geneId in geneStartDict) and (geneStart < geneStartDict[geneId]):
 			geneStartDict[geneId] = geneStart
 
 		if geneId not in geneEndDict:
 			geneEndDict[geneId] = geneEnd
 		# only modify geneEnd if new ending position is larger than the current one
-		elif (geneId in geneEndDict) && (geneEnd > geneEndDict[geneId]):
+		elif (geneId in geneEndDict) and (geneEnd > geneEndDict[geneId]):
 			geneEndDict[geneId] = geneEnd
 
 inFile.close()
