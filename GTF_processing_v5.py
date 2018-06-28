@@ -21,6 +21,7 @@ geneEndDict = {}
 for i in range(5):
         inFile.readline()
 
+lineNum = 0
 for line in inFile:
    	line = line.rstrip('\r\n')
 	
