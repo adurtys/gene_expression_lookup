@@ -37,6 +37,7 @@ for line in inFile:
 	geneId = otherInfo[0]
 	geneId = [id.strip('gene_id ') for id in geneId]
 	geneId = [id.strip() for id in geneId]
+	print(geneId)
 
 	geneName = otherInfo[4]
 	geneName = [name.strip('gene_name ') for name in geneName]
