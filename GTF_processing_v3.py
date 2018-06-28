@@ -36,20 +36,20 @@ for line in inFile:
 
 	geneId = otherInfo[0]
 	geneId = geneId.strip('gene_id ')
-        print "geneId is ", geneId, "and its length is ", len(geneId)
-        geneId = geneId.strip('"')
-        print "geneId is ", geneId, "and its length is ", len(geneId)
+	geneId = geneId.strip('"')
 
 	geneName = otherInfo[4]
 	geneName = geneName.strip('gene_name ')
+	geneName = geneName.strip('"')
 
 	geneType = otherInfo[2]
 	geneType = geneType.strip('gene_type ')
-	geneType = geneType.strip()
+	geneType = geneType.strip('"')
 	
 	outFile.write(geneId)
 	outFile.write(tab)
 	outFile.write(geneName)
+	outFile.write(tab)
 	outFile.write(tab)
 	outFile.write(geneStart)
 	outFile.write(tab)
