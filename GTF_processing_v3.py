@@ -50,6 +50,7 @@ for line in inFile:
 	outFile.write(tab)
 	outFile.write(geneName)
 	outFile.write(tab)
+	outFile.write(geneType)
 	outFile.write(tab)
 	outFile.write(geneStart)
 	outFile.write(tab)
