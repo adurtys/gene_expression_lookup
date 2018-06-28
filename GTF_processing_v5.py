@@ -47,8 +47,6 @@ for line in inFile:
 	geneType = geneType.strip('gene_type ')
 	geneType = geneType.strip('"')
 
-	# print "Finished processing the columns. Now, parsing for protein-coding genes. "
-
 	if geneType == "protein_coding":
 		# create list of unique protein-coding genes
 		if geneId not in uniqGenes:
@@ -56,14 +54,10 @@ for line in inFile:
 
 print "There are ", len(uniqGenes), "unique protein-coding genes in this file."
 
-inFile.close()	
+for i in range(len(uniqGenes)):
+	print uniqGenes[i]
 
-	# # parse file and extract information for protein-coding genes
-	# if geneType == "protein_coding":
-	# 	# create list of unique protein-coding genes
-	# 	if geneId not in uniqGenes:
-	# 		print "a unique gene, ", geneId, ", has been found."
-	# 		uniqGenes.append(geneType)
+inFile.close()	
 
 	# 	# edit dictionaries containing gene information using uniqGenes list as keys
 	# 	if geneId not in chromosomeDict:
