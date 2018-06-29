@@ -26,7 +26,8 @@ for line in inFile:
 	
 	# split line on tab, return list of columns
 	columns = line.split('\t')
-        
+    
+    chromosome = columns[0]    
 	geneStart = columns[3]
 	geneEnd = columns[4]
 	
@@ -46,16 +47,20 @@ for line in inFile:
 	geneType = geneType.strip('gene_type ')
 	geneType = geneType.strip('"')
 	
-	outFile.write(geneId)
-	outFile.write(tab)
-	outFile.write(geneName)
-	outFile.write(tab)
-	outFile.write(geneType)
-	outFile.write(tab)
-	outFile.write(geneStart)
-	outFile.write(tab)
-	outFile.write(geneEnd)
-	outFile.write(newline)
+	# create list of protein-coding genes
+	if geneType == "protein_coding":
+		outFile.write(geneId)
+		outFile.write(tab)
+		outFile.write(geneName)
+		outFile.write(tab)
+		outFile.write(chromosome)
+		outFile.write(tab)
+		outFile.write(geneType)
+		outFile.write(tab)
+		outFile.write(geneStart)
+		outFile.write(tab)
+		outFile.write(geneEnd)
+		outFile.write(newline)
 
 outFile.close()
 inFile.close()
@@ -65,14 +70,6 @@ inFile.close()
 
 # inFilename = outFilename
 # inFile = open(inFilename, 'r')
-
-
-	
-
-	# parse file for protein-coding genes
-	# if geneType == "gene_type "protein_coding"":
-
-
 
 # for each line: 
 	# determine whether gene already has start and end specified in new file
