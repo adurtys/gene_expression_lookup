@@ -98,34 +98,19 @@ for index in range(numGenes):
 numUniqGenes = len(uniqGenes)
 print "There are ", numUniqGenes, "unique protein-coding genes in this file."
 
-for uniqId in uniqGenes:
-	print uniqId, "\t", uniqGeneName[uniqId], "\t", "start:", uniqGeneStart[uniqId], "end:", uniqGeneEnd[uniqId]
-
-
 # create a new file for start and end positions of only protein-coding genes
-# outFilename = "gene_annotations_v2.txt"
-# outFile = open(outFilename, 'w')
+outFilename = "gene_annotations.txt"
+outFile = open(outFilename, 'w')
 
-# tab = "\t"
-# newline = "\n"
+tab = "\t"
+newline = "\n"
 
-# # convert start and end positions back to strings
-# for geneId in geneStartDict:
-# 	geneStartDict[geneId] = str(geneStartDict[geneId])
-# for geneId in geneEndDict:
-# 	geneEndDict[geneId] = str(geneEndDict[geneId])
+for uniqId in uniqGenes:
+	# convert start and end positions back to strings
+	uniqGeneStart[uniqId] = str(uniqGeneStart[uniqId])
+	uniqGeneEnd[uniqId] = str(uniqGeneEnd[uniqId])
 
-# string = geneId + tab + geneNameDict[geneId] + tab + geneStartDict[geneId] ...
+	output = uniqGeneChrom[uniqId] + tab + uniqId + tab + uniqGeneName[uniqId] + tab +  uniqGeneStart[uniqId] + tab + uniqGeneEnd[uniqId] + newline
+	outFile.write(output)
 
-# print "writing file now"
-# for geneId in uniqGenes:
-# 	 outFile.write(geneId)
-# 	 outFile.write(tab)
-# 	 outFile.write(geneNameDict[geneId])
-# 	 outFile.write(tab)
-# 	 outFile.write(geneStartDict[geneStart])
-# 	 outFile.write(tab)
-# 	 outFile.write(geneEndDict[geneEnd])
-# 	 outFile.write(newline)
-
-# outFile.close()
+outFile.close()
