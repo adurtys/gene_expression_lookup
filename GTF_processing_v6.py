@@ -58,7 +58,8 @@ for line in inFile:
 
 inFile.close()
 
-print "There are", len(genes), "total genes in this file."
+numGenes = len(genes)
+print "There are", numGenes, "total genes in this file."
 
 # create new data structures to store information for unique protein-coding genes
 protCodingGenes = []
@@ -69,14 +70,15 @@ uniqGeneStart = {}
 uniqGeneEnd = {}
 
 # parse gene list for protein-coding genes
-for id in range(len(genes)):
+for id in range(numGenes):
 	if geneTypes[id] == "protein_coding":
 		protCodingGenes.append(genes[id])
 
-print "There are", len(protCodingGenes), "total protein-coding genes in this file."
+numProtGenes = len(protCodingGenes)
+print "There are", numProtGenes, "total protein-coding genes in this file."
 
 # parse protein-coding gene list for unique genes
-for id in range(len(protCodingGenes))
+for id in range(numProtGenes)
 	if protCodingGenes[id] not in uniqGenes:
 		# create list of unique protein-coding genes
 		uniqGenes.append(protCodingGenes[id])
@@ -86,7 +88,8 @@ for id in range(len(protCodingGenes))
 		uniqGeneName[protCodingGenes[id]] = geneNames[id]
 		uniqGeneChrom[protCodingGenes[id]] = chromNums[id]
 
-print "There are ", len(uniqGenes), "unique protein-coding genes in this file."
+numUniqGenes = len(uniqGenes)
+print "There are ", numUniqGenes, "unique protein-coding genes in this file."
 
 for uniqId in uniqGenes:
 	print uniqId, "\t", uniqGeneName[uniqId], "\t", uniqGeneChrom[uniqId]
