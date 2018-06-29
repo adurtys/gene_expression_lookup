@@ -1,0 +1,37 @@
+Sender: LSF System <jszostek@judicator>
+Subject: Job 14486458: <python GTF_processing_final.py> in cluster <PMACS-SCC> Done
+
+Job <python GTF_processing_final.py> was submitted from host <devastator> by user <adurtys> in cluster <PMACS-SCC> at Fri Jun 29 14:55:45 2018.
+Job was executed on host(s) <judicator>, in queue <voight_normal>, as user <adurtys> in cluster <PMACS-SCC> at Fri Jun 29 14:55:45 2018.
+</home/adurtys> was used as the home directory.
+</project/voight_metprofiling/adurtys/gene_expression_lookup> was used as the working directory.
+Started at Fri Jun 29 14:55:45 2018.
+Terminated at Fri Jun 29 15:09:07 2018.
+Results reported at Fri Jun 29 15:09:07 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python GTF_processing_final.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   803.78 sec.
+    Max Memory :                                 1912 MB
+    Average Memory :                             1878.00 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                4
+    Run time :                                   801 sec.
+    Turnaround time :                            802 sec.
+
+The output (if any) follows:
+
+There are 2402832 total protein-coding genes in this file.
+There are  20345 unique protein-coding genes in this file.
