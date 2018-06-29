@@ -69,24 +69,18 @@ uniqGeneEnd = {}
 
 # parse gene list for unique protein-coding genes
 for id in range(len(genes)):
-	if geneTypes[id] == "protein_coding":
+	if (geneTypes[id] == "protein_coding") and (genes[id] not in uniqGenes):
 		uniqGenes.append(genes[id])
+
+print "There are ", len(uniqGenes), "unique protein-coding genes in this file."
 
 for uniqId in uniqGenes:
 	print uniqId
 
-		#if genes[id] not in uniqGenes:
-		#	uniqGenes.append(genes[id])
+
 		#	uniqGeneChrom[id] =  chromNums[id]
 		#	uniqGeneName[id]
 
-
-
-
-	#if geneType == "protein_coding":
-	#	# create list of unique protein-coding genes
-	#	if geneId not in uniqGenes:
-	#		uniqGenes.append(geneId)
 
  	# edit dictionaries containing gene information using uniqGenes list as keys
 	# if geneId not in chromosomeDict:
@@ -106,15 +100,6 @@ for uniqId in uniqGenes:
 	# 	# only modify geneEnd if new ending position is larger than the current one
 	# 	elif (geneId in geneEndDict) and (geneEnd > geneEndDict[geneId]):
 	# 		geneEndDict[geneId] = geneEnd
-
-
-#for i in range(len(uniqGenes)):
-#	print uniqGenes[i], 
-
-
-	
-
-
 
 # create a new file for start and end positions of only protein-coding genes
 # outFilename = "gene_annotations_v2.txt"
