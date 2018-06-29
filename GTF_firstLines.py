@@ -14,7 +14,7 @@ outFile = open(outFilename, 'w')
 
 lines = inFile.readlines()
 
-for i in range(2000):
+for i in range(500000):
 	outFile.write(lines[i])
 
 inFile.close()
