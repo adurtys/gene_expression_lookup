@@ -78,7 +78,7 @@ numProtGenes = len(protCodingGenes)
 print "There are", numProtGenes, "total protein-coding genes in this file."
 
 # parse protein-coding gene list for unique genes
-for id in range(numProtGenes)
+for id in range(numProtGenes):
 	if protCodingGenes[id] not in uniqGenes:
 		# create list of unique protein-coding genes
 		uniqGenes.append(protCodingGenes[id])
