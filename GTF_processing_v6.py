@@ -73,7 +73,7 @@ for id in range(len(genes)):
 		uniqGenes.append(genes[id])
 
 for uniqId in uniqGenes:
-	print uniqGenes[uniqId]
+	print uniqId
 
 		#if genes[id] not in uniqGenes:
 		#	uniqGenes.append(genes[id])
