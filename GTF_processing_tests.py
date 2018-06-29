@@ -26,8 +26,8 @@ for line in inFile:
 	
 	# split line on tab, return list of columns
 	columns = line.split('\t')
-    
-    chromosome = columns[0]
+
+	chromosome = columns[0]
     featureType = columns[2]    
 	geneStart = columns[3]
 	geneEnd = columns[4]
