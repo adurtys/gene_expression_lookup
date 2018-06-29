@@ -15,6 +15,7 @@ inFile = open(inFilename, 'r')
 genes = []
 geneNames = []
 chromNums = []
+features = []
 geneTypes = []
 geneStartLocations = []
 geneEndLocations = []
@@ -30,7 +31,7 @@ for line in inFile:
 	columns = line.split('\t')
     
 	chromosome = columns[0]
-#	featureType = columns[2]
+	featureType = columns[2]
 	geneStart = int(columns[3])
 	geneEnd = int(columns[4])
 	
@@ -56,6 +57,7 @@ for line in inFile:
 		genes.append(geneId)
 		geneNames.append(name)
 		chromNums.append(chromosome)
+		features.append(featureType)
 		geneTypes.append(geneType)
 		geneStartLocations.append(geneStart)
 		geneEndLocations.append(geneEnd)
@@ -69,6 +71,7 @@ print "There are", numGenes, "total protein-coding genes in this file."
 uniqGenes = []
 uniqGeneName = {}
 uniqGeneChrom = {}
+uniqGeneFeature = {}
 uniqGeneStart = {}
 uniqGeneEnd = {}
 
@@ -82,6 +85,7 @@ for index in range(numGenes):
 
 	uniqGeneName[key] = geneNames[index]
 	uniqGeneChrom[key] = chromNums[index]
+	uniqGeneFeature[key] = features[index]
 
 	# add start location if not already in the dictionary
 	if key not in uniqGeneStart:
@@ -112,7 +116,7 @@ for uniqId in uniqGenes:
 	uniqGeneStart[uniqId] = str(uniqGeneStart[uniqId])
 	uniqGeneEnd[uniqId] = str(uniqGeneEnd[uniqId])
 
-	output = uniqGeneChrom[uniqId] + tab + uniqId + tab + uniqGeneName[uniqId] + tab +  uniqGeneStart[uniqId] + tab + uniqGeneEnd[uniqId] + newline
+	output = uniqGeneChrom[uniqId] + tab + uniqId + tab + uniqGeneName[uniqId] + tab + uniqGeneFeature[uniqId] + tab + uniqGeneStart[uniqId] + tab + uniqGeneEnd[uniqId] + newline
 	outFile.write(output)
 
 outFile.close()
