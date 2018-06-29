@@ -99,7 +99,7 @@ numUniqGenes = len(uniqGenes)
 print "There are ", numUniqGenes, "unique protein-coding genes in this file."
 
 for uniqId in uniqGenes:
-	print uniqId, "\t", uniqGeneName[uniqId], "\t", uniqGeneChrom[uniqId], "\t", uniqGeneStart[uniqId], "\t", uniqGeneEnd[uniqId]
+	print uniqId, "\t", uniqGeneName[uniqId], "\t", "start:", uniqGeneStart[uniqId], "end:", uniqGeneEnd[uniqId]
 
 
 # create a new file for start and end positions of only protein-coding genes
