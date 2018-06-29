@@ -28,7 +28,7 @@ for line in inFile:
 	columns = line.split('\t')
 
 	chromosome = columns[0]
-    featureType = columns[2]    
+	featureType = columns[2]    
 	geneStart = columns[3]
 	geneEnd = columns[4]
 	
