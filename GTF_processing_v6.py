@@ -58,25 +58,33 @@ for line in inFile:
 
 inFile.close()
 
-print "There are ", len(genes), "total genes in this file."
+print "There are", len(genes), "total genes in this file."
 
 # create new data structures to store information for unique protein-coding genes
+protCodingGenes = []
 uniqGenes = []
 uniqGeneName = {}
 uniqGeneChrom = {}
 uniqGeneStart = {}
 uniqGeneEnd = {}
 
-# parse gene list
+# parse gene list for protein-coding genes
 for id in range(len(genes)):
-	if (geneTypes[id] == "protein_coding") and (genes[id] not in uniqGenes):
+	if geneTypes[id] == "protein_coding":
+		protCodingGenes.append(genes[id])
+
+print "There are", len(protCodingGenes), "total protein-coding genes in this file."
+
+# parse protein-coding gene list for unique genes
+for id in range(len(protCodingGenes))
+	if protCodingGenes[id] not in uniqGenes:
 		# create list of unique protein-coding genes
-		uniqGenes.append(genes[id])
+		uniqGenes.append(protCodingGenes[id])
 
 		# edit dictionaries containing gene information
 		# use the GeneID stored in the genes list as keys
-		uniqGeneName[genes[id]] = geneNames[id]
-		uniqGeneChrom[genes[id]] = chromNums[id]
+		uniqGeneName[protCodingGenes[id]] = geneNames[id]
+		uniqGeneChrom[protCodingGenes[id]] = chromNums[id]
 
 print "There are ", len(uniqGenes), "unique protein-coding genes in this file."
 
@@ -84,13 +92,7 @@ for uniqId in uniqGenes:
 	print uniqId, "\t", uniqGeneName[uniqId], "\t", uniqGeneChrom[uniqId]
 
 
- 	# edit dictionaries containing gene information using uniqGenes list as keys
-	# if geneId not in chromosomeDict:
-	# 	chromosomeDict[geneId] = chromosome
-
-	# 	if geneId not in geneNameDict:
-	# 		geneNameDict[geneId] = geneName
-		
+ 	# edit dictionaries containing gene information using uniqGenes list as keys		
 	# 	if geneId not in geneStartDict:
 	# 		geneStartDict[geneId] = geneStart
 	# 	# only modify geneStart if new starting position is smaller than current one
