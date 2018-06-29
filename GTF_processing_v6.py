@@ -12,8 +12,8 @@ inFile = open(inFilename, 'r')
 
 # create data structures to hold information pertaining to each gene
 genes = []
-chromNums = []
 geneNames = []
+chromNums = []
 geneTypes = []
 geneStartLocations = []
 geneEndLocations = []
@@ -50,8 +50,8 @@ for line in inFile:
 
 	# add info to their respective data structures
 	genes.append(geneId)
-	chromNums.append(chromosome)
 	geneNames.append(name)
+	chromNums.append(chromosome)
 	geneTypes.append(geneType)
 	geneStartLocations.append(geneStart)
 	geneEndLocations.append(geneEnd)
@@ -62,24 +62,26 @@ print "There are ", len(genes), "total genes in this file."
 
 # create new data structures to store information for unique protein-coding genes
 uniqGenes = []
-uniqGeneChrom = {}
 uniqGeneName = {}
+uniqGeneChrom = {}
 uniqGeneStart = {}
 uniqGeneEnd = {}
 
-# parse gene list for unique protein-coding genes
+# parse gene list
 for id in range(len(genes)):
 	if (geneTypes[id] == "protein_coding") and (genes[id] not in uniqGenes):
+		# create list of unique protein-coding genes
 		uniqGenes.append(genes[id])
+
+		# edit dictionaries containing gene information
+		# use the GeneID stored in the genes list as keys
+		uniqGeneName[genes[id]] = geneNames[id]
+		uniqGeneChrom[genes[id]] = chromNums[id]
 
 print "There are ", len(uniqGenes), "unique protein-coding genes in this file."
 
 for uniqId in uniqGenes:
-	print uniqId
-
-
-		#	uniqGeneChrom[id] =  chromNums[id]
-		#	uniqGeneName[id]
+	print uniqId, "\t", uniqGeneName[uniqId], "\t", uniqGeneChrom[uniqId]
 
 
  	# edit dictionaries containing gene information using uniqGenes list as keys
