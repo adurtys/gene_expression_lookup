@@ -79,14 +79,31 @@ print "There are", numProtGenes, "total protein-coding genes in this file."
 
 # parse protein-coding gene list for unique genes
 for id in range(numProtGenes):
-	if protCodingGenes[id] not in uniqGenes:
+	key = protCodingGenes[id]
+
+	if key not in uniqGenes:
 		# create list of unique protein-coding genes
-		uniqGenes.append(protCodingGenes[id])
+		uniqGenes.append(key)
 
 		# edit dictionaries containing gene information
-		# use the GeneID stored in the genes list as keys
-		uniqGeneName[protCodingGenes[id]] = geneNames[id]
-		uniqGeneChrom[protCodingGenes[id]] = chromNums[id]
+		# use the GeneID stored in the protein-coding gene list as keys
+		uniqGeneName[key] = geneNames[id]
+		uniqGeneChrom[key] = chromNums[id]
+
+		# add start location if not already in the dictionary
+		if key not in uniqGeneStart:
+			uniqGeneStart[key] = geneStartLocations[id]
+		# only modify start location if new position is smaller than current one
+		elif geneStartLocations[id] < uniqGeneStart[key]:
+			uniqGeneStart[key] = geneStartLocations[id]
+
+		# add end location if not already in the dictionary
+		if key not in uniqGeneEnd:
+			uniqGeneEnd[key] = geneEndLocations[id]
+		# only modify end location if new position is larger than current one
+		elif geneEndLocations[id] > uniqGeneEnd[key]:
+			uniqGeneEnd[key] = geneEndLocations[id]
+
 
 numUniqGenes = len(uniqGenes)
 print "There are ", numUniqGenes, "unique protein-coding genes in this file."
@@ -94,19 +111,6 @@ print "There are ", numUniqGenes, "unique protein-coding genes in this file."
 for uniqId in uniqGenes:
 	print uniqId, "\t", uniqGeneName[uniqId], "\t", uniqGeneChrom[uniqId]
 
-
- 	# edit dictionaries containing gene information using uniqGenes list as keys		
-	# 	if geneId not in geneStartDict:
-	# 		geneStartDict[geneId] = geneStart
-	# 	# only modify geneStart if new starting position is smaller than current one
-	# 	elif (geneId in geneStartDict) and (geneStart < geneStartDict[geneId]):
-	# 		geneStartDict[geneId] = geneStart
-
-	# 	if geneId not in geneEndDict:
-	# 		geneEndDict[geneId] = geneEnd
-	# 	# only modify geneEnd if new ending position is larger than the current one
-	# 	elif (geneId in geneEndDict) and (geneEnd > geneEndDict[geneId]):
-	# 		geneEndDict[geneId] = geneEnd
 
 # create a new file for start and end positions of only protein-coding genes
 # outFilename = "gene_annotations_v2.txt"
@@ -120,6 +124,8 @@ for uniqId in uniqGenes:
 # 	geneStartDict[geneId] = str(geneStartDict[geneId])
 # for geneId in geneEndDict:
 # 	geneEndDict[geneId] = str(geneEndDict[geneId])
+
+# string = geneId + tab + geneNameDict[geneId] + tab + geneStartDict[geneId] ...
 
 # print "writing file now"
 # for geneId in uniqGenes:
