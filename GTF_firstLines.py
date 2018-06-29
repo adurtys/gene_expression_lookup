@@ -1,7 +1,7 @@
 # Date Created: 27 June 2018
-# Date Last Modified: 28 June 2018
+# Date Last Modified: 29 June 2018
 # TODO: Execution: python GTF_firstLines.py
-# TODO: This program writes the first 2000 lines of "gencode.v19.annotation.gtf" to "firstLines.txt"
+# TODO: This program writes the first 500,000 lines of "gencode.v19.annotation.gtf" to "firstLines.txt"
 
 #!/usr/bin/env python
 
