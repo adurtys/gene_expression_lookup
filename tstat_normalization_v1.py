@@ -86,7 +86,7 @@ outFilename = "normalizedGTEx.tstat.txt"
 outFile = open(outFilename, 'w')
 
 tab = "\t"
-newline = "\t"
+newline = "\n"
 
 # store column labels in header row
 headerLine = inFile.readline()
@@ -98,8 +98,8 @@ numColumns = len(headers)
 prevOutput = ""
 output = ""
 # start at the second column (skip first column, containing ENSGID)
-# FOR TESTING, numColumns = 2!!!!!!
-for i in range(1, 2):
+# FOR TESTING, numColumns = 3!!!!!! (also didn't rank yet)
+for i in range(1, 3):
 	tempColumn = []
 	output = prevOutput
 
@@ -108,12 +108,17 @@ for i in range(1, 2):
 		tissues = line.split('\t')
 
 		tempColumn.append(tissues[i])
-	
-	rankedColumn = rankList(tempColumn)
-	for rank in rankedColumn:
-		rank = str(rank)
-		output += rank + newline
+
+	for tsat in tempColumn:
+		tstat = str(tstat)
+		output += tstat + newline
 		prevOutput = output
+	
+	# rankedColumn = rankList(tempColumn)
+	# for rank in rankedColumn:
+	# 	rank = str(rank)
+	# 	output += rank + newline
+	# 	prevOutput = output
 
 	outFile.write(output)
 
