@@ -95,13 +95,12 @@ headers = headerLine.split('\t')
 
 numColumns = len(headers)
 
-prevOutput = ""
 output = ""
 # start at the second column (skip first column, containing ENSGID)
 # FOR TESTING, numColumns = 3!!!!!! (also didn't rank yet)
 for i in range(1, 3):
 	tempColumn = []
-	output = prevOutput
+	output = output.rstrip('\r\n')
 
 	for line in inFile:
 		line = line.rstrip('\r\n')
@@ -111,8 +110,7 @@ for i in range(1, 3):
 
 	for tstat in tempColumn:
 		tstat = str(tstat)
-		output += tstat + newline
-		prevOutput = output
+		output += tstat + tab + newline
 	
 	# rankedColumn = rankList(tempColumn)
 	# for rank in rankedColumn:
