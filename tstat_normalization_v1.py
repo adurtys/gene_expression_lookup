@@ -118,7 +118,7 @@ for i in range(1, 3):
 	# 	output += rank + newline
 	# 	prevOutput = output
 
-	outFile.write(output)
+outFile.write(output)
 
 
 
