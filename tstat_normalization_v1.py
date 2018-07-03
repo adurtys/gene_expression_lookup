@@ -111,6 +111,7 @@ for i in range(1, 2):
 	
 	rankedColumn = rankList(tempColumn)
 	for rank in rankedColumn:
+		rank = str(rank)
 		output += rank + newline
 		prevOutput = output
 
