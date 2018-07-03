@@ -109,7 +109,7 @@ for i in range(1, 3):
 
 		tempColumn.append(tissues[i])
 
-	for tsat in tempColumn:
+	for tstat in tempColumn:
 		tstat = str(tstat)
 		output += tstat + newline
 		prevOutput = output
