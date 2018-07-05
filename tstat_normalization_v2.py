@@ -144,9 +144,9 @@ for i in range(numGenes):
 	output = ids[i] + tab
 	for j in range(numTissues):
 		if j < (numTissues - 1):
-			output += matrix[j][i] + tab
+			output += str(matrix[j][i]) + tab
 		else: # j = numTissues - 1
-			output += matrix[j][i] + newline
+			output += str(matrix[j][i]) + newline
 
 	outFile.write(output)
 
