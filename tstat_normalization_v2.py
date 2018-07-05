@@ -1,7 +1,7 @@
 # Date Created: 3 July 2018
 # Date Last Modified: 4 July 2018
 # Execution: python tstat_normalization_v1.py
-# TODO: This program rank-normalizes the t statistics in the "GTEx.tstat.tsv" file
+# TODO: This program rank-normalizes the t statistics in the "GTEx.tstat.tsv" file (where rows = genes, columnes = tissues)
 
 #!/usr/bin/env python
 
@@ -95,89 +95,59 @@ def rankList(anyList):
 
 
 # read in the tstat file
-# strip file of new lines
-# split based on tabs
-# first column contains ensgId
-# create matrix to store all info
-# for each line in the file, read in each column, starting from the second, and fill out matrix
-# rank-order each column
-
-
-
-# read in the tstat file
-inFilename = "GTEx.tstat.tsv"
+inFilename = "tstat_first10lines.tsv"
 inFile = open(inFilename, 'r')
-
-# # create new file containing rank-normalized tstats
-# outFilename = "normalizedGTEx.tstat.txt"
-# outFile = open(outFilename, 'w')
-
-# tab = "\t"
-# newline = "\n"
 
 # store column labels in header row
 headerLine = inFile.readline()
 headerLine = headerLine.rstrip('\r\n')
 headers = headerLine.split('\t')
 
-numCol = len(headers)
+# exclude first column when counting the number of tissues present in the file
+numTissues = len(headers) - 1
 
-# initialize matrix with numColumns
-matrix = [[0 for x in range(numCol)]]
+# initialize matrix comprised of numTissues lists
+matrix = [[] for tissue in range(numTissues)]
 
-# initialize another matrix of the same size to store the ranks
-rankedMatrix = [[0 for x in range(numCol)]]
+# create list for ENSGIDs
+ids = []
 
-numRowsSoFar = 0
 for line in inFile:
 	line = line.rstrip('\r\n')
 	tissues = line.split('\t')
 
-	# keep first column as the ENSGID
-	id = tissues[0]
-	matrix[numRowsSoFar][0] = tissues[0]
-	
-	# for every subsequent column, rank order the column, then append it to the matrix
+	# add ENSGID, found in first column, to the list
+	ids.append(tissues[0])
 
+	# for every subsequent column (representing another tissue), tissues[i + 1] = tissue expression for that gene
+	for i in range(numTissues):
+		matrix[i].append(int(tissues[i + 1]))
 
-	numRowsSoFar += 1
+inFile.close()
+numGenes = len(matrix[0])
 
+# initialize a new matrix to store the ranks
+rankedMatrix = [[0 for gene in range(numGenes)] for tissue in range(numTissues)]
 
+# rank tissue expressions for each tissue
+for i in range(numTissues):
+	rankedMatrix[i] = rankList(matrix[i])
 
+# create new file containing rank-normalized tstats
+outFilename = "normalizedGTEx.tstat.txt"
+outFile = open(outFilename, 'w')
 
+tab = "\t"
+newline = "\n"
 
+for i in range(numGenes):
+	output = ids[i] + tab
+	for j in range(numTissues):
+		if j < (numTissues - 1):
+			output += matrix[j][i] + tab
+		else: # j = numTissues - 1
+			output += matrix[j][i] + newline
 
-
-prevOutput = ""
-output = ""
-# start at the second column (skip first column, containing ENSGID)
-# FOR TESTING, numColumns = 3!!!!!! (also didn't rank yet)
-for i in range(1, 3):
-	print "i:", i
-	tempColumn = []
-
-	for line in output:
-		prevOutput = output.rstrip('\r\n')
-
-	for line in inFile:
-		line = line.rstrip('\r\n')
-		tissues = line.split('\t')
-
-		tempColumn.append(tissues[i])
-
-	print "tempColumn[1]:", tempColumn[1]
-	for tstat in tempColumn:
-		tstat = str(tstat)
-		output = prevOutput + tstat + tab + newline
-	
-	# rankedColumn = rankList(tempColumn)
-	# for rank in rankedColumn:
-	# 	rank = str(rank)
-	# 	output += rank + newline
-	# 	prevOutput = output
-
-outFile.write(output)
-
+	outFile.write(output)
 
 outFile.close()
-inFile.close()
