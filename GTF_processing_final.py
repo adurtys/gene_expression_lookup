@@ -27,7 +27,7 @@ for i in range(5):
 for line in inFile:
    	line = line.rstrip('\r\n')
 	
-	# split line on tab, return list of columns
+	# split line on tab, creating list of possible columns
 	columns = line.split('\t')
     
 	chromosome = columns[0]

@@ -1,70 +1,23 @@
 # Date Created: 28 June 2018
-# Date Last Modified: 2 July 2018
-# Execution: python expression_lookup_v1.py snp numGenes distance
+# Date Last Modified: 3 July 2018
+# Execution: python expression_lookup_v1.py snp numGenes distance threshold
 # snp is a string of the format "chr#:location" for the snp to be looked up in "gene_annotations.txt" file.
 # numGenes is an int representing the number of closest genes on either side of the snp that should be analyzed 
 # with respect to expression in the tissues listed in "GTEx.tstat.tsv" file.
-# distance is a flot representing the max distance (in kilobp) from the snp that the closest genes can be
+# distance is a float representing the max distance (in kilobp) from the snp that the closest genes can be
+# threshold is a float (decimal) representing the percentage of top rank-ordered t-statistics that should be considered
+# as "highly expressed" within a particular tissue.
 # TODO: This program ...
 
 #!/usr/bin/env python
+import sys
 
-# read in arguments from user
-snp = sys.argv[1]
-numGenes = int(sys.argv[2])
-distance = float(sys.argv[3])
-if distance > 1000:
-	distance = 1000
-
-# process the snp
-snp = snp.split(':')
-chromosome = snp[0]
-snpLocation = int(snp[1])
-
-# read in gene annotations file
-inFilename = "gene_annotations.txt"
-inFile = open(inFilename, 'r')
-
-# create data structures containing information pertaining to each gene
-nameDict = {}
-startDict = {}
-endDict = {}
-
-for line in file:
-	line = line.rstrip('\r\n')
-	
-	# split line on tab, return list of columns
-	columns = line.split('\t')
-	
-	geneChrom = columns[0]
-	geneId = columns[1]
-	geneName = columns[2]
-	# geneFeature = columns[3]
-	geneStart = int(columns[4])
-	geneEnd = int(columns[5])
-
-	# parse for chromosome specified by user
-	if geneChrom == chromosome:
-		# populate arrays to be used for searching
-		startLocations.append(geneStart)
-		endLocations.append(geneEnd)
-
-		# populate the dictionaries
-		nameDict[geneId] = geneName
-		# start and end location dictionaries use GeneID as value
-		startDict[geneStart] = geneId
-		endDict[geneEnd] = geneId
-
-inFile.close()
-
-print "The chromosome to be searched is:", chromosome, ".\nThere are", len(nameDict), "genes on this chromosome."
-
-# Input: a sorted list of locations, a location to be searched, the number of nearest genes to return, the distance
+# Input: a sorted list of locations, a position to be searched, the number of nearest genes to return, the distance
 # within which to search for nearby genes, the first index (default = 0), and the last index (default = None) 
-# Output: if the searched number was found, the function will return a list containing the locations of the searched number 
-# and the next closest numbers, both greater and less than the number that was searched. If the searched number was not
-# found, then the function will return a list of the nearest numbers. The number of items in this list is the number
-# specified by the user, as long as the genes are within the specified distance.
+# Output: if the searched position was found, the function will return a list containing the locations of the searched number 
+# and the next closest numbers, both greater and less than the number that was searched. If the searched position was not
+# found, then the function will return a list of the nearest positions. The number of items in this list is the number of
+# nearest genes specified by the user, as long as the genes are within the specified distance.
 # Description: this function is a recursive binary search function that will return locations for the number of closest
 # genes specified by the user, given that these genes are within 1mb from the snp. If the snp itself occurs at a location,
 # then this location is included in the list of locations. numGenes is the number of locations less than and greater 
@@ -129,6 +82,59 @@ def binarySearch(sortedList, number, numGenes, distance, first = 0, last = None)
 	# number is larger than the number at mid
 	return binarySearch(sortedList, number, numGenes, distance, mid + 1, last)
 
+# read in arguments from user
+snp = sys.argv[1]
+numGenes = int(sys.argv[2])
+distance = float(sys.argv[3])
+threshold = float(sys.argv[4])
+
+# only search for genes within 1mb of the snp
+if distance > 1000:
+	distance = 1000
+
+# process the snp
+snp = snp.split(':')
+chromosome = snp[0]
+snpLocation = int(snp[1])
+
+# read in gene annotations file
+inFilename = "gene_annotations.txt"
+inFile = open(inFilename, 'r')
+
+# create data structures containing information pertaining to each gene
+nameDict = {}
+startDict = {}
+endDict = {}
+
+for line in file:
+	line = line.rstrip('\r\n')
+	
+	# split line on tab, return list of columns
+	columns = line.split('\t')
+	
+	geneChrom = columns[0]
+	geneId = columns[1]
+	geneName = columns[2]
+	# geneFeature = columns[3]
+	geneStart = int(columns[4])
+	geneEnd = int(columns[5])
+
+	# parse for chromosome specified by user
+	if geneChrom == chromosome:
+		# populate arrays to be used for searching
+		startLocations.append(geneStart)
+		endLocations.append(geneEnd)
+
+		# populate the dictionaries
+		nameDict[geneId] = geneName
+		# start and end location dictionaries use GeneID as value
+		startDict[geneStart] = geneId
+		endDict[geneEnd] = geneId
+
+inFile.close()
+
+print "The chromosome to be searched is:", chromosome, ".\nThere are", len(nameDict), "genes on this chromosome."
+
 # create list of nearby genes downstream from the snp
 sortedStartDictionary = sorted(startDict)
 nearbyStartLocations = binarySearch(sortedStartDictionary, snpLocation, numGenes, distance, first = 0, last = None)
@@ -143,8 +149,66 @@ upstreamGenes = []
 for posiition in nearbyEndLocations:
 	upstreamGenes.append(endDict[posiition])
 
-# read in tissue expression file (tab-separated)
+# read in the normalized tissue expression file
+inFilename2 = "normalizedGTEx.tstat.txt"
+inFile2 = open(inFilename2, 'r')
 
+# create a matrix to hold tissue expressions for the genes to be searched
+genesForAnalysis = len(downstreamGenes) + len(upstreamGenes)
+ids = []
+matrix = [[] for gene in range(genesForAnalysis)]
 
+geneIndex = 0
+totalGenes = 0
+for line in inFile2:
+	line = line.rstrip('\r\n')
+	tissues = line.split("\t")
 
+	numTissues = len(tissues) - 1
 
+	# parse for ENSGIDs in upstreamGenes or downstreamGenes	
+	if (tissues[0] in downstreamGenes) or (tissues[0] in upstreamGenes):
+		ids.append(tissues[0])
+		
+		# store the ranks for this ID
+		for i in range(numTissues):
+			matrix[geneIndex][i] = int(tissues[i + 1])
+
+	geneIndex += 1
+	totalGenes += 1
+
+numTissues = len(matrix[0])
+
+# determine whether expression meets threshold for high expression
+numTopRankingGenes = threshold * totalGenes
+critRank = totalGenes - numTopRankingGenes
+
+expressionMatrix = [[0 for tissue in numTissues] for gene in genesForAnalysis]
+
+# if the rank for expression of a gene in a particular tissue type is greater than critRank, then that gene
+# will be considered highly expressed in that tissue
+for i in range(genesForAnalysis):
+	for j in range(numTissues):
+		if matrix[i][j] >= critRank:
+			expressionMatrix[i][j] = 1
+
+# create new file containing expressionMatrix
+outFilename = "geneExpressionLookupResults.txt"
+outFile = open(outFilename, 'w')
+
+tab = "\t"
+newline = "\n"
+
+for i in range(genesForAnalysis):
+	output = ids[i] + tab
+	for j in range(numTissues):
+		if j < (numTissues - 1):
+			output += str(expressionMatrix[i][j]) + tab
+		else:
+			output += str(expressionMatrix[i][j]) + newline
+
+	outFile.write(output)
+
+outFile.close()
+
+##TODO: FIGURE OUT HOW TO ADD BACK HEADERS!
