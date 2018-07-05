@@ -121,7 +121,7 @@ for line in inFile:
 
 	# for every subsequent column (representing another tissue), tissues[i + 1] = tissue expression for that gene
 	for i in range(numTissues):
-		matrix[i].append(int(tissues[i + 1]))
+		matrix[i].append(float(tissues[i + 1]))
 
 inFile.close()
 numGenes = len(matrix[0])
