@@ -5,6 +5,9 @@
 
 #!/usr/bin/env python
 
+# Input: a list
+# Output: a list of items that are present in the list more than once
+# Description: finds items that are present more than once in the inputted list 
 def findDuplicates(anyList):
 	seen = set()
 	duplicates = []
@@ -17,6 +20,8 @@ def findDuplicates(anyList):
 
 	return duplicates
 
+# Input: a list, and 
+# Output: a list of the 
 def numDuplicates(anyList, item):
 	seen = set()
 	duplicates = []
@@ -35,6 +40,35 @@ def numDuplicates(anyList, item):
 	if item in numDupDict:
 		return numDupDict[item]
 	return 0
+
+
+def numOccurrences(anyList, item):
+	numOccurrences = {}
+
+	for i in range(len(anyList)):
+		if anyList[i] not in numOccurrences:
+			numOccurrences[anyList[i]] = 1
+		else: 
+			# item is a duplicate
+			numOccurrences[anyList[i]] += 1
+
+	if item not in numOccurrences:
+		return 0
+	return numOccurrences[item]
+
+def numOccurrences(anyList):
+	numOccurrences = {}
+
+	for i in range(len(anyList)):
+		if anyList[i] not in numOccurrences:
+			numOccurrences[anyList[i]] = 1
+		else:
+			# item is a duplicate
+			numOccurrences[anyList[i]] += 1
+
+	return numOccurrences
+
+
 
 def rankList(anyList):
 	sortedList = sorted(anyList)
@@ -95,12 +129,42 @@ headers = headerLine.split('\t')
 
 numColumns = len(headers)
 
+# initialize matrix with numColumns
+matrix = [[0 for x in range(numColumns)]]
+
+# initialize a temporary column to store values to be rank-ordered
+tempColumn = []
+
+numRowsSoFar = 0
+for line in inFile:
+	line = line.rstrip('\r\n')
+	tissues = line.split('\t')
+
+	# keep first column as the ENSGID
+	id = tissues[0]
+	matrix[numRowsSoFar][0] = tissues[0]
+	
+	# for every subsequent column, rank order the column, then append it to the matrix
+
+
+	numRowsSoFar += 1
+
+
+
+
+
+
+
+prevOutput = ""
 output = ""
 # start at the second column (skip first column, containing ENSGID)
 # FOR TESTING, numColumns = 3!!!!!! (also didn't rank yet)
 for i in range(1, 3):
+	print "i:", i
 	tempColumn = []
-	output = output.rstrip('\r\n')
+
+	for line in output:
+		prevOutput = output.rstrip('\r\n')
 
 	for line in inFile:
 		line = line.rstrip('\r\n')
@@ -108,9 +172,10 @@ for i in range(1, 3):
 
 		tempColumn.append(tissues[i])
 
+	print "tempColumn[1]:", tempColumn[1]
 	for tstat in tempColumn:
 		tstat = str(tstat)
-		output += tstat + tab + newline
+		output = prevOutput + tstat + tab + newline
 	
 	# rankedColumn = rankList(tempColumn)
 	# for rank in rankedColumn:
@@ -120,10 +185,6 @@ for i in range(1, 3):
 
 outFile.write(output)
 
-
-
-# rank the data set
-# replace each number in the column with its rank in the column
 
 outFile.close()
 inFile.close()
