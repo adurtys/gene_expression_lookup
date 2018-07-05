@@ -132,6 +132,7 @@ rankedMatrix = [[0 for gene in range(numGenes)] for tissue in range(numTissues)]
 # rank tissue expressions for each tissue
 for i in range(numTissues):
 	rankedMatrix[i] = rankList(matrix[i])
+	print "rankedMatrix[i]:", rankedMatrix[i]
 
 # create new file containing rank-normalized tstats
 outFilename = "normalizedGTEx.tstat.txt"
