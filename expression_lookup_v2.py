@@ -222,6 +222,7 @@ print "there are", len(ids), "ids for which to look up tissue expression:", ids
 
 numTissues = len(matrix[0])
 print "numTissues:", numTissues
+print "len(matrix[0]):", len(matrix[0])
 
 # determine whether expression meets threshold for high expression
 numTopRankingGenes = threshold * totalGenes
