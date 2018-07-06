@@ -203,6 +203,7 @@ for line in inFile2:
 	line = line.rstrip('\r\n')
 	tissues = line.split("\t")
 
+	# first column contains GeneID, not tissue
 	numTissues = len(tissues) - 1
 
 	# parse for ENSGIDs in upstreamGenes or downstreamGenes	
@@ -210,8 +211,9 @@ for line in inFile2:
 		ids.append(tissues[0])
 		
 		# store the ranks for this ID
-		for i in range(numTissues):
-			matrix[i].append(int(tissues[i + 1]))
+		for i in range(genesForAnalysis):
+			for j in range(numTissues):
+				matrix[i].append(int(tissues[j + 1]))
 
 	totalGenes += 1
 
