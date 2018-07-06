@@ -210,7 +210,7 @@ for line in inFile2:
 		ids.append(tissues[0])
 		
 		# store the ranks for this ID
-		for i in range(genesForAnalysis):
+		for i in range(numTissues):
 			matrix[i].append(int(tissues[i + 1]))
 
 	totalGenes += 1
