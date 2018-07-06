@@ -196,11 +196,13 @@ for line in inFile2:
 		ids.append(tissues[0])
 		
 		# store the ranks for this ID
-		for i in range(numTissues):
+		for i in range(genesForAnalysis):
 			matrix[geneIndex][i] = int(tissues[i + 1])
 
 	geneIndex += 1
 	totalGenes += 1
+
+print "ids for which to look up tissue expression:", ids
 
 numTissues = len(matrix[0])
 
