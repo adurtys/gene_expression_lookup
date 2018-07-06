@@ -56,7 +56,7 @@ def binarySearch(sortedList, number, numGenes, distance, first = 0, last = None)
 				if distRight <= distance:
 					locations.append(sortedList[first + i])
 
-		print "Finished searching for snp."
+		print "Finished searching."
 		print "locations:", locations
 		return locations
 
@@ -157,6 +157,7 @@ print "The chromosome to be searched is:", chromosome, "\nThere are", len(nameDi
 
 # create list of nearby genes downstream from the snp
 sortedStartDictionary = sorted(startDict)
+print "Searching for genes downstream from the snp."
 nearbyStartLocations = binarySearch(sortedStartDictionary, snpLocation, numGenes, distance, first = 0, last = None)
 downstreamGenes = []
 for position in nearbyStartLocations:
@@ -164,10 +165,14 @@ for position in nearbyStartLocations:
 
 # create list of nearby genes upstream from the snp
 sortedEndDictionary = sorted(endDict)
+print "Searching for genes upstream from the snp."
 nearbyEndLocations = binarySearch(sortedEndDictionary, snpLocation, numGenes, distance, first = 0, last = None)
 upstreamGenes = []
 for posiition in nearbyEndLocations:
 	upstreamGenes.append(endDict[posiition])
+
+print "Downstream Genes:", downstreamGenes
+print "Upstream Genes:", upstreamGenes
 
 # read in the normalized tissue expression file
 inFilename2 = "normalizedGTEx.tstat.txt"
@@ -183,7 +188,6 @@ genesForAnalysis = len(downstreamGenes) + len(upstreamGenes)
 ids = []
 matrix = [[] for gene in range(genesForAnalysis)]
 
-geneIndex = 0
 totalGenes = 0
 for line in inFile2:
 	line = line.rstrip('\r\n')
@@ -197,12 +201,13 @@ for line in inFile2:
 		
 		# store the ranks for this ID
 		for i in range(genesForAnalysis):
-			matrix[geneIndex][i] = int(tissues[i + 1])
+			matrix[i].append(int(tissues[i + 1]))
 
-	geneIndex += 1
 	totalGenes += 1
 
 print "ids for which to look up tissue expression:", ids
+print "total genes in normalized t-stat file:", totalGenes
+print matrix
 
 numTissues = len(matrix[0])
 
