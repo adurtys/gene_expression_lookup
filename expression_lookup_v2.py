@@ -215,7 +215,7 @@ numTissues = len(matrix[0])
 numTopRankingGenes = threshold * totalGenes
 critRank = totalGenes - numTopRankingGenes
 
-expressionMatrix = [[0 for tissue in numTissues] for gene in genesForAnalysis]
+expressionMatrix = [[0 for tissue in range(numTissues)] for gene in range(genesForAnalysis)]
 
 # if the rank for expression of a gene in a particular tissue type is greater than critRank, then that gene
 # will be considered highly expressed in that tissue
