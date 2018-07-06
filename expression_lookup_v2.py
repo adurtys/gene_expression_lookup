@@ -183,9 +183,19 @@ headerLine = inFile2.readline()
 headerLine = headerLine.rstrip('\r\n')
 headers = headerLine.split('\t')
 
-# create a matrix to hold tissue expressions for the genes to be searched
-genesForAnalysis = len(downstreamGenes) + len(upstreamGenes)
+
+# calculate number of genes to analyze for tissue expression
+uniqueDownstreamGenes = 0
+for gene in downstreamGenes:
+	if gene not in upstreamGenes:
+		uniqueDownstreamGenes += 1
+
+genesForAnalysis = len(upstreamGenes) + uniqueDownstreamGenes
+print "genes for analysis:", genesForAnalysis
+
 ids = []
+
+# create a matrix to hold tissue expressions for the genes to be searched
 matrix = [[] for gene in range(genesForAnalysis)]
 
 totalGenes = 0
@@ -205,8 +215,8 @@ for line in inFile2:
 
 	totalGenes += 1
 
-print "ids for which to look up tissue expression:", ids
-print "total genes in normalized t-stat file:", totalGenes
+# len(ids) should be the same as genesForAnalysis
+print "there are", len(ids), "ids for which to look up tissue expression:", ids
 print matrix
 
 numTissues = len(matrix[0])
@@ -235,7 +245,7 @@ newline = "\n"
 headerLineOutput = headerLine + newline
 outFile.write(headerLineOutput)
 
-for i in range(genesForAnalysis):
+for i in range(ids):
 	output = ids[i] + tab
 	for j in range(numTissues):
 		if j < (numTissues - 1):
