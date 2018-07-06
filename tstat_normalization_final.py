@@ -140,6 +140,10 @@ outFile = open(outFilename, 'w')
 tab = "\t"
 newline = "\n"
 
+# write header line onto new file
+headerLineOutput = headerLine + newline
+outFile.write(headerLineOutput)
+
 for i in range(numGenes):
 	output = ids[i] + tab
 	for j in range(numTissues):

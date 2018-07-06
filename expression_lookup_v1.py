@@ -1,5 +1,5 @@
 # Date Created: 28 June 2018
-# Date Last Modified: 3 July 2018
+# Date Last Modified: 6 July 2018
 # Execution: python expression_lookup_v1.py snp numGenes distance threshold
 # snp is a string of the format "chr#:location" for the snp to be looked up in "gene_annotations.txt" file.
 # numGenes is an int representing the number of closest genes on either side of the snp that should be analyzed 
@@ -152,6 +152,11 @@ for posiition in nearbyEndLocations:
 # read in the normalized tissue expression file
 inFilename2 = "normalizedGTEx.tstat.txt"
 inFile2 = open(inFilename2, 'r')
+
+# store column labels in header row
+headerLine = inFile.readline()
+headerLine = headerLine.rstrip('\r\n')
+headers = headerLine.split('\t')
 
 # create a matrix to hold tissue expressions for the genes to be searched
 genesForAnalysis = len(downstreamGenes) + len(upstreamGenes)
