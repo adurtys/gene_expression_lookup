@@ -92,6 +92,9 @@ numGenes = int(sys.argv[2])
 distance = float(sys.argv[3])
 threshold = float(sys.argv[4])
 
+# TESTING:
+print "snp:", snp, "numGenes:", numGenes, "distance:", distance, "threshold:", threshold
+
 # only search for genes within 1mb of the snp
 if distance < 0:
 	print: "ERROR: Invalid value entered for distance from snp"
