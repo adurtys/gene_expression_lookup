@@ -173,15 +173,13 @@ print "Upstream Genes:", upstreamGenes
 # determine the closest genes to the snp
 distanceFromSnpDict = {}
 for gene in downstreamGenes:
-	distanceFromSnpDict[gene] = abs((startDict.values()).index(gene) - snpLocation)
-	print "position:", (startDict.values()).index(gene)
+	distanceFromSnpDict[gene] = (startDict.values()).index(gene)
 	print "Distance of", gene, "from snp:", distanceFromSnpDict[gene]
 for gene in upstreamGenes:
-	distanceFromSnpDict[gene] = abs((endDict.values()).index(gene) - snpLocation)
-	print "position:", (endDict.values()).index(gene)
+	distanceFromSnpDict[gene] = (endDict.values()).index(gene)
 	print "Distance of", gene, "from snp:", distanceFromSnpDict[gene]
 
-closestDistances = sorted(distanceFromSnpDict.values(), reverse = True)
+closestDistances = sorted(distanceFromSnpDict.values())
 print "Closest distances from snp (in sorted order):", closestDistances
 
 # create list of only numGenes closest genes to the snp
