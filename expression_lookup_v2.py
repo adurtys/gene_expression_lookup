@@ -183,7 +183,6 @@ headerLine = inFile2.readline()
 headerLine = headerLine.rstrip('\r\n')
 headers = headerLine.split('\t')
 
-
 # calculate number of genes to analyze for tissue expression
 uniqueDownstreamGenes = 0
 for gene in downstreamGenes:
@@ -199,6 +198,7 @@ ids = []
 matrix = [[] for gene in range(genesForAnalysis)]
 
 totalGenes = 0
+geneIndex = 0
 for line in inFile2:
 	line = line.rstrip('\r\n')
 	tissues = line.split("\t")
@@ -209,12 +209,12 @@ for line in inFile2:
 	# parse for ENSGIDs in upstreamGenes or downstreamGenes	
 	if (tissues[0] in downstreamGenes) or (tissues[0] in upstreamGenes):
 		ids.append(tissues[0])
-		
+
 		# store the ranks for this ID
-		for i in range(genesForAnalysis):
-			for j in range(numTissues):
-				matrix[i].append(int(tissues[j + 1]))
-			print j
+		for i in range(numTissues):
+			matrix[geneIndex].append(int(tissues[i + 1]))
+		geneIndex += 1
+	
 	totalGenes += 1
 
 # len(ids) should be the same as genesForAnalysis
@@ -222,7 +222,6 @@ print "there are", len(ids), "ids for which to look up tissue expression:", ids
 
 numTissues = len(matrix[0])
 print "numTissues:", numTissues
-print "len(matrix[0]):", len(matrix[0])
 
 # determine whether expression meets threshold for high expression
 numTopRankingGenes = threshold * totalGenes
