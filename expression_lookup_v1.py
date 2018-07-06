@@ -92,12 +92,12 @@ numGenes = int(sys.argv[2])
 distance = float(sys.argv[3])
 threshold = float(sys.argv[4])
 
-# TESTING:
+# for testing!
 print "snp:", snp, "numGenes:", numGenes, "distance:", distance, "threshold:", threshold
 
 # only search for genes within 1mb of the snp
 if distance < 0:
-	print: "ERROR: Invalid value entered for distance from snp"
+	print: "ERROR:", distance, " is an invalid input value for distance. Please enter a valid distance from the snp."
 if distance > 1000:
 	distance = 1000
 
@@ -114,6 +114,8 @@ inFile = open(inFilename, 'r')
 nameDict = {}
 startDict = {}
 endDict = {}
+startLocations = []
+endLocations = []
 
 for line in inFile:
 	line = line.rstrip('\r\n')
