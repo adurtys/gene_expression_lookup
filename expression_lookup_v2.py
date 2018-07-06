@@ -88,9 +88,9 @@ def binarySearch(sortedList, number, numGenes, distance, first = 0, last = None)
 	# number is smaller than the number at mid
 	if number < sortedList[mid]:
 		return binarySearch(sortedList, number, numGenes, distance, first, mid - 1)
-
-	# number is larger than the number at mid
-	return binarySearch(sortedList, number, numGenes, distance, mid + 1, last)
+	else:
+		# number is larger than the number at mid
+		return binarySearch(sortedList, number, numGenes, distance, mid + 1, last)
 
 # check to make sure file was run with correct number of arguments
 if len(sys.argv) != 5:
