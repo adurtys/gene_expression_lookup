@@ -82,6 +82,10 @@ def binarySearch(sortedList, number, numGenes, distance, first = 0, last = None)
 	# number is larger than the number at mid
 	return binarySearch(sortedList, number, numGenes, distance, mid + 1, last)
 
+# check to make sure file was run with correct number of arguments
+if len(sys.argv) != 5:
+	print "ERROR: Incorrect number of command-line arguments!"
+
 # read in arguments from user
 snp = sys.argv[1]
 numGenes = int(sys.argv[2])
@@ -89,6 +93,8 @@ distance = float(sys.argv[3])
 threshold = float(sys.argv[4])
 
 # only search for genes within 1mb of the snp
+if distance < 0:
+	print: "ERROR: Invalid value entered for distance from snp"
 if distance > 1000:
 	distance = 1000
 
@@ -106,7 +112,7 @@ nameDict = {}
 startDict = {}
 endDict = {}
 
-for line in file:
+for line in inFile:
 	line = line.rstrip('\r\n')
 	
 	# split line on tab, return list of columns
@@ -204,6 +210,10 @@ outFile = open(outFilename, 'w')
 tab = "\t"
 newline = "\n"
 
+# write header line onto new file
+headerLineOutput = headerLine + newline
+outFile.write(headerLineOutput)
+
 for i in range(genesForAnalysis):
 	output = ids[i] + tab
 	for j in range(numTissues):
@@ -215,5 +225,3 @@ for i in range(genesForAnalysis):
 	outFile.write(output)
 
 outFile.close()
-
-##TODO: FIGURE OUT HOW TO ADD BACK HEADERS!
