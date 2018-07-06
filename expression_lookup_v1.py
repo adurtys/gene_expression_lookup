@@ -13,7 +13,7 @@
 import sys
 
 # Input: a sorted list of locations, a position to be searched, the number of nearest genes to return, the distance
-# within which to search for nearby genes, the first index (default = 0), and the last index (default = None) 
+# within which to search for nearby genes (in kilobp), the first index (default = 0), and the last index (default = None) 
 # Output: if the searched position was found, the function will return a list containing the locations of the searched number 
 # and the next closest numbers, both greater and less than the number that was searched. If the searched position was not
 # found, then the function will return a list of the nearest positions. The number of items in this list is the number of
@@ -24,6 +24,15 @@ import sys
 # than the value to be returned.
 def binarySearch(sortedList, number, numGenes, distance, first = 0, last = None):
 	locations = []
+
+	# only search for genes within 1mb of the snp
+	if distance < 0:
+		print "ERROR:", distance, " is an invalid input value for distance. Please enter a valid distance from the snp."
+	if distance > 1000:
+		distance = 1000
+
+	# convert distance (kilobp) to bp
+	distance = distance * 1000
 
 	# this is the first call of the function on the list
 	if last is None:
@@ -41,13 +50,11 @@ def binarySearch(sortedList, number, numGenes, distance, first = 0, last = None)
 				distLeft = abs(sortedList[last - i] - number)
 				if distLeft <= distance:
 					locations.insert(0, sortedList[last - i])
-					print locations
 			
 			if (first + i) <= len(sortedList) - 1:
 				distRight = abs(sortedList[first + i] - number)
 				if distRight <= distance:
 					locations.append(sortedList[first + i])
-					print locations
 
 		print "locations:", locations
 		return locations
@@ -97,12 +104,6 @@ threshold = float(sys.argv[4])
 # for testing!
 print "snp:", snp, "numGenes:", numGenes, "distance:", distance, "threshold:", threshold
 
-# only search for genes within 1mb of the snp
-if distance < 0:
-	print "ERROR:", distance, " is an invalid input value for distance. Please enter a valid distance from the snp."
-if distance > 1000:
-	distance = 1000
-
 # process the snp
 snp = snp.split(':')
 chromosome = snp[0]
@@ -126,7 +127,12 @@ for line in inFile:
 	columns = line.split('\t')
 	
 	geneChrom = columns[0]
-	geneId = columns[1]
+
+	# remove decimal at end of ENSGID
+	ensgId = columns[1]
+	ensgId = ensgId.split('.')
+	geneId = ensgId[0]
+
 	geneName = columns[2]
 	# geneFeature = columns[3]
 	geneStart = int(columns[4])
@@ -167,7 +173,7 @@ inFilename2 = "normalizedGTEx.tstat.txt"
 inFile2 = open(inFilename2, 'r')
 
 # store column labels in header row
-headerLine = inFile.readline()
+headerLine = inFile2.readline()
 headerLine = headerLine.rstrip('\r\n')
 headers = headerLine.split('\t')
 
@@ -232,3 +238,4 @@ for i in range(genesForAnalysis):
 	outFile.write(output)
 
 outFile.close()
+inFile2.close()
