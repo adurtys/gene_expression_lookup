@@ -174,10 +174,12 @@ print "Upstream Genes:", upstreamGenes
 distanceFromSnpDict = {}
 for gene in downstreamGenes:
 	distanceFromSnpDict[gene] = abs((startDict.values()).index(gene) - snpLocation)
+	print "Distance of", gene, "from snp:", distanceFromSnpDict[gene]
 for gene in upstreamGenes:
 	distanceFromSnpDict[gene] = abs((endDict.values()).index(gene) - snpLocation)
+	print "Distance of", gene, "from snp:", distanceFromSnpDict[gene]
 
-closestDistances = sorted(distanceFromSnpDict.values())
+closestDistances = sorted(distanceFromSnpDict.values(), reverse = True)
 print "Closest distances from snp (in sorted order):", closestDistances
 
 # create list of only numGenes closest genes to the snp
@@ -198,7 +200,7 @@ headerLine = headerLine.rstrip('\r\n')
 headers = headerLine.split('\t')
 
 numGenesForAnalysis = len(genesForAnalysis)
-print "Number of genes for analysis:", numGenesForAnalysis # should be equal to numGenes
+print "There are", numGenesForAnalysis, "genes for analysis:", genesForAnalysis # should be equal to numGenes
 
 ids = []
 
@@ -214,8 +216,8 @@ for line in inFile2:
 	# first column contains GeneID, not tissue
 	numTissues = len(tissues) - 1
 
-	# parse for ENSGIDs in upstreamGenes or downstreamGenes	
-	if (tissues[0] in downstreamGenes) or (tissues[0] in upstreamGenes):
+	# parse for ENSGIDs in genesForAnalysis
+	if tissues[0] in genesForAnalysis:
 		ids.append(tissues[0])
 
 		# store the ranks for this ID
