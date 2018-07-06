@@ -214,12 +214,11 @@ for line in inFile2:
 		for i in range(genesForAnalysis):
 			for j in range(numTissues):
 				matrix[i].append(int(tissues[j + 1]))
-
+			print j
 	totalGenes += 1
 
 # len(ids) should be the same as genesForAnalysis
 print "there are", len(ids), "ids for which to look up tissue expression:", ids
-print matrix
 
 numTissues = len(matrix[0])
 print "numTissues:", numTissues
