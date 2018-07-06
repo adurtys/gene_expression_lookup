@@ -41,11 +41,13 @@ def binarySearch(sortedList, number, numGenes, distance, first = 0, last = None)
 				distLeft = abs(sortedList[last - i] - number)
 				if distLeft <= distance:
 					locations.insert(0, sortedList[last - i])
+					print locations
 			
 			if (first + i) <= len(sortedList) - 1:
 				distRight = abs(sortedList[first + i] - number)
 				if distRight <= distance:
 					locations.append(sortedList[first + i])
+					print locations
 
 		print "locations:", locations
 		return locations
@@ -97,7 +99,7 @@ print "snp:", snp, "numGenes:", numGenes, "distance:", distance, "threshold:", t
 
 # only search for genes within 1mb of the snp
 if distance < 0:
-	print: "ERROR:", distance, " is an invalid input value for distance. Please enter a valid distance from the snp."
+	print "ERROR:", distance, " is an invalid input value for distance. Please enter a valid distance from the snp."
 if distance > 1000:
 	distance = 1000
 
@@ -144,7 +146,7 @@ for line in inFile:
 
 inFile.close()
 
-print "The chromosome to be searched is:", chromosome, ".\nThere are", len(nameDict), "genes on this chromosome."
+print "The chromosome to be searched is:", chromosome, "\nThere are", len(nameDict), "genes on this chromosome."
 
 # create list of nearby genes downstream from the snp
 sortedStartDictionary = sorted(startDict)
@@ -154,7 +156,7 @@ for position in nearbyStartLocations:
 	downstreamGenes.append(startDict[position])
 
 # create list of nearby genes upstream from the snp
-sortedEndDictionary = storted(endDict)
+sortedEndDictionary = sorted(endDict)
 nearbyEndLocations = binarySearch(sortedEndDictionary, snpLocation, numGenes, distance, first = 0, last = None)
 upstreamGenes = []
 for posiition in nearbyEndLocations:
