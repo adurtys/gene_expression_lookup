@@ -171,22 +171,21 @@ print "Downstream Genes:", downstreamGenes
 print "Upstream Genes:", upstreamGenes
 
 # determine the closest genes to the snp
-distanceFromSnp = {}
+distanceFromSnpDict = {}
 for gene in downstreamGenes:
-	distanceFromSnp[gene] = abs((startDict.values()).index(gene) - snpLocation)
+	distanceFromSnpDict[gene] = abs((startDict.values()).index(gene) - snpLocation)
 for gene in upstreamGenes:
-	distanceFromSnp[gene] = abs((endDict.values()).index(gene) - snpLocation)
+	distanceFromSnpDict[gene] = abs((endDict.values()).index(gene) - snpLocation)
 
-nearestGenes = sorted(distanceFromSnp.values())
-print "Nearest Genes (in sorted order):", nearestGenes
+closestDistances = sorted(distanceFromSnpDict.values())
+print "Closest distances from snp (in sorted order):", closestDistances
 
 # create list of only numGenes closest genes to the snp
 genesForAnalysis = []
-closestDistances = nearestGenes.values()
 
 # closestDistances[numGenes] is critical value --> only keep distances less than this value
-for gene in nearestGenes:
-	if nearestGenes[gene] < closestDistances[numGenes]:
+for gene in distanceFromSnpDict:
+	if distanceFromSnpDict[gene] < closestDistances[numGenes]:
 		genesForAnalysis.append(gene)
 
 # read in the normalized tissue expression file
