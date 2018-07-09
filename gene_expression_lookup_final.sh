@@ -30,9 +30,8 @@ then
 
 		while read -r line
 		do
-			snp="$line"
-			echo "snp read from file: $snp"
-			./expression_lookup_final "$snp" numGenesToSearch distanceFromSnp expressionThreshold
+			echo "snp read from file: $line"
+			./expression_lookup_final $line numGenesToSearch distanceFromSnp expressionThreshold
 		done < "$snpFile"
 
 	fi
