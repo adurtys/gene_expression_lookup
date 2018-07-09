@@ -9,6 +9,8 @@ if [ -f ./gene_annotations.txt] && [ -f ./normalizedGTEx.tstat.txt]
 then
 	echo "Both the GENCODE GTF file and the t-statistics file have been processed."
 	echo "Now starting snp lookup."
+else
+	echo "something is wrong..."
 # elif [ -f ./gene_annotations.txt]
 # then
 # 	echo "GENCODE GTF file has been processed."
