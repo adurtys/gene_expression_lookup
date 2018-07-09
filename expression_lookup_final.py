@@ -255,7 +255,7 @@ headerLineOutput = headerLine + newline
 outFile.write(headerLineOutput)
 
 for i in range(len(ids)):
-	output = ids[i] + tab
+	output = ids[i] + nameDict[ids[i]] + tab
 	for j in range(numTissues):
 		if j < (numTissues - 1):
 			output += str(expressionMatrix[i][j]) + tab
