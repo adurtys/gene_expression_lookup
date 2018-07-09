@@ -277,7 +277,6 @@ numTissues = len(matrix[0])
 # determine whether expression meets threshold for high expression
 numTopRankingGenes = threshold * totalGenes
 critRank = totalGenes - numTopRankingGenes
-print "Critical Rank:", critRank
 
 expressionMatrix = [[0 for tissue in range(numTissues)] for gene in range(numGenesForAnalysis)]
 
@@ -286,7 +285,6 @@ expressionMatrix = [[0 for tissue in range(numTissues)] for gene in range(numGen
 for i in range(numGenesForAnalysis):
 	for j in range(numTissues):
 		if matrix[i][j] >= critRank:
-			print "Rank:", matrix[i][j]
 			expressionMatrix[i][j] = 1
 
 # create new file containing expressionMatrix
