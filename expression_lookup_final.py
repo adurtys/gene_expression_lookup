@@ -178,6 +178,7 @@ for gene in upstreamGenes:
 	distanceFromSnpDict[gene] = (endDict.values()).index(gene)
 
 closestDistances = sorted(distanceFromSnpDict.values())
+print "Closest Distances:", closestDistances
 
 # create list of only numGenes closest genes to the snp
 genesForAnalysis = []
