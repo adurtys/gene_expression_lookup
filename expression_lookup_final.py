@@ -188,18 +188,27 @@ print "Upstream Genes:", upstreamGenes
 # determine the closest genes to the snp
 distanceFromSnpDict = {}
 for gene in downstreamGenes:
-	distanceFromSnpDict[gene] = (startDict.values()).index(gene)
+	for startLocation, geneId in startDict.items():
+		if geneId == gene:
+			distanceFromSnpDict[gene] = abs(startLocation - distance)
+	# distanceFromSnpDict[gene] = (startDict.values()).index(gene)
 	print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
 for gene in upstreamGenes:
 	if gene not in distanceFromSnpDict:
-		distanceFromSnpDict[gene] = (endDict.values()).index(gene)
+		for endLocation, geneId in endDict.items():
+			if geneId == gene:
+				distanceFromSnpDict[gene] = abs(endLocation - distance)
+		# distanceFromSnpDict[gene] = (endDict.values()).index(gene)
 		print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
 	else:
 		# gene is already in the dictionary
 		# modify distance in dictionary only if new distance is less than current distance
-		if (endDict.values()).index(gene) < distanceFromSnpDict[gene]:
-			distanceFromSnpDict[gene] = (endDict.values()).index(gene)
-			print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
+		for endLocation, geneId in endDict.items():
+			if (geneId == gene) and (abs(endLocation - distance) < distanceFromSnpDict[gene]):
+				distanceFromSnpDict[gene] = abs(endLocation - distance)
+		# if (endDict.values()).index(gene) < distanceFromSnpDict[gene]:
+			# distanceFromSnpDict[gene] = (endDict.values()).index(gene)
+		print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
 
 closestDistances = sorted(distanceFromSnpDict.values())
 print "Closest Distances:", closestDistances
