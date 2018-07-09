@@ -36,7 +36,7 @@ then
 		while IFS= read -r snp || [[ -n "$snp" ]]
 		do
 			echo "$snp"
-			python ./expression_lookup_final.py $snp numGenesToSearch distanceFromSnp expressionThreshold
+			python ./expression_lookup_final.py $snp $numGenesToSearch $distanceFromSnp $expressionThreshold
 		done < "$snpFile"
 	fi
 

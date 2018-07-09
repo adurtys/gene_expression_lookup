@@ -1,12 +1,12 @@
 # Date Created: 28 June 2018
-# Date Last Modified: 6 July 2018
+# Date Last Modified: 9 July 2018
 # Execution: python expression_lookup_v1.py snp numGenes distance threshold
 # snp is a string of the format "chr#:location" for the snp to be looked up in "gene_annotations.txt" file.
 # numGenes is an int representing the number of closest genes on either side of the snp that should be analyzed 
 # with respect to expression in the tissues listed in "GTEx.tstat.tsv" file.
 # distance is a float representing the max distance (in kilobp) from the snp that the closest genes can be
 # threshold is a float (decimal) representing the percentage of top rank-ordered t-statistics that should be considered
-# as "highly expressed" within a particular tissue.
+# as "highly expressed" for each tissue.
 # TODO: This program ...
 
 #!/usr/bin/env python
@@ -94,6 +94,8 @@ if len(sys.argv) != 5:
 
 # read in arguments from user
 snp = sys.argv[1]
+print "snp:", snp
+
 numGenes = int(sys.argv[2])
 distance = float(sys.argv[3])
 threshold = float(sys.argv[4])
