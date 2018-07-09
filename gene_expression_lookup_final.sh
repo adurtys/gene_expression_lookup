@@ -22,8 +22,6 @@ then
 		echo "ERROR: incorrect number of command-line arguments."
 		echo "This program requires 4 command-line arguments in addition to the name of the command."
 	else
-		echo "file containing snps: $1"
-
 		# store command-line arguments as variables
 		snpFile="$1"
 		numGenesToSearch="$2"
@@ -34,7 +32,7 @@ then
 		do
 			snp="$line"
 			echo "snp read from file: $snp"
-			./expression_lookup_final snp numGenesToSearch distanceFromSnp expressionThreshold
+			./expression_lookup_final "$snp" numGenesToSearch distanceFromSnp expressionThreshold
 		done < "$snpFile"
 
 	fi
