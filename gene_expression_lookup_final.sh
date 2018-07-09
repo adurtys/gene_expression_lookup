@@ -35,12 +35,9 @@ then
 
 		while IFS= read -r snp || [[ -n "$snp" ]]
 		do
-			echo "in here!"
 			echo "$snp"
-
-			# ./expression_lookup_final $line numGenesToSearch distanceFromSnp expressionThreshold
+			./expression_lookup_final.py $snp numGenesToSearch distanceFromSnp expressionThreshold
 		done < "$snpFile"
-		echo "out here!"
 	fi
 
 elif [ -f ./gene_annotations.txt]
