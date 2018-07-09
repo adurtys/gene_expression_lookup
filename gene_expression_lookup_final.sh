@@ -9,7 +9,7 @@
 # expressed" for each tissue
 # TODO: Description:
 
-#!/usr/bein/env bash
+#!/usr/bin/env bash
 
 if [ -f ./gene_annotations.txt ] && [ -f ./normalizedGTEx.tstat.txt ]
 then
@@ -33,13 +33,13 @@ then
 		echo "distanceFromSnp: $3"
 		echo "expressionThreshold: $4"
 
-		while IFS= '' read -r snp || [[ -n "$snp" ]]
+		while IFS= read -r snp || [[ -n "$snp" ]]
 		do
 			echo "in here!"
 			echo "$snp"
 
 			# ./expression_lookup_final $line numGenesToSearch distanceFromSnp expressionThreshold
-		done <"$snpFile"
+		done < "$snpFile"
 		echo "out here!"
 	fi
 
