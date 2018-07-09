@@ -269,14 +269,15 @@ for line in inFile2:
 	totalGenes += 1
 
 # len(ids) should be the same as numGenesForAnalysis
-print "there are", totalGenes, "genes in the file."
-print "there are", len(ids), "ids for which to look up tissue expression:", ids
+print "There are", totalGenes, "genes in the file."
+print "There are", len(ids), "ids for which to look up tissue expression:", ids
 
 numTissues = len(matrix[0])
 
 # determine whether expression meets threshold for high expression
 numTopRankingGenes = threshold * totalGenes
 critRank = totalGenes - numTopRankingGenes
+print "Critical Rank:", critRank
 
 expressionMatrix = [[0 for tissue in range(numTissues)] for gene in range(numGenesForAnalysis)]
 
@@ -285,6 +286,7 @@ expressionMatrix = [[0 for tissue in range(numTissues)] for gene in range(numGen
 for i in range(numGenesForAnalysis):
 	for j in range(numTissues):
 		if matrix[i][j] >= critRank:
+			print "Rank:", matrix[i][j]
 			expressionMatrix[i][j] = 1
 
 # create new file containing expressionMatrix
