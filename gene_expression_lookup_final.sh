@@ -36,7 +36,7 @@ then
 		while IFS= read -r snp || [[ -n "$snp" ]]
 		do
 			echo "$snp"
-			./expression_lookup_final.py $snp numGenesToSearch distanceFromSnp expressionThreshold
+			python ./expression_lookup_final.py $snp numGenesToSearch distanceFromSnp expressionThreshold
 		done < "$snpFile"
 	fi
 
@@ -45,7 +45,7 @@ then
 	echo "GENCODE GTF file has been processed."
 	echo "Now processing t-statistics file."
 
-	./tstat_normalization_final.py
+	python ./tstat_normalization_final.py
 
 	echo "Now starting snp lookup."
 	# TODO: COPY FROM ABOVE ONCE COMPLETE
@@ -55,7 +55,7 @@ else [ -f ./normalizedGTEx.tstat.txt]
 	echo "GTEx t-statistics file has been processed."
 	echo "Now processing GENCODE GTF file"
 	
-	./GTF_processing_final.py
+	python ./GTF_processing_final.py
 
 	echo "Now starting snp lookup."
 	# TODO: COPY FROM ABOVE ONCE COMPLETE
