@@ -9,19 +9,19 @@ if [ -f ./gene_annotations.txt] && [ -f ./normalizedGTEx.tstat.txt]
 then
 	echo "Both the GENCODE GTF file and the t-statistics file have been processed."
 	echo "Now starting snp lookup."
-elif [ -f ./gene_annotations.txt]
-then
-	echo "GENCODE GTF file has been processed."
-	echo "Now processing t-statistics file."
+# elif [ -f ./gene_annotations.txt]
+# then
+# 	echo "GENCODE GTF file has been processed."
+# 	echo "Now processing t-statistics file."
 
-	./tstat_normalization_final.py
+# 	./tstat_normalization_final.py
 
-	echo "Now starting snp lookup."
-else [ -f ./normalizedGTEx.tstat.txt]
-	echo "GTEx t-statistics file has been processed."
-	echo "Now processing GENCODE GTF file"
+# 	echo "Now starting snp lookup."
+# else [ -f ./normalizedGTEx.tstat.txt]
+# 	echo "GTEx t-statistics file has been processed."
+# 	echo "Now processing GENCODE GTF file"
 	
-	./GTF_processing_final.py
+# 	./GTF_processing_final.py
 
-	echo "Now starting snp lookup."
+# 	echo "Now starting snp lookup."
 fi
