@@ -23,20 +23,20 @@ then
 		echo "This program requires 4 command-line arguments in addition to the name of the command."
 	else
 		# store command-line arguments as variables
-		snpFile <- $1
-		numGenesToSearch <- $2
-		distanceFromSnp <- $3
-		expressionThreshold <- $4
+		snpFile <- "$1"
+		numGenesToSearch <- "$2"
+		distanceFromSnp <- "$3"
+		expressionThreshold <- "$4"
 
 		while read -r line
 		do
 			snp <- "$line"
 			echo "snp read from file - $snp"
 			./expression_lookup_final snp numGenesToSearch distanceFromSnp expressionThreshold
-		done
+		done < "$snpFile"
 
 	fi
-	
+
 elif [ -f ./gene_annotations.txt]
 then
 	echo "GENCODE GTF file has been processed."
