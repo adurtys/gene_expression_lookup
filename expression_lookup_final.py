@@ -196,7 +196,6 @@ closestDistances = sorted(distanceFromSnpDict.values())
 print "Closest Distances:", closestDistances
 # check if there are any duplicate distances in distanceFromSnpDict
 duplicates = findDuplicates(closestDistances)
-print "Duplicates:", duplicates
 
 # create list of only numGenes closest genes to the snp
 genesForAnalysis = []
