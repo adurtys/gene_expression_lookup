@@ -28,12 +28,19 @@ then
 		distanceFromSnp="$3"
 		expressionThreshold="$4"
 
-		while read -r line
-		do
-			echo "snp read from file: $line"
-			./expression_lookup_final $line numGenesToSearch distanceFromSnp expressionThreshold
-		done < "$snpFile"
+		echo "snpFile: $1"
+		echo "numGenesToSearch: $2"
+		echo "distanceFromSnp: $3"
+		echo "expressionThreshold: $4"
 
+		while IFS= read -r snp
+		do
+			echo "in here!"
+			echo "$snp"
+
+			# ./expression_lookup_final $line numGenesToSearch distanceFromSnp expressionThreshold
+		done < "$snpFile"
+		echo "out here!"
 	fi
 
 elif [ -f ./gene_annotations.txt]
