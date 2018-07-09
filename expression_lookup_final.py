@@ -94,8 +94,6 @@ if len(sys.argv) != 5:
 
 # read in arguments from user
 snp = sys.argv[1]
-print "snp:", snp
-
 numGenes = int(sys.argv[2])
 distance = float(sys.argv[3])
 threshold = float(sys.argv[4])
