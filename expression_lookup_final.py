@@ -174,13 +174,10 @@ print "Upstream Genes:", upstreamGenes
 distanceFromSnpDict = {}
 for gene in downstreamGenes:
 	distanceFromSnpDict[gene] = (startDict.values()).index(gene)
-	print "Distance of", gene, "from snp:", distanceFromSnpDict[gene]
 for gene in upstreamGenes:
 	distanceFromSnpDict[gene] = (endDict.values()).index(gene)
-	print "Distance of", gene, "from snp:", distanceFromSnpDict[gene]
 
 closestDistances = sorted(distanceFromSnpDict.values())
-print "Closest distances from snp (in sorted order):", closestDistances
 
 # create list of only numGenes closest genes to the snp
 genesForAnalysis = []
@@ -228,10 +225,10 @@ for line in inFile2:
 	totalGenes += 1
 
 # len(ids) should be the same as numGenesForAnalysis
+print "there are", totalGenes, "genes in the file."
 print "there are", len(ids), "ids for which to look up tissue expression:", ids
 
 numTissues = len(matrix[0])
-print "numTissues:", numTissues
 
 # determine whether expression meets threshold for high expression
 numTopRankingGenes = threshold * totalGenes
