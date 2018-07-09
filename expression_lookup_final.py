@@ -88,6 +88,21 @@ def binarySearch(sortedList, number, numGenes, distance, first = 0, last = None)
 		# number is larger than the number at mid
 		return binarySearch(sortedList, number, numGenes, distance, mid + 1, last)
 
+# Input: a list
+# Output: a list of items that are present in the list more than once
+# Description: finds items that are present more than once in the inputted list 
+def findDuplicates(anyList):
+	seen = set()
+	duplicates = []
+
+	for item in anyList:
+		if item in seen and item not in duplicates:
+			duplicates.append(item)
+		else:
+			seen.add(item)
+
+	return duplicates
+
 # check to make sure file was run with correct number of arguments
 if len(sys.argv) != 5:
 	print "ERROR: Incorrect number of command-line arguments!"
@@ -179,14 +194,24 @@ for gene in upstreamGenes:
 
 closestDistances = sorted(distanceFromSnpDict.values())
 print "Closest Distances:", closestDistances
+# check if there are any duplicate distances in distanceFromSnpDict
+duplicates = findDuplicates(closestDistances)
 
 # create list of only numGenes closest genes to the snp
 genesForAnalysis = []
 
-# closestDistances[numGenes] is critical value --> only keep distances less than this value
-for gene in distanceFromSnpDict:
-	if distanceFromSnpDict[gene] < closestDistances[numGenes]:
-		genesForAnalysis.append(gene)
+if len(duplicates) == 0:
+	# no genes have identical distances from the snp
+	# closestDistances[numGenes] is critical value --> only keep distances less than this value
+	for gene in distanceFromSnpDict:
+		if distanceFromSnpDict[gene] < closestDistances[numGenes]:
+			genesForAnalysis.append(gene)
+else:
+	# genes have identical distances from snp
+	for gene in distanceFromSnpDict:
+		# one more entry in list of genes to analyze than if there weren't duplicated values
+		if (distanceFromSnpDict[gene] in duplicates) and (distanceFromSnpDict[gene] < closestDistances[numGenes + 1]):
+			genesForAnalysis.append(gene)
 
 # read in the normalized tissue expression file
 inFilename2 = "normalizedGTEx.tstat.txt"
