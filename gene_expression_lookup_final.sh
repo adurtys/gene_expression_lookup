@@ -5,7 +5,7 @@
 
 #!/usr/bein/env bash
 
-if [ -f ./gene_annotations.txt] && [ -f ./normalizedGTEx.tstat.txt]
+if [ -f ./gene_annotations.txt ] && [ -f ./normalizedGTEx.tstat.txt ]
 then
 	echo "Both the GENCODE GTF file and the t-statistics file have been processed."
 	echo "Now starting snp lookup."
