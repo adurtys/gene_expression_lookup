@@ -1,5 +1,5 @@
 # Date Created: 9 July 2018
-# Date Last Modified: 9 July 2018
+# Date Last Modified: 11 July 2018
 # Execution: python gene_expression_lookup_final.sh snpFile numGenesToSearch distanceFromSnp expressionThreshold
 # snpFile is the name of the file containing the snps for which to search
 # numGenesToSearch is the number of genes closest to the snp for which to look up tissue expression
@@ -23,22 +23,15 @@ then
 		echo "This program requires 4 command-line arguments in addition to the name of the command."
 	else
 		# store command-line arguments as variables
-		snpFile="$1"
-		numGenesToSearch="$2"
-		distanceFromSnp="$3"
-		expressionThreshold="$4"
+		numGenesToSearch="$1"
+		distanceFromSnp="$2"
+		expressionThreshold="$3"
 
-		echo "snpFile: $1"
-		echo "numGenesToSearch: $2"
-		echo "distanceFromSnp: $3"
-		echo "expressionThreshold: $4"
+		echo "numGenesToSearch: $1"
+		echo "distanceFromSnp: $2"
+		echo "expressionThreshold: $3"
 
-		while IFS= read -r snp || [[ -n "$snp" ]]
-		do
-			echo "$snp"
-			python ./expression_lookup_final.py $snp $numGenesToSearch $distanceFromSnp $expressionThreshold
-			
-		done < "$snpFile"
+		python ./expression_lookup_final.py $numGenesToSearch $distanceFromSnp $expressionThreshold
 	fi
 
 elif [ -f ./gene_annotations.txt]
