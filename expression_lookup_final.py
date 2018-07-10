@@ -119,7 +119,16 @@ threshold = float(sys.argv[3])
 snpFilename = "snpFile.txt"
 snpFile = open(snpFilename, 'r')
 
+# create new file that will contain the results of the expression lookup
+outFilename = "geneExpressionLookupResults.txt"
+outFile = open(outFilename, 'w')
+
+tab = "\t"
+newline = "\n"
+
+numSnps = 0
 for snp in snpFile:
+	numSnps += 1
 	snp = snp.rstrip('\r\n')
 
 	# for testing!
@@ -258,13 +267,6 @@ for snp in snpFile:
 	headerLine = headerLine.rstrip('\r\n')
 	headers = headerLine.split('\t')
 
-	# create new file that will contain the results of the expression lookup
-	outFilename = "geneExpressionLookupResults.txt"
-	outFile = open(outFilename, 'w')
-
-	tab = "\t"
-	newline = "\n"
-
 	if len(genesForAnalysis) != 0:
 		# there are genes to analyze
 		numGenesForAnalysis = len(genesForAnalysis)
@@ -314,9 +316,10 @@ for snp in snpFile:
 				if matrix[i][j] >= critRank:
 					expressionMatrix[i][j] = 1
 
-		# write header line onto new file
-		headerLineOutput = headerLine + newline
-		outFile.write(headerLineOutput)
+		# write header line onto new file once (only for first snp)
+		if numSnps == 1:
+			headerLineOutput = headerLine + newline
+			outFile.write(headerLineOutput)
 
 		for i in range(len(ids)):
 			output = ids[i] + tab + nameDict[ids[i]] + tab
@@ -333,7 +336,7 @@ for snp in snpFile:
 		outFile.write("No genes were found within 1mbp on either side of the snp that was searched.")
 		outFile.close()
 
-	print "Finished writing tissue expression lookup results onto output file."
+	print "Finished writing tissue expression lookup results onto output file for", numSnps, "snps in the snpFile.txt file"
 	inFile2.close()
 
 snpFile.close()
