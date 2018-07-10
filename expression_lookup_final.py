@@ -220,12 +220,19 @@ genesForAnalysis = []
 
 if len(duplicates) == 0:
 	# no genes have identical distances from the snp
-	# closestDistances[numGenes] is critical value --> only keep distances less than this value
 	for gene in distanceFromSnpDict:
-		print "distanceFromSnpDict[gene]:", distanceFromSnpDict[gene]
-		print "closestDistances[numGenes]:", closestDistances[numGenes]
-		if distanceFromSnpDict[gene] < closestDistances[numGenes]:
+		if len(closestDistances) > 1:
+			# more than one gene is near the snp
+			# only add the distances less than closestDistances[numGenes]
+			if distanceFromSnpDict[gene] < closestDistances[numGenes]:
+				genesForAnalysis.append(gene)
+		elif len(closestDistances) = 1:
+			# only one gene is near the snp
+			# analyze this gene
 			genesForAnalysis.append(gene)
+		else len(closestDistances) = 0:
+			# no gene is near the snp
+			print "No gene is within 1mbp on either side of the snp."
 else:
 	# genes have identical distances from snp
 	for gene in distanceFromSnpDict:
@@ -242,73 +249,77 @@ headerLine = inFile2.readline()
 headerLine = headerLine.rstrip('\r\n')
 headers = headerLine.split('\t')
 
-numGenesForAnalysis = len(genesForAnalysis)
-print "There are", numGenesForAnalysis, "genes for analysis:", genesForAnalysis # should be equal to numGenes
-
-ids = []
-
-# create a matrix to hold tissue expressions for the genes to be searched
-matrix = [[] for gene in range(numGenesForAnalysis)]
-
-totalGenes = 0
-geneIndex = 0
-for line in inFile2:
-	line = line.rstrip('\r\n')
-	tissues = line.split("\t")
-
-	# first column contains GeneID, not tissue
-	numTissues = len(tissues) - 1
-
-	# parse for ENSGIDs in genesForAnalysis
-	if tissues[0] in genesForAnalysis:
-		ids.append(tissues[0])
-
-		# store the ranks for this ID
-		for i in range(numTissues):
-			matrix[geneIndex].append(int(tissues[i + 1]))
-		geneIndex += 1
-	
-	totalGenes += 1
-
-# len(ids) should be the same as numGenesForAnalysis
-print "There are", totalGenes, "genes in the file."
-print "There are", len(ids), "ids for which to look up tissue expression:", ids
-
-numTissues = len(matrix[0])
-
-# determine whether expression meets threshold for high expression
-numTopRankingGenes = threshold * totalGenes
-critRank = totalGenes - numTopRankingGenes
-
-expressionMatrix = [[0 for tissue in range(numTissues)] for gene in range(numGenesForAnalysis)]
-
-# if the rank for expression of a gene in a particular tissue type is greater than critRank, then that gene
-# will be considered highly expressed in that tissue
-for i in range(numGenesForAnalysis):
-	for j in range(numTissues):
-		if matrix[i][j] >= critRank:
-			expressionMatrix[i][j] = 1
-
-# create new file containing expressionMatrix
+# create new file that will contain the results of the expression lookup
 outFilename = "geneExpressionLookupResults.txt"
 outFile = open(outFilename, 'w')
 
 tab = "\t"
 newline = "\n"
 
-# write header line onto new file
-headerLineOutput = headerLine + newline
-outFile.write(headerLineOutput)
+if len(genesForAnalysis) != 0:
+	# there are genes to analyze
+	numGenesForAnalysis = len(genesForAnalysis)
+	print "There are", numGenesForAnalysis, "genes for analysis:", genesForAnalysis # should be equal to numGenes
 
-for i in range(len(ids)):
-	output = ids[i] + tab + nameDict[ids[i]] + tab
-	for j in range(numTissues):
-		if j < (numTissues - 1):
-			output += str(expressionMatrix[i][j]) + tab
-		else:
-			output += str(expressionMatrix[i][j]) + newline
+	ids = []
 
-	outFile.write(output)
+	# create a matrix to hold tissue expressions for the genes to be searched
+	matrix = [[] for gene in range(numGenesForAnalysis)]
 
-outFile.close()
+	totalGenes = 0
+	geneIndex = 0
+	for line in inFile2:
+		line = line.rstrip('\r\n')
+		tissues = line.split("\t")
+
+		# first column contains GeneID, not tissue
+		numTissues = len(tissues) - 1
+
+		# parse for ENSGIDs in genesForAnalysis
+		if tissues[0] in genesForAnalysis:
+			ids.append(tissues[0])
+
+			# store the ranks for this ID
+			for i in range(numTissues):
+				matrix[geneIndex].append(int(tissues[i + 1]))
+			geneIndex += 1
+		
+		totalGenes += 1
+
+	# len(ids) should be the same as numGenesForAnalysis
+	print "There are", totalGenes, "genes in the file."
+	print "There are", len(ids), "ids for which to look up tissue expression:", ids
+
+	numTissues = len(matrix[0])
+
+	# determine whether expression meets threshold for high expression
+	numTopRankingGenes = threshold * totalGenes
+	critRank = totalGenes - numTopRankingGenes
+
+	expressionMatrix = [[0 for tissue in range(numTissues)] for gene in range(numGenesForAnalysis)]
+
+	# if the rank for expression of a gene in a particular tissue type is greater than critRank, then that gene
+	# will be considered highly expressed in that tissue
+	for i in range(numGenesForAnalysis):
+		for j in range(numTissues):
+			if matrix[i][j] >= critRank:
+				expressionMatrix[i][j] = 1
+
+	# write header line onto new file
+	headerLineOutput = headerLine + newline
+	outFile.write(headerLineOutput)
+
+	for i in range(len(ids)):
+		output = ids[i] + tab + nameDict[ids[i]] + tab
+		for j in range(numTissues):
+			if j < (numTissues - 1):
+				output += str(expressionMatrix[i][j]) + tab
+			else:
+				output += str(expressionMatrix[i][j]) + newline
+
+		outFile.write(output)
+	outFile.close()
+else:
+	# there are no genes to analyze
+	outFile.write("No genes were found within 1mbp on either side of the snp that was searched.")
 inFile2.close()
