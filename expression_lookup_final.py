@@ -226,11 +226,11 @@ if len(duplicates) == 0:
 			# only add the distances less than closestDistances[numGenes]
 			if distanceFromSnpDict[gene] < closestDistances[numGenes]:
 				genesForAnalysis.append(gene)
-		elif len(closestDistances) = 1:
+		elif len(closestDistances) == 1:
 			# only one gene is near the snp
 			# analyze this gene
 			genesForAnalysis.append(gene)
-		else len(closestDistances) = 0:
+		else len(closestDistances) == 0:
 			# no gene is near the snp
 			print "No gene is within 1mbp on either side of the snp."
 else:
