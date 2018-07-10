@@ -330,13 +330,13 @@ for snp in snpFile:
 					output += str(expressionMatrix[i][j]) + newline
 
 			outFile.write(output)
-		outFile.close()
 	else:
 		# there are no genes to analyze
 		outFile.write("No genes were found within 1mbp on either side of the snp that was searched.")
-		outFile.close()
 
-	print "Finished writing tissue expression lookup results onto output file for", numSnps, "snps in the snpFile.txt file"
+	print "Finished writing tissue expression lookup results onto output file."
 	inFile2.close()
 
+print "There were", numSnps, "snps to search in the snpFile.txt file."
+outFile.close()
 snpFile.close()
