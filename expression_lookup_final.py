@@ -222,6 +222,8 @@ if len(duplicates) == 0:
 	# no genes have identical distances from the snp
 	# closestDistances[numGenes] is critical value --> only keep distances less than this value
 	for gene in distanceFromSnpDict:
+		print "distanceFromSnpDict[gene]:", distanceFromSnpDict[gene]
+		print "closestDistances[numGenes]:", closestDistances[numGenes]
 		if distanceFromSnpDict[gene] < closestDistances[numGenes]:
 			genesForAnalysis.append(gene)
 else:
