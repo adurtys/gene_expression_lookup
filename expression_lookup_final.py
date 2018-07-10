@@ -230,8 +230,8 @@ if len(duplicates) == 0:
 			# only one gene is near the snp
 			# analyze this gene
 			genesForAnalysis.append(gene)
-		else len(closestDistances) == 0:
-			# no gene is near the snp
+		else:
+			# len(closestDistances) == 0
 			print "No gene is within 1mbp on either side of the snp."
 else:
 	# genes have identical distances from snp
