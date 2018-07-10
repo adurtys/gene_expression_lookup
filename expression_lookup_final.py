@@ -322,4 +322,7 @@ if len(genesForAnalysis) != 0:
 else:
 	# there are no genes to analyze
 	outFile.write("No genes were found within 1mbp on either side of the snp that was searched.")
+	outFile.close()
+
+print "Finished writing tissue expression lookup results onto output file."
 inFile2.close()
