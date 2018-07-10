@@ -7,7 +7,8 @@
 # if distanceFromSnp > 1000 kbp, distanceFromSnp = 1000kbp (max distance from gene that will be searched is 1 mbp)
 # expressionThreshold is the percentage (in decimal) of top rank-ordered t-statistics that should be considered "highly
 # expressed" for each tissue
-# TODO: Description:
+# Description: Shell script for tissue expression lookup of genes near specified snps. First, ensures that both the 
+# GENCODE GTF file and GTEx t-statistics file have been processed. Then analyzes expression of 
 
 #!/usr/bin/env bash
 
@@ -42,8 +43,24 @@ then
 	python ./tstat_normalization_final.py
 
 	echo "Now starting snp lookup."
-	# TODO: COPY FROM ABOVE ONCE COMPLETE
-	# TODO: DETERMINE RUNTIME AND CPU TIME
+	
+	# check number of command-line arguments
+	if [ $# = 0 ]
+	then
+		echo "ERROR: incorrect number of command-line arguments."
+		echo "This program requires 4 command-line arguments in addition to the name of the command."
+	else
+		# store command-line arguments as variables
+		numGenesToSearch="$1"
+		distanceFromSnp="$2"
+		expressionThreshold="$3"
+
+		echo "numGenesToSearch: $1"
+		echo "distanceFromSnp: $2"
+		echo "expressionThreshold: $3"
+
+		python ./expression_lookup_final.py $numGenesToSearch $distanceFromSnp $expressionThreshold
+	fi
 
 else [ -f ./normalizedGTEx.tstat.txt]
 	echo "GTEx t-statistics file has been processed."
@@ -52,7 +69,22 @@ else [ -f ./normalizedGTEx.tstat.txt]
 	python ./GTF_processing_final.py
 
 	echo "Now starting snp lookup."
-	# TODO: COPY FROM ABOVE ONCE COMPLETE
-	# TODO: DETERMINE RUNTIME AND CPU TIME
+	
+	# check number of command-line arguments
+	if [ $# = 0 ]
+	then
+		echo "ERROR: incorrect number of command-line arguments."
+		echo "This program requires 4 command-line arguments in addition to the name of the command."
+	else
+		# store command-line arguments as variables
+		numGenesToSearch="$1"
+		distanceFromSnp="$2"
+		expressionThreshold="$3"
 
+		echo "numGenesToSearch: $1"
+		echo "distanceFromSnp: $2"
+		echo "expressionThreshold: $3"
+
+		python ./expression_lookup_final.py $numGenesToSearch $distanceFromSnp $expressionThreshold
+	fi
 fi
