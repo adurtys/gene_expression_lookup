@@ -126,6 +126,10 @@ tab = "\t"
 newline = "\n"
 
 numSnps = 0
+	
+# create counter variable for snps that didn't have a nearby gene
+numSnpsNoGenes = 0
+
 for snp in snpFile:
 	numSnps += 1
 	snp = snp.rstrip('\r\n')
@@ -236,6 +240,7 @@ for snp in snpFile:
 	genesForAnalysis = []
 
 	if len(duplicates) == 0:
+		print "The snp is not equidistant from genes."
 		# no genes have identical distances from the snp
 		for gene in distanceFromSnpDict:
 			if len(closestDistances) > 1:
@@ -252,6 +257,8 @@ for snp in snpFile:
 				print "No gene is within 1mbp on either side of the snp."
 	else:
 		# genes have identical distances from snp
+		print "The snp is equidistant from genes."
+
 		for gene in distanceFromSnpDict:
 			# one more entry in list of genes to analyze than if there weren't duplicated values
 			if (distanceFromSnpDict[gene] in duplicates) and (distanceFromSnpDict[gene] < closestDistances[numGenes + 1]):
@@ -331,6 +338,7 @@ for snp in snpFile:
 			outFile.write(output)
 	else:
 		# there are no genes to analyze
+		numSnpsNoGenes += 1
 		output = "No genes were found within 1mbp on either side of the snp that was searched." + newline
 		outFile.write(output)
 
@@ -338,5 +346,7 @@ for snp in snpFile:
 	inFile2.close()
 
 print "There were", numSnps, "snps to search in the snpFile.txt file."
+print "There were", 
+
 outFile.close()
 snpFile.close()
