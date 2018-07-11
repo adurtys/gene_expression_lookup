@@ -106,11 +106,10 @@ def findDuplicates(anyList):
 	return duplicates
 
 # check to make sure file was run with correct number of arguments
-if len(sys.argv) != 4:
+if len(sys.argv) != 5:
 	print "ERROR: Incorrect number of command-line arguments!"
 
 # read in arguments from user
-# snp = sys.argv[1]
 numGenes = int(sys.argv[2])
 distance = float(sys.argv[3])
 threshold = float(sys.argv[4])
