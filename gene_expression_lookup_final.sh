@@ -35,6 +35,9 @@ then
 		echo "expressionThreshold: $4"
 
 		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold
+
+		# rename the output file
+		for f in geneExpressionLookupResults.txt; do mv $f ${f/${f:27:30}/_$snpFile}; done
 	fi
 
 elif [ -f ./gene_annotations.txt]
