@@ -331,7 +331,8 @@ for snp in snpFile:
 			outFile.write(output)
 	else:
 		# there are no genes to analyze
-		outFile.write("No genes were found within 1mbp on either side of the snp that was searched.")
+		output = "No genes were found within 1mbp on either side of the snp that was searched." + newline
+		outFile.write(output)
 
 	print "Finished writing tissue expression lookup results onto output file."
 	inFile2.close()
