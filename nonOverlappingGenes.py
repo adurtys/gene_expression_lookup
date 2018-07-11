@@ -74,7 +74,7 @@ gencodeGenesFile = open(gencodeFilename, 'w')
 
 genesNotInGTEx = []
 gencodeOutput = ""
-for item in idsInGencodeFile;
+for item in idsInGencodeFile:
 	if item not in idsInTstatFile:
 		genesNotInGTEx.append(item)
 		gencodeOutput += item + newline
