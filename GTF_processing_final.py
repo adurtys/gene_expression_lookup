@@ -7,7 +7,7 @@
 
 #!/usr/bin/env python
 
-# read in the GTF file (TODO: for now, it is the shortened version)
+# read in the GTF file
 inFilename = "gencode.v19.annotation.gtf"
 inFile = open(inFilename, 'r')
 
