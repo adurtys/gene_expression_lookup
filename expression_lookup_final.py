@@ -1,6 +1,6 @@
 # Date Created: 28 June 2018
 # Date Last Modified: 11 July 2018
-# Execution: python expression_lookup_final.py snpFilename numGenes distance threshold
+# Execution: python expression_lookup_final.py snpFilename numGenes distance threshold outFilename
 # numGenes is an int representing the number of closest genes on either side of the snp that should be analyzed 
 # with respect to expression in the tissues listed in "GTEx.tstat.tsv" file.
 # distance is a float representing the max distance (in kilobp) from the snp that the closest genes can be
@@ -106,7 +106,7 @@ def findDuplicates(anyList):
 	return duplicates
 
 # check to make sure file was run with correct number of arguments
-if len(sys.argv) != 5:
+if len(sys.argv) != 6:
 	print "ERROR: Incorrect number of command-line arguments!"
 
 # read in arguments from user
@@ -119,7 +119,7 @@ snpFilename = sys.argv[1]
 snpFile = open(snpFilename, 'r')
 
 # create new file that will contain the results of the expression lookup
-outFilename = "geneExpressionLookupResults.txt"
+outFilename = sys.argv[5]
 outFile = open(outFilename, 'w')
 
 tab = "\t"

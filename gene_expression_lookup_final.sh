@@ -1,6 +1,6 @@
 # Date Created: 9 July 2018
 # Date Last Modified: 11 July 2018
-# Execution: python gene_expression_lookup_final.sh snpFile numGenesToSearch distanceFromSnp expressionThreshold
+# Execution: python gene_expression_lookup_final.sh snpFile numGenesToSearch distanceFromSnp expressionThreshold outFile
 # snpFile is the name of the file containing the snps for which to search
 # numGenesToSearch is the number of genes closest to the snp for which to look up tissue expression
 # distanceFromSnp is the maximum distance upstream and downstream from the snp for which to search for genes, in kbp
@@ -28,16 +28,16 @@ then
 		numGenesToSearch="$2"
 		distanceFromSnp="$3"
 		expressionThreshold="$4"
+		
+		outFile=geneExpressionLookupResults_$snpFile
 
 		echo "snpFile: $1"
 		echo "numGenesToSearch: $2"
 		echo "distanceFromSnp: $3"
 		echo "expressionThreshold: $4"
+		echo $outFile
 
-		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold
-
-		# rename the output file
-		for f in geneExpressionLookupResults.txt; do mv $f ${f/${f:27:30}/_$snpFile}; done
+		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold $outFile
 	fi
 
 elif [ -f ./gene_annotations.txt]
