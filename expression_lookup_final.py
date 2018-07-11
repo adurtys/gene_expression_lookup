@@ -1,6 +1,6 @@
 # Date Created: 28 June 2018
 # Date Last Modified: 11 July 2018
-# Execution: python expression_lookup_final.py snpFilename numGenes distance threshold outFilename
+# Execution: python expression_lookup_final.py snpFilename numGenes distance threshold outFilename lostSnpsFilename
 # numGenes is an int representing the number of closest genes on either side of the snp that should be analyzed 
 # with respect to expression in the tissues listed in "GTEx.tstat.tsv" file.
 # distance is a float representing the max distance (in kilobp) from the snp that the closest genes can be
@@ -106,7 +106,7 @@ def findDuplicates(anyList):
 	return duplicates
 
 # check to make sure file was run with correct number of arguments
-if len(sys.argv) != 6:
+if len(sys.argv) != 7:
 	print "ERROR: Incorrect number of command-line arguments!"
 
 # read in arguments from user
@@ -122,6 +122,9 @@ snpFile = open(snpFilename, 'r')
 outFilename = sys.argv[5]
 outFile = open(outFilename, 'w')
 
+# create new file that will contain snps that were lost due to lack of tissue expression data in GTEx file
+lostSnpsFilename = sys.argv[6]
+
 tab = "\t"
 newline = "\n"
 
@@ -130,12 +133,13 @@ numSnps = 0
 # create counter variable for snps that didn't have a nearby gene
 numSnpsNoGenes = 0
 
+# create lists for snps and genes without corresponding tissue expression data in GTEx file
+snpsNoTissueExp = []
+idsWithoutTissueExpData = []
+
 for snp in snpFile:
 	numSnps += 1
 	snp = snp.rstrip('\r\n')
-
-	# for testing!
-	print "snp:", snp, "numGenes:", numGenes, "distance:", distance, "threshold:", threshold
 
 	# process the snp
 	snp = snp.split(':')
@@ -212,14 +216,12 @@ for snp in snpFile:
 		for startLocation, geneId in startDict.items():
 			if geneId == gene:
 				distanceFromSnpDict[gene] = abs(startLocation - snpLocation)
-		# distanceFromSnpDict[gene] = (startDict.values()).index(gene)
 		print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
 	for gene in upstreamGenes:
 		if gene not in distanceFromSnpDict:
 			for endLocation, geneId in endDict.items():
 				if geneId == gene:
 					distanceFromSnpDict[gene] = abs(endLocation - snpLocation)
-			# distanceFromSnpDict[gene] = (endDict.values()).index(gene)
 			print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
 		else:
 			# gene is already in the dictionary
@@ -227,8 +229,6 @@ for snp in snpFile:
 			for endLocation, geneId in endDict.items():
 				if (geneId == gene) and (abs(endLocation - snpLocation) < distanceFromSnpDict[gene]):
 					distanceFromSnpDict[gene] = abs(endLocation - snpLocation)
-			# if (endDict.values()).index(gene) < distanceFromSnpDict[gene]:
-				# distanceFromSnpDict[gene] = (endDict.values()).index(gene)
 			print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
 
 	closestDistances = sorted(distanceFromSnpDict.values())
@@ -303,12 +303,19 @@ for snp in snpFile:
 			
 			totalGenes += 1
 
-		print "There are", totalGenes, "genes in the file."
 		print "There are", len(ids), "ids for which to look up tissue expression:", ids
-		
+
 		# len(ids) should be the same as numGenesForAnalysis
 		if len(ids) != numGenesForAnalysis:
-			print "ERROR: len(ids) not equal to numGenesForAnalysis!"
+			# add snp to list of snps whose nearest gene doesn't have tissue experssion data in the GTEx file
+			snpName = snp[0] + ":" + snp[1]
+			snpsNoTissueExp.append(snpName)
+
+			for item in genesForAnalysis:
+				# if the GeneId isn't in the GTEx file, add it to the list of ids without tissue expression data
+				# if it isn't already in the list
+				if (item not in ids) and (item not in idsWithoutTissueExpData):
+					idsWithoutTissueExpData.append(item)
 
 		numTissues = len(matrix[0])
 
@@ -344,8 +351,6 @@ for snp in snpFile:
 			outFile.write(output)
 			numOutputs += 1
 
-		print numOutputs, "tissue expression vectors have been written to the lookup results file."
-
 	else:
 		# there are no genes to analyze
 		numSnpsNoGenes += 1
@@ -357,6 +362,18 @@ for snp in snpFile:
 
 print "There were", numSnps, "snps to search in the snpFile.txt file."
 print "There were", numSnpsNoGenes, "snps that did not have a nearby gene to analyze."
+print "There were", len(snpsNoTissueExp), "snps that did not have tissue expression data for their nearest gene."
+print "Found", len(idsWithoutTissueExpData), "GeneIDs that did not have tissue expression data:", idsWithoutTissueExpData
 
+# output lost snps to output file
+lostSnpsFile = open(lostSnpsFilename, 'w')
+
+lostSnpsOutput = ""
+for lostSnp in snpsNoTissueExp:
+	lostSnpsOutput += lostSnp + newline
+
+lostSnpsFile.write(lostSnpsOutput)
+
+lostSnpsFile.close()
 outFile.close()
 snpFile.close()

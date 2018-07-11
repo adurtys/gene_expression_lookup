@@ -30,14 +30,16 @@ then
 		expressionThreshold="$4"
 		
 		outFile=geneExpressionLookupResults_$snpFile
+		lostSnpsFile=lostSnps_$snpFile
 
 		echo "snpFile: $1"
 		echo "numGenesToSearch: $2"
 		echo "distanceFromSnp: $3"
 		echo "expressionThreshold: $4"
 		echo "outFile: $outFile"
+		echo "lostSnpsFile: $lostSnpsFile"
 
-		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold $outFile
+		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold $outFile $lostSnpsFile
 	fi
 
 elif [ -f ./gene_annotations.txt]
