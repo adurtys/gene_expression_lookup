@@ -276,7 +276,7 @@ for snp in snpFile:
 	if len(genesForAnalysis) != 0:
 		# there are genes to analyze
 		numGenesForAnalysis = len(genesForAnalysis)
-		print "There are", numGenesForAnalysis, "genes for analysis:", genesForAnalysis # should be equal to numGenes
+		print "Analyzing", numGenesForAnalysis, "genes:", genesForAnalysis # should be equal to numGenes
 
 		ids = []
 
@@ -303,9 +303,12 @@ for snp in snpFile:
 			
 			totalGenes += 1
 
-		# len(ids) should be the same as numGenesForAnalysis
 		print "There are", totalGenes, "genes in the file."
 		print "There are", len(ids), "ids for which to look up tissue expression:", ids
+		
+		# len(ids) should be the same as numGenesForAnalysis
+		if len(ids) != numGenesForAnalysis:
+			print "ERROR: len(ids) not equal to numGenesForAnalysis!"
 
 		numTissues = len(matrix[0])
 
@@ -327,6 +330,9 @@ for snp in snpFile:
 			headerLineOutput = headerLine + newline
 			outFile.write(headerLineOutput)
 
+		# create counter variable to determine how many tissue expression vectors have been written out
+		numOutputs = 0
+
 		for i in range(len(ids)):
 			output = ids[i] + tab + nameDict[ids[i]] + tab
 			for j in range(numTissues):
@@ -336,6 +342,10 @@ for snp in snpFile:
 					output += str(expressionMatrix[i][j]) + newline
 
 			outFile.write(output)
+			numOutputs += 1
+
+		print numOutputs, "tissue expression vectors have been written to the lookup results file."
+
 	else:
 		# there are no genes to analyze
 		numSnpsNoGenes += 1
@@ -346,7 +356,7 @@ for snp in snpFile:
 	inFile2.close()
 
 print "There were", numSnps, "snps to search in the snpFile.txt file."
-print "There were", 
+print "There were", numSnpsNoGenes, "snps that did not have a nearby gene to analyze."
 
 outFile.close()
 snpFile.close()
