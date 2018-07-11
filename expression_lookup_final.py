@@ -1,6 +1,6 @@
 # Date Created: 28 June 2018
-# Date Last Modified: 10 July 2018
-# Execution: python expression_lookup_final.py numGenes distance threshold
+# Date Last Modified: 11 July 2018
+# Execution: python expression_lookup_final.py snpFilename numGenes distance threshold
 # numGenes is an int representing the number of closest genes on either side of the snp that should be analyzed 
 # with respect to expression in the tissues listed in "GTEx.tstat.tsv" file.
 # distance is a float representing the max distance (in kilobp) from the snp that the closest genes can be
@@ -111,12 +111,12 @@ if len(sys.argv) != 4:
 
 # read in arguments from user
 # snp = sys.argv[1]
-numGenes = int(sys.argv[1])
-distance = float(sys.argv[2])
-threshold = float(sys.argv[3])
+numGenes = int(sys.argv[2])
+distance = float(sys.argv[3])
+threshold = float(sys.argv[4])
 
 # read in file containing snps
-snpFilename = "snpFile.txt"
+snpFilename = sys.argv[1]
 snpFile = open(snpFilename, 'r')
 
 # create new file that will contain the results of the expression lookup

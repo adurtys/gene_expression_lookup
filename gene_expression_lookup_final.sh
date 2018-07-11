@@ -24,15 +24,17 @@ then
 		echo "This program requires 4 command-line arguments in addition to the name of the command."
 	else
 		# store command-line arguments as variables
-		numGenesToSearch="$1"
-		distanceFromSnp="$2"
-		expressionThreshold="$3"
+		snpFile="$1"
+		numGenesToSearch="$2"
+		distanceFromSnp="$3"
+		expressionThreshold="$4"
 
-		echo "numGenesToSearch: $1"
-		echo "distanceFromSnp: $2"
-		echo "expressionThreshold: $3"
+		echo "snpFile: $1"
+		echo "numGenesToSearch: $2"
+		echo "distanceFromSnp: $3"
+		echo "expressionThreshold: $4"
 
-		python ./expression_lookup_final.py $numGenesToSearch $distanceFromSnp $expressionThreshold
+		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold
 	fi
 
 elif [ -f ./gene_annotations.txt]
@@ -51,15 +53,17 @@ then
 		echo "This program requires 4 command-line arguments in addition to the name of the command."
 	else
 		# store command-line arguments as variables
-		numGenesToSearch="$1"
-		distanceFromSnp="$2"
-		expressionThreshold="$3"
+		snpFile="$1"
+		numGenesToSearch="$2"
+		distanceFromSnp="$3"
+		expressionThreshold="$4"
 
-		echo "numGenesToSearch: $1"
-		echo "distanceFromSnp: $2"
-		echo "expressionThreshold: $3"
+		echo "snpFile: $1"
+		echo "numGenesToSearch: $2"
+		echo "distanceFromSnp: $3"
+		echo "expressionThreshold: $4"
 
-		python ./expression_lookup_final.py $numGenesToSearch $distanceFromSnp $expressionThreshold
+		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold
 	fi
 
 else [ -f ./normalizedGTEx.tstat.txt]
@@ -77,14 +81,16 @@ else [ -f ./normalizedGTEx.tstat.txt]
 		echo "This program requires 4 command-line arguments in addition to the name of the command."
 	else
 		# store command-line arguments as variables
-		numGenesToSearch="$1"
-		distanceFromSnp="$2"
-		expressionThreshold="$3"
+		snpFile="$1"
+		numGenesToSearch="$2"
+		distanceFromSnp="$3"
+		expressionThreshold="$4"
 
-		echo "numGenesToSearch: $1"
-		echo "distanceFromSnp: $2"
-		echo "expressionThreshold: $3"
+		echo "snpFile: $1"
+		echo "numGenesToSearch: $2"
+		echo "distanceFromSnp: $3"
+		echo "expressionThreshold: $4"
 
-		python ./expression_lookup_final.py $numGenesToSearch $distanceFromSnp $expressionThreshold
+		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold
 	fi
 fi
