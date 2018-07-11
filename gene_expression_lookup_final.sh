@@ -1,6 +1,6 @@
 # Date Created: 9 July 2018
 # Date Last Modified: 11 July 2018
-# Execution: python gene_expression_lookup_final.sh snpFile numGenesToSearch distanceFromSnp expressionThreshold outFile
+# Execution: gene_expression_lookup_final.sh snpFile numGenesToSearch distanceFromSnp expressionThreshold
 # snpFile is the name of the file containing the snps for which to search
 # numGenesToSearch is the number of genes closest to the snp for which to look up tissue expression
 # distanceFromSnp is the maximum distance upstream and downstream from the snp for which to search for genes, in kbp
@@ -18,7 +18,7 @@ then
 	echo "Now starting snp lookup."
 
 	# check number of command-line arguments
-	if [ $# = 0 ]
+	if [ $# != 4 ]
 	then
 		echo "ERROR: incorrect number of command-line arguments."
 		echo "This program requires 4 command-line arguments in addition to the name of the command."
@@ -35,7 +35,7 @@ then
 		echo "numGenesToSearch: $2"
 		echo "distanceFromSnp: $3"
 		echo "expressionThreshold: $4"
-		echo $outFile
+		echo "outFile: $outFile"
 
 		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold $outFile
 	fi
@@ -50,7 +50,7 @@ then
 	echo "Now starting snp lookup."
 	
 	# check number of command-line arguments
-	if [ $# = 0 ]
+	if [ $# != 4 ]
 	then
 		echo "ERROR: incorrect number of command-line arguments."
 		echo "This program requires 4 command-line arguments in addition to the name of the command."
@@ -60,13 +60,16 @@ then
 		numGenesToSearch="$2"
 		distanceFromSnp="$3"
 		expressionThreshold="$4"
+		
+		outFile=geneExpressionLookupResults_$snpFile
 
 		echo "snpFile: $1"
 		echo "numGenesToSearch: $2"
 		echo "distanceFromSnp: $3"
 		echo "expressionThreshold: $4"
+		echo "outFile: $outFile"
 
-		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold
+		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold $outFile
 	fi
 
 else [ -f ./normalizedGTEx.tstat.txt]
@@ -78,7 +81,7 @@ else [ -f ./normalizedGTEx.tstat.txt]
 	echo "Now starting snp lookup."
 	
 	# check number of command-line arguments
-	if [ $# = 0 ]
+	if [ $# != 4 ]
 	then
 		echo "ERROR: incorrect number of command-line arguments."
 		echo "This program requires 4 command-line arguments in addition to the name of the command."
@@ -88,12 +91,15 @@ else [ -f ./normalizedGTEx.tstat.txt]
 		numGenesToSearch="$2"
 		distanceFromSnp="$3"
 		expressionThreshold="$4"
+		
+		outFile=geneExpressionLookupResults_$snpFile
 
 		echo "snpFile: $1"
 		echo "numGenesToSearch: $2"
 		echo "distanceFromSnp: $3"
 		echo "expressionThreshold: $4"
+		echo "outFile: $outFile"
 
-		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold
+		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold $outFile
 	fi
 fi
