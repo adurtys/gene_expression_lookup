@@ -27,16 +27,6 @@ for line in geneAnnotationsFile:
 
 geneAnnotationsFile.close()
 
-# newline = "\n"
-# output = ""
-# for protCodingGene in proteinCodingGenes:
-# 	output += protCodingGene + newline
-
-# outFilename = "protein_coding_genes.txt"
-# outFile = open(outFilename, 'w')
-# outFile.write(output)
-# outFile.close()
-
 print "There are", len(proteinCodingGenes), "protein coding genes in the gene annotations file."
 print "There are", len(idsNotFound), "ids that weren't found in the GTEx file."
 
@@ -47,16 +37,19 @@ for idNotFound in idsNotFound:
 	if idNotFound in proteinCodingGenes:
 		notFoundButProtCoding.append(idNotFound)
 
-# for i in range(10):
-# 	print idsNotFound[i]
-# 	isProteinCoding = False
-# 	if idsNotFound[i] in proteinCodingGenes:
-# 		isProteinCoding = True
-# 	print isProteinCoding
-
 if len(notFoundButProtCoding) == len(idsNotFound):
 	print "All genes that weren't found were listed as protein-coding."
 else:
 	print "There are", len(notFoundButProtCoding), "genes that don't have tissue-expression data in GTEx file but are protein-coding according to GENCODE."
 
-print notFoundButProtCoding
+# output these genes as separate file
+
+newline = "\n"
+output = ""
+for protCodingGene in notFoundButProtCoding:
+	output += protCodingGene + newline
+
+outFilename = "protCodingGenes_notInGTEx.txt"
+outFile = open(outFilename, 'w')
+outFile.write(output)
+outFile.close()
