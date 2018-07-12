@@ -26,7 +26,17 @@ for line in geneAnnotationsFile:
 
 geneAnnotationsFile.close()
 
-print "There are", len(proteinCodingGenes), "protein coding genes in the gene_annotations file."
+newline = "\n"
+output = ""
+for protCodingGene in proteinCodingGenes:
+	output += protCodingGene + newline
+
+outFilename = "protein_coding_genes.txt"
+outFile = open(outFilename, 'w')
+outFile.write(output)
+outFile.close()
+
+print "There are", len(proteinCodingGenes), "protein coding genes in the gene annotations file."
 print "There are", len(idsNotFound), "ids that weren't found in the GTEx file."
 
 # if the ids in idsNotFound are in the gene annotations file, then they are ids for protein-coding genes
