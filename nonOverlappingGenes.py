@@ -1,7 +1,10 @@
 # Date Created: 11 July 2018
-# Date Last Modified: 11 July 2018
+# Date Last Modified: 12 July 2018
 # Execution: python nonOverlappingGenes.py
-# Description:
+# Description: Finds genes listed in the GENCODE GTF file but that do not have tissue expression data in the
+# GTEx file, and vice versa. Prints out these non-overlapping genes into separate files, namely
+# "genesNotInGencode.txt" and "genesNotInGTEx.txt", respectively.
+# Run Time: 1296 sec (~ 22 min)
 
 #!/usr/bin/env python
 
@@ -47,8 +50,12 @@ for line in gencodeFile:
 	geneId = geneId.strip('gene_id ')
 	geneId = geneId.strip('"')
 
+	# remove decimal at end of ENSGID for every id in the gencode file
+	geneId = geneId.strip('.')
+	ensgId = geneId[0]
+
 	# add ENSGID to the list
-	idsInGencodeFile.append(geneId)
+	idsInGencodeFile.append(ensgId)
 
 gencodeFile.close()
 
@@ -70,7 +77,7 @@ tstatGenesFile.close()
 
 # create output file for genes in GENCODE file and not in GTEx file
 gencodeGenesFilename = "genesNotInGTEx.txt"
-gencodeGenesFile = open(gencodeFilename, 'w')
+gencodeGenesFile = open(gencodeGenesFilename, 'w')
 
 genesNotInGTEx = []
 gencodeOutput = ""

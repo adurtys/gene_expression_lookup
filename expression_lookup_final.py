@@ -9,7 +9,7 @@
 # Description: This program finds the genes closest to the snp, then outputs a file of gene expression across tissues in the
 # GTEx t-statistics file, where 1 = highly expressed, 0 = not highly expressed. This is done for each snp listed in the
 # "snpFile.txt" file, which contains the snps in the format "chr#:location" to look up in the "gene_annotations.txt" file. 
-# Runtime: 1 sec for each snp
+# Run Time: 1 sec for each snp
 
 #!/usr/bin/env python
 import sys
