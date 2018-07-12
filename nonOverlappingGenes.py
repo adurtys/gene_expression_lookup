@@ -68,7 +68,7 @@ tstatGenesFile = open(tstatGenesFilename, 'w')
 genesNotInGencode = []
 tstatOutput = ""
 for item in idsInTstatFile:
-	if item not in idsInGencodeFile:
+	if (item not in idsInGencodeFile) and (item not in genesNotInGencode):
 		genesNotInGencode.append(item)
 		tstatOutput += item + newline
 
@@ -82,7 +82,8 @@ gencodeGenesFile = open(gencodeGenesFilename, 'w')
 genesNotInGTEx = []
 gencodeOutput = ""
 for item in idsInGencodeFile:
-	if item not in idsInTstatFile:
+	# only add new ids to outFile once
+	if (item not in idsInTstatFile) and (item not in genesNotInGTEx):
 		genesNotInGTEx.append(item)
 		gencodeOutput += item + newline
 
