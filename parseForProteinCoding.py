@@ -5,7 +5,7 @@ idsNotFoundFile = open(idsNotFoundFilename, 'r')
 
 idsNotFound = []
 for gene in idsNotFoundFile:
-	idsNotFound.append(geneId)
+	idsNotFound.append(gene)
 
 idsNotFoundFile.close()
 
