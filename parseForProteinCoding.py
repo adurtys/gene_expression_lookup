@@ -24,13 +24,18 @@ for line in geneAnnotationsFile:
 
 	proteinCodingGenes.append(ensgId)
 
+geneAnnotationsFile.close()
+
 print "There are", len(proteinCodingGenes), "protein coding genes in the gene_annotations file."
-print "The first one is:", proteinCodingGenes[1]
+print "There are", len(idsNotFound), "ids that weren't found in the GTEx file."
+
+# if the ids in idsNotFound are in the gene annotations file, then they are ids for protein-coding genes
 
 notFoundButProtCoding = []
-for idNotFound in idsNotFound:
-	if idNotFound in proteinCodingGenes:
-		notFoundButProtCoding.append(idNotFound)
+for gene in proteinCodingGenes:
+	if gene in idsNotFound:
+		notFoundButProtCoding.append(gene)
 
 print "There are", len(notFoundButProtCoding), "genes that don't have tissue-expression data in GTEx file but are protein-coding according to GENCODE."
 print notFoundButProtCoding
+
