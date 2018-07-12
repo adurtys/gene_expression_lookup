@@ -4,7 +4,7 @@
 # Description: Finds genes listed in the GENCODE GTF file but that do not have tissue expression data in the
 # GTEx file, and vice versa. Prints out these non-overlapping genes into separate files, namely
 # "genesNotInGencode.txt" and "genesNotInGTEx.txt", respectively.
-# Run Time: 1296 sec (~ 22 min)
+# Run Time: 1084 sec (~ 20 min)
 
 #!/usr/bin/env python
 
@@ -51,7 +51,7 @@ for line in gencodeFile:
 	geneId = geneId.strip('"')
 
 	# remove decimal at end of ENSGID for every id in the gencode file
-	geneId = geneId.strip('.')
+	geneId = geneId.split('.')
 	ensgId = geneId[0]
 
 	# add ENSGID to the list
