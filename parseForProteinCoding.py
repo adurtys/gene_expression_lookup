@@ -24,6 +24,8 @@ for line in geneAnnotationsFile:
 
 	proteinCodingGenes.append(ensgId)
 
+print "there are", len(proteinCodingGenes), "protein coding genes in the gene_annotations file."
+
 notFoundButProtCoding = []
 for idNotFound in idsNotFound:
 	if idNotFound in proteinCodingGenes:
