@@ -2,8 +2,8 @@
 # Date Last Modified: 5 July 2018
 # Execution: python tstat_normalization_final.py
 # Description: This program rank-normalizes the t statistics in the "GTEx.tstat.tsv" file, which is formatted 
-# such that each row is a gene, and each column is the t statistic for the expression of that gene in the tissue 
-# corresponding to that column.
+# 	such that each row is a gene, and each column is the t statistic for the expression of that gene in the tissue 
+# 	corresponding to that column.
 # Run Time: 318 sec (~ 5 min)
 
 #!/usr/bin/env python

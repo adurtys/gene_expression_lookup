@@ -2,9 +2,9 @@
 # Date Last Modified: 13 July 2018
 # Execution: python GTF_processing_final.py
 # Description: This program proceses GENCODE Comprehensive Gene Annotation GTF File for the start and end locations of protein-coding genes. 
-# The input is "gencode.v19.annotation.gtf", and the output is "gene_annotations.txt", a file with five columns (tab separated).
-# The columns are chromosome name, GeneID, gene name, gene start location, and gene end location, respectively, for all protein-coding genes in the GENCODE file. 
-# Rn Time: 
+# 	The input is "gencode.v19.annotation.gtf", and the output is "gene_annotations.txt", a file with five columns (tab separated).
+# 	The columns are chromosome name, GeneID, gene name, gene start location, and gene end location, respectively, for all protein-coding genes in the GENCODE file. 
+# Run Time: 1036 sec (~ 17 min)
 
 #!/usr/bin/env python
 
@@ -125,7 +125,7 @@ for index in range(numGenes):
 		uniqGeneEnd[key] = geneEndLocations[key]
 
 numUniqGenes = len(uniqGenes)
-print "There are ", numUniqGenes, "unique genes in this file."
+print "There are", numUniqGenes, "unique genes in this file."
 
 # create a new file for start and end positions of only protein-coding genes
 outFilename = "gene_annotations.txt"
