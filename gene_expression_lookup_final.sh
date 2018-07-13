@@ -3,13 +3,13 @@
 # Execution: gene_expression_lookup_final.sh snpFile numGenesToSearch distanceFromSnp expressionThreshold
 # snpFile is the name of the file containing the snps for which to search
 # numGenesToSearch is the number of genes closest to the snp for which to look up tissue expression
-# distanceFromSnp is the maximum distance upstream and downstream from the snp for which to search for genes, in kbp
-# if distanceFromSnp > 1000 kbp, distanceFromSnp = 1000kbp (max distance from gene that will be searched is 1 mbp)
+# distanceFromSnp is the maximum distance upstream and downstream from the snp for which to search for genes, in kbp.
+# 	If distanceFromSnp > 1000 kbp, distanceFromSnp = 1000kbp (max distance from gene that will be searched is 1 mbp)
 # expressionThreshold is the percentage (in decimal) of top rank-ordered t-statistics that should be considered "highly
-# expressed" for each tissue
+# 	expressed" for each tissue
 # Description: Shell script for tissue expression lookup of genes near specified snps. First, ensures that both the 
-# GENCODE GTF file and GTEx t-statistics file have been processed. Then analyzes expression of genes closest to snps
-# listed in the snp file.
+# 	GENCODE GTF file and GTEx t-statistics file have been processed. Then analyzes expression of genes closest to snps
+# 	listed in the snp file.
 
 #!/usr/bin/env bash
 
@@ -32,7 +32,7 @@ then
 		
 		outFile=geneExpressionLookupResults_$snpFile
 		lostSnpsFile=lostSnps_$snpFile
-		missingGenesFile=missingGnes_$snpFile
+		missingGenesFile=missingGenes_$snpFile
 
 		echo "snpFile: $1"
 		echo "numGenesToSearch: $2"

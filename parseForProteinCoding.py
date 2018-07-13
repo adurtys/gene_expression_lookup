@@ -1,6 +1,13 @@
-#!/usr/bin/env python
+# Date Created: 12 July 2018
+# Date Last Modified: 13 July 2018
+# Execution: python parseForProteinCoding.py geneIdList
+# geneIdList is a string containing the name of the file containing the genes to look up
+# Description: checks whether a list of ENSGIDs is protein-coding, according to GENCODE
 
-idsNotFoundFilename = "idsNotFound_fullTest.txt"
+#!/usr/bin/env python
+import sys
+
+idsNotFoundFilename = sys.argv[1]
 idsNotFoundFile = open(idsNotFoundFilename, 'r')
 
 idsNotFound = []
@@ -9,6 +16,8 @@ for gene in idsNotFoundFile:
 	idsNotFound.append(gene)
 
 idsNotFoundFile.close()
+
+print "Searching for", len(idsNotFound), "ids."
 
 geneAnnotationsFilename = "gene_annotations.txt"
 geneAnnotationsFile = open(geneAnnotationsFilename, 'r')
@@ -19,19 +28,15 @@ for line in geneAnnotationsFile:
 
 	columns = line.split('\t')
 
-	geneId = columns[1]
-	geneId = geneId.split('.')
-	ensgId = geneId[0]
+	ensgId = columns[1]
 
 	proteinCodingGenes.append(ensgId)
 
 geneAnnotationsFile.close()
 
 print "There are", len(proteinCodingGenes), "protein coding genes in the gene annotations file."
-print "There are", len(idsNotFound), "ids that weren't found in the GTEx file."
 
 # if the ids in idsNotFound are in the gene annotations file, then they are ids for protein-coding genes
-
 notFoundButProtCoding = []
 for idNotFound in idsNotFound:
 	if idNotFound in proteinCodingGenes:
@@ -40,16 +45,15 @@ for idNotFound in idsNotFound:
 if len(notFoundButProtCoding) == len(idsNotFound):
 	print "All genes that weren't found were listed as protein-coding."
 else:
-	print "There are", len(notFoundButProtCoding), "genes that don't have tissue-expression data in GTEx file but are protein-coding according to GENCODE."
+	print len(notFoundButProtCoding), "genes in the inputted list of ENSGIds are protein-coding, according to GENCODE."
 
-# output these genes as separate file
-
+# output these protein-coding genes as separate file
 newline = "\n"
 output = ""
 for protCodingGene in notFoundButProtCoding:
 	output += protCodingGene + newline
 
-outFilename = "protCodingGenes_notInGTEx.txt"
+outFilename = "proteinCodingGenes.txt"
 outFile = open(outFilename, 'w')
 outFile.write(output)
 outFile.close()
