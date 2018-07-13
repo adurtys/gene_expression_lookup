@@ -1,7 +1,8 @@
 # Date Created: 11 July 2018
-# Date Last Modified: 12 July 2018
+# Date Last Modified: 13 July 2018
 # Execution: python nonOverlappingGenes.py
-# Description: Finds genes listed in the GENCODE GTF file but that do not have tissue expression data in the
+# Description: Finds genes listed in the gene_annotations file (containing only the protein-coding genes from
+# the GENCODE GTF file) but that do not have tissue expression data in the
 # GTEx file, and vice versa. Prints out these non-overlapping genes into separate files, namely
 # "genesNotInGencode.txt" and "genesNotInGTEx.txt", respectively.
 # Run Time: 1084 sec (~ 20 min)
@@ -26,29 +27,18 @@ for line in tstatFile:
 
 tstatFile.close()
 
-# read in GTF file
-gencodeFilename = "gencode.v19.annotation.gtf"
-gencodeFile = open(gencodeFilename, 'r')
+# read in gene_annotations file
+annotationsFilename = "gene_annotations.txt"
+annotationsFile = open(annotationsFilename, 'r')
 
-# skip first five lines
-for i in range(5):
-        gencodeFile.readline()
-
-# parse GENCODE GTF file for GeneIds
+# parse file for GeneIds
 idsInGencodeFile = []
-for line in gencodeFile:
+for line in annotationsFile:
    	line = line.rstrip('\r\n')
 	
 	# split line on tab, creating list of possible columns
 	columns = line.split('\t')
-	
-	# process otherInfo column by getting rid of key label and quotes
-	otherInfo = columns[8]
-	otherInfo = otherInfo.split(';')
-
-	geneId = otherInfo[0]
-	geneId = geneId.strip('gene_id ')
-	geneId = geneId.strip('"')
+	geneId = columns[1]
 
 	# remove decimal at end of ENSGID for every id in the gencode file
 	geneId = geneId.split('.')
@@ -57,7 +47,7 @@ for line in gencodeFile:
 	# add ENSGID to the list
 	idsInGencodeFile.append(ensgId)
 
-gencodeFile.close()
+annotationsFile.close()
 
 newline = "\n"
 

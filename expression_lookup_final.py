@@ -1,5 +1,5 @@
 # Date Created: 28 June 2018
-# Date Last Modified: 11 July 2018
+# Date Last Modified: 13 July 2018
 # Execution: python expression_lookup_final.py snpFilename numGenes distance threshold outFilename lostSnpsFilename
 # numGenes is an int representing the number of closest genes on either side of the snp that should be analyzed 
 # with respect to expression in the tissues listed in "GTEx.tstat.tsv" file.
@@ -373,7 +373,9 @@ for lostSnp in snpsNoTissueExp:
 	lostSnpsOutput += lostSnp + newline
 
 lostSnpsFile.write(lostSnpsOutput)
-
 lostSnpsFile.close()
+
+# output genes without tissue expression data to output file
+
 outFile.close()
 snpFile.close()
