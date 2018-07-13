@@ -1,5 +1,5 @@
 # Date Created: 9 July 2018
-# Date Last Modified: 11 July 2018
+# Date Last Modified: 13 July 2018
 # Execution: gene_expression_lookup_final.sh snpFile numGenesToSearch distanceFromSnp expressionThreshold
 # snpFile is the name of the file containing the snps for which to search
 # numGenesToSearch is the number of genes closest to the snp for which to look up tissue expression
@@ -8,7 +8,8 @@
 # expressionThreshold is the percentage (in decimal) of top rank-ordered t-statistics that should be considered "highly
 # expressed" for each tissue
 # Description: Shell script for tissue expression lookup of genes near specified snps. First, ensures that both the 
-# GENCODE GTF file and GTEx t-statistics file have been processed. Then analyzes expression of 
+# GENCODE GTF file and GTEx t-statistics file have been processed. Then analyzes expression of genes closest to snps
+# listed in the snp file.
 
 #!/usr/bin/env bash
 
@@ -31,6 +32,7 @@ then
 		
 		outFile=geneExpressionLookupResults_$snpFile
 		lostSnpsFile=lostSnps_$snpFile
+		missingGenesFile=missingGnes_$snpFile
 
 		echo "snpFile: $1"
 		echo "numGenesToSearch: $2"
@@ -38,8 +40,9 @@ then
 		echo "expressionThreshold: $4"
 		echo "outFile: $outFile"
 		echo "lostSnpsFile: $lostSnpsFile"
+		echo "missingGenesFile: $missingGenesFile"
 
-		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold $outFile $lostSnpsFile
+		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold $outFile $lostSnpsFile $missingGenesFile
 	fi
 
 elif [ -f ./gene_annotations.txt]
@@ -64,14 +67,18 @@ then
 		expressionThreshold="$4"
 		
 		outFile=geneExpressionLookupResults_$snpFile
+		lostSnpsFile=lostSnps_$snpFile
+		missingGenesFile=missingGnes_$snpFile
 
 		echo "snpFile: $1"
 		echo "numGenesToSearch: $2"
 		echo "distanceFromSnp: $3"
 		echo "expressionThreshold: $4"
 		echo "outFile: $outFile"
+		echo "lostSnpsFile: $lostSnpsFile"
+		echo "missingGenesFile: $missingGenesFile"
 
-		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold $outFile
+		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold $outFile $lostSnpsFile $missingGenesFile
 	fi
 
 else [ -f ./normalizedGTEx.tstat.txt]
@@ -95,13 +102,17 @@ else [ -f ./normalizedGTEx.tstat.txt]
 		expressionThreshold="$4"
 		
 		outFile=geneExpressionLookupResults_$snpFile
+		lostSnpsFile=lostSnps_$snpFile
+		missingGenesFile=missingGnes_$snpFile
 
 		echo "snpFile: $1"
 		echo "numGenesToSearch: $2"
 		echo "distanceFromSnp: $3"
 		echo "expressionThreshold: $4"
 		echo "outFile: $outFile"
+		echo "lostSnpsFile: $lostSnpsFile"
+		echo "missingGenesFile: $missingGenesFile"
 
-		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold $outFile
+		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold $outFile $lostSnpsFile $missingGenesFile
 	fi
 fi

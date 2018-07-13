@@ -1,14 +1,16 @@
 # Date Created: 28 June 2018
 # Date Last Modified: 13 July 2018
-# Execution: python expression_lookup_final.py snpFilename numGenes distance threshold outFilename lostSnpsFilename
-# numGenes is an int representing the number of closest genes on either side of the snp that should be analyzed 
-# with respect to expression in the tissues listed in "GTEx.tstat.tsv" file.
+# Execution: python expression_lookup_final.py snpFilename numGenes distance threshold outFilename lostSnpsFilename missingGenesFilename
+# 	numGenes is an int representing the number of closest genes on either side of the snp that should be analyzed 
+# 	with respect to expression in the tissues listed in "GTEx.tstat.tsv" file.
 # distance is a float representing the max distance (in kilobp) from the snp that the closest genes can be
 # threshold is a float (decimal) representing the percentage of top rank-ordered t-statistics that should be considered
-# as "highly expressed" for each tissue.
+# 	as "highly expressed" for each tissue.
+# outFilename is a string representing the name of the file that will contain the results of the gene expression lookup
+# lostSnpsFilename is a string representing the name of 
 # Description: This program finds the genes closest to the snp, then outputs a file of gene expression across tissues in the
-# GTEx t-statistics file, where 1 = highly expressed, 0 = not highly expressed. This is done for each snp listed in the
-# "snpFile.txt" file, which contains the snps in the format "chr#:location" to look up in the "gene_annotations.txt" file. 
+# 	GTEx t-statistics file, where 1 = highly expressed, 0 = not highly expressed. This is done for each snp listed in the
+# 	"snpFile.txt" file, which contains the snps in the format "chr#:location" to look up in the "gene_annotations.txt" file. 
 # Run Time: 1 sec for each snp
 
 #!/usr/bin/env python
@@ -106,24 +108,27 @@ def findDuplicates(anyList):
 	return duplicates
 
 # check to make sure file was run with correct number of arguments
-if len(sys.argv) != 7:
+if len(sys.argv) != 8:
 	print "ERROR: Incorrect number of command-line arguments!"
+
+# read in file containing snps
+snpFilename = sys.argv[1]
+snpFile = open(snpFilename, 'r')
 
 # read in arguments from user
 numGenes = int(sys.argv[2])
 distance = float(sys.argv[3])
 threshold = float(sys.argv[4])
 
-# read in file containing snps
-snpFilename = sys.argv[1]
-snpFile = open(snpFilename, 'r')
-
 # create new file that will contain the results of the expression lookup
 outFilename = sys.argv[5]
 outFile = open(outFilename, 'w')
 
-# create new file that will contain snps that were lost due to lack of tissue expression data in GTEx file
+# create new file that will contain snps that were lost due to lack of tissue expression data for their nearest gene in GTEx file
 lostSnpsFilename = sys.argv[6]
+
+# create new file that will contain genes associated with snps in the snpFile that didn't have tissue expression data
+missingGenesFilename = sys.argv[7]
 
 tab = "\t"
 newline = "\n"
@@ -363,7 +368,7 @@ for snp in snpFile:
 print "There were", numSnps, "snps to search in the snpFile.txt file."
 print "There were", numSnpsNoGenes, "snps that did not have a nearby gene to analyze."
 print "There were", len(snpsNoTissueExp), "snps that did not have tissue expression data for their nearest gene."
-print "Found", len(idsWithoutTissueExpData), "GeneIDs that did not have tissue expression data:", idsWithoutTissueExpData
+print "Found", len(idsWithoutTissueExpData), "GeneIDs that did not have tissue expression data."
 
 # output lost snps to output file
 lostSnpsFile = open(lostSnpsFilename, 'w')
@@ -376,6 +381,14 @@ lostSnpsFile.write(lostSnpsOutput)
 lostSnpsFile.close()
 
 # output genes without tissue expression data to output file
+missingGenesFile = open(missingGenesFilename, 'w')
+
+missingGenesOutput = ""
+for missingGene in idsWithoutTissueExpData:
+	missingGenesOutput += missingGene + newline
+
+missingGenesFile.write(missingGenesOutput)
+missingGenesFile.close()
 
 outFile.close()
 snpFile.close()
