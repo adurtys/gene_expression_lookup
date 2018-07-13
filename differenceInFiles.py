@@ -1,6 +1,14 @@
-#!/usr/bin/env python
+# Date Created: 12 July 2018
+# Date Last Modified: 13 July 2018
+# Execution: python differenceInFiles.py geneIdListFilename
+# geneIdListFilename is a string representing the name of the file containing ids for which to search in the
+# non-overlapping genes file. 
+# Description: Determines whether ids listed in the input file are in the non-overlapping genes file.
 
-idsNotFoundFilename = "idsNotFound_fullTest.txt"
+#!/usr/bin/env python
+import sys
+
+idsNotFoundFilename = sys.argv[0]
 idsNotFoundFile = open(idsNotFoundFilename, 'r')
 
 idsNotFound = []
@@ -25,4 +33,4 @@ for ensgId in idsNotFound:
 		errorIds.append(ensgId)
 
 if len(errorIds) == 0:
-	print "All ids that weren't in the GTEx file are listed in the non-overlapping genes list."
+	print "All ids are listed in the non-overlapping genes list."

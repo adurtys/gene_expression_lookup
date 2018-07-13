@@ -53,7 +53,7 @@ output = ""
 for protCodingGene in notFoundButProtCoding:
 	output += protCodingGene + newline
 
-outFilename = "proteinCodingGenes.txt"
+outFilename = "proteinCoding_missingGenes.txt"
 outFile = open(outFilename, 'w')
 outFile.write(output)
 outFile.close()
