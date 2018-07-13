@@ -8,7 +8,7 @@
 #!/usr/bin/env python
 import sys
 
-idsNotFoundFilename = sys.argv[0]
+idsNotFoundFilename = sys.argv[1]
 idsNotFoundFile = open(idsNotFoundFilename, 'r')
 
 idsNotFound = []
