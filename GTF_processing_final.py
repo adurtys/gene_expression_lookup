@@ -1,5 +1,5 @@
 # Date Created: 27 June 2018
-# Date Last Modified: 29 June 2018
+# Date Last Modified: 13 July 2018
 # Execution: python GTF_processing_final.py
 # Description: This program proceses GENCODE Comprehensive Gene Annotation GTF File for the start and end locations of protein-coding genes. 
 # The input is "gencode.v19.annotation.gtf", and the output is "gene_annotations.txt", a file with five columns (tab separated).
@@ -7,6 +7,25 @@
 # Rn Time: 
 
 #!/usr/bin/env python
+
+# read in the GTEx file
+tstatFilename = "GTEx.tstat.tsv"
+tstatFile = open(tstatFilename, 'r')
+
+# skip header line
+tstatFile.readline()
+
+# make list of all geneIds in tstat file
+idsInGTEx = []
+for line in tstatFile:
+	line = line.rstrip('\r\n')
+
+	columns = line.split('\t')
+
+	ensgId = columns[0]
+	idsInGTEx.append(ensgId)
+
+tstatFile.close()
 
 # read in the GTF file
 inFilename = "gencode.v19.annotation.gtf"
@@ -23,7 +42,7 @@ geneEndLocations = []
 
 # skip first five lines
 for i in range(5):
-        inFile.readline()
+	inFile.readline()
 
 for line in inFile:
    	line = line.rstrip('\r\n')
@@ -44,6 +63,9 @@ for line in inFile:
 	geneId = geneId.strip('gene_id ')
 	geneId = geneId.strip('"')
 
+	geneId = geneId.split('.')
+	ensgId = geneId[0]
+
 	name = otherInfo[4]
 	name = name.strip('gene_name ')
 	name = name.strip('"')
@@ -52,10 +74,10 @@ for line in inFile:
 	geneType = geneType.strip('gene_type ')
 	geneType = geneType.strip('"')
 
-	# parse for protein-coding genes
-	if geneType == "protein_coding":
+	# parse for protein-coding genes or genes in the GTEx file 
+	if (geneType == "protein_coding") or (ensgId in idsInGTEx):
 		# add info to their respective data structures
-		genes.append(geneId)
+		genes.append(ensgId)
 		geneNames.append(name)
 		chromNums.append(chromosome)
 		features.append(featureType)
@@ -66,7 +88,7 @@ for line in inFile:
 inFile.close()
 
 numGenes = len(genes)
-print "There are", numGenes, "total protein-coding genes in this file."
+print "Writing", numGenes, "genes to the annotations file. These genes are either protein-coding or have tissue expression data in the GTEx file."
 
 # create new data structures to store information for unique protein-coding genes
 uniqGenes = []
@@ -103,7 +125,7 @@ for index in range(numGenes):
 		uniqGeneEnd[key] = geneEndLocations[key]
 
 numUniqGenes = len(uniqGenes)
-print "There are ", numUniqGenes, "unique protein-coding genes in this file."
+print "There are ", numUniqGenes, "unique genes in this file."
 
 # create a new file for start and end positions of only protein-coding genes
 outFilename = "gene_annotations.txt"

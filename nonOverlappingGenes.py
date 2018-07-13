@@ -2,10 +2,9 @@
 # Date Last Modified: 13 July 2018
 # Execution: python nonOverlappingGenes.py
 # Description: Finds genes listed in the gene_annotations file (containing only the protein-coding genes from
-# the GENCODE GTF file) but that do not have tissue expression data in the
-# GTEx file, and vice versa. Prints out these non-overlapping genes into separate files, namely
-# "genesNotInGencode.txt" and "genesNotInGTEx.txt", respectively.
-# Run Time: 1084 sec (~ 20 min)
+# 	the GENCODE GTF file) but that do not have tissue expression data in the GTEx file, and vice versa. Prints out these 
+# 	non-overlapping genes into separate files, namely "genesNotInGencode.txt" and "genesNotInGTEx.txt", respectively.
+# Run Time: 10 sec
 
 #!/usr/bin/env python
 
@@ -52,7 +51,7 @@ annotationsFile.close()
 newline = "\n"
 
 # create output file for genes in GTEx file and not in GENCODE file
-tstatGenesFilename = "genesNotInGencode.txt"
+tstatGenesFilename = "genesNotInAnnotationsFile.txt"
 tstatGenesFile = open(tstatGenesFilename, 'w')
 
 genesNotInGencode = []
@@ -80,5 +79,5 @@ for item in idsInGencodeFile:
 gencodeGenesFile.write(gencodeOutput)
 gencodeGenesFile.close()
 
-print "There are", len(genesNotInGencode), "genes in the GTEx file but not in the GENCODE file."
-print "There are", len(genesNotInGTEx), "genes in the GENCODE file but not in the GTEx file."
+print "There are", len(genesNotInGencode), "genes in the GTEx file but not in the gene annotations file."
+print "There are", len(genesNotInGTEx), "genes in the gene annotations file but not in the GTEx file."
