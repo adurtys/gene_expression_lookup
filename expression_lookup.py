@@ -1,7 +1,7 @@
 # Date Created: 28 June 2018
 # Date Last Modified: 16 July 2018
 # Execution: python expression_lookup.py snpFilename geneAnnotationsFilename tstatFilename numGenes distance threshold
-# 	outFilename nearestGenesFilenamelostSnpsFilename missingGenesFilename
+# 	outFilename nearestGenesFilename lostSnpsFilename missingGenesFilename
 # 		numGenes is an int representing the number of closest genes on either side of the snp that should be analyzed 
 # 			with respect to expression in the tissues listed in "GTEx.tstat.tsv" file.
 # 		distance is a float representing the max distance (in kilobp) from the snp that the closest genes can be
@@ -128,7 +128,7 @@ outFile = open(outFilename, 'w')
 
 # create new file that will contain the nearest genes associated with each snp
 nearestGenesFilename = sys.argv[8]
-nearestGenesFile.open(nearestGenesFilename, 'w')
+nearestGenesFile = open(nearestGenesFilename, 'w')
 
 # create new file that will contain snps that were lost due to lack of tissue expression data for their nearest gene in GTEx file
 lostSnpsFilename = sys.argv[9]
