@@ -1,15 +1,20 @@
 # Date Created: 11 July 2018
-# Date Last Modified: 13 July 2018
-# Execution: python nonOverlappingGenes.py
+# Date Last Modified: 16 July 2018
+# Execution: python nonOverlappingGenes.py tstatFilename geneAnnotationsFilename
 # Description: Finds genes listed in the gene_annotations file (containing only the protein-coding genes from
 # 	the GENCODE GTF file) but that do not have tissue expression data in the GTEx file, and vice versa. Prints out these 
 # 	non-overlapping genes into separate files, namely "genesNotInGencode.txt" and "genesNotInGTEx.txt", respectively.
 # Run Time: 10 sec
 
 #!/usr/bin/env python
+import sys
+
+# check to make sure file was run with correct number of arguments
+if len(sys.argv) != 3:
+	print "ERROR: Incorrect number of command-line arguments!"
 
 # read in GTEx t-statistics file
-tstatFilename = "GTEx.tstat.tsv"
+tstatFilename = sys.argv[1]
 tstatFile = open(tstatFilename, 'r')
 
 # skip header line
@@ -27,7 +32,7 @@ for line in tstatFile:
 tstatFile.close()
 
 # read in gene_annotations file
-annotationsFilename = "gene_annotations.txt"
+annotationsFilename = sys.argv[2]
 annotationsFile = open(annotationsFilename, 'r')
 
 # parse file for GeneIds
@@ -37,14 +42,10 @@ for line in annotationsFile:
 	
 	# split line on tab, creating list of possible columns
 	columns = line.split('\t')
-	geneId = columns[1]
-
-	# remove decimal at end of ENSGID for every id in the gencode file
-	geneId = geneId.split('.')
-	ensgId = geneId[0]
+	geneId = columns[0]
 
 	# add ENSGID to the list
-	idsInGencodeFile.append(ensgId)
+	idsInGencodeFile.append(geneId)
 
 annotationsFile.close()
 
