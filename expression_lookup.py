@@ -1,13 +1,14 @@
 # Date Created: 28 June 2018
-# Date Last Modified: 13 July 2018
-# Execution: python expression_lookup_final.py snpFilename geneAnnotationsFilename numGenes distance threshold outFilename lostSnpsFilename missingGenesFilename
-# 	numGenes is an int representing the number of closest genes on either side of the snp that should be analyzed 
-# 	with respect to expression in the tissues listed in "GTEx.tstat.tsv" file.
-# distance is a float representing the max distance (in kilobp) from the snp that the closest genes can be
-# threshold is a float (decimal) representing the percentage of top rank-ordered t-statistics that should be considered
-# 	as "highly expressed" for each tissue.
-# outFilename is a string representing the name of the file that will contain the results of the gene expression lookup
-# lostSnpsFilename is a string representing the name of 
+# Date Last Modified: 16 July 2018
+# Execution: python expression_lookup_final.py snpFilename geneAnnotationsFilename tstatFilename numGenes distance threshold
+# 	outFilename nearestGenesFilenamelostSnpsFilename missingGenesFilename
+# 		numGenes is an int representing the number of closest genes on either side of the snp that should be analyzed 
+# 			with respect to expression in the tissues listed in "GTEx.tstat.tsv" file.
+# 		distance is a float representing the max distance (in kilobp) from the snp that the closest genes can be
+# 		threshold is a float (decimal) representing the percentage of top rank-ordered t-statistics that should be considered
+# 			as "highly expressed" for each tissue.
+# 		outFilename is a string representing the name of the file that will contain the results of the gene expression lookup
+# 		lostSnpsFilename is a string representing the name of 
 # Description: This program finds the genes closest to the snp, then outputs a file of gene expression across tissues in the
 # 	GTEx t-statistics file, where 1 = highly expressed, 0 = not highly expressed. This is done for each snp listed in the
 # 	"snpFile.txt" file, which contains the snps in the format "chr#:location" to look up in the "gene_annotations.txt" file. 
@@ -109,7 +110,7 @@ def findDuplicates(anyList):
 	return duplicates
 
 # check to make sure file was run with correct number of arguments
-if len(sys.argv) != 9:
+if len(sys.argv) != 11:
 	print "ERROR: Incorrect number of command-line arguments!"
 
 # read in file containing snps
@@ -117,19 +118,23 @@ snpFilename = sys.argv[1]
 snpFile = open(snpFilename, 'r')
 
 # read in arguments from user
-numGenes = int(sys.argv[3])
-distance = float(sys.argv[4])
-threshold = float(sys.argv[5])
+numGenes = int(sys.argv[4])
+distance = float(sys.argv[5])
+threshold = float(sys.argv[6])
 
 # create new file that will contain the results of the expression lookup
-outFilename = sys.argv[6]
+outFilename = sys.argv[7]
 outFile = open(outFilename, 'w')
 
+# create new file that will contain the nearest genes associated with each snp
+nearestGenesFilename = sys.argv[8]
+nearestGenesFile.open(nearestGenesFilename, 'w')
+
 # create new file that will contain snps that were lost due to lack of tissue expression data for their nearest gene in GTEx file
-lostSnpsFilename = sys.argv[7]
+lostSnpsFilename = sys.argv[9]
 
 # create new file that will contain genes associated with snps in the snpFile that didn't have tissue expression data
-missingGenesFilename = sys.argv[8]
+missingGenesFilename = sys.argv[10]
 
 tab = "\t"
 newline = "\n"
@@ -157,11 +162,8 @@ for snp in snpFile:
 	inFile = open(inFilename, 'r')
 
 	# create data structures containing information pertaining to each gene
-	nameDict = {}
-	startDict = {}
-	endDict = {}
-	startLocations = []
-	endLocations = []
+
+	genes = {}
 
 	for line in inFile:
 		line = line.rstrip('\r\n')
@@ -175,58 +177,69 @@ for snp in snpFile:
 		geneStart = int(columns[3])
 		geneEnd = int(columns[4])
 
+		geneInfo = []
+
 		# parse for chromosome specified by user
 		if geneChrom == chromosome:
-			# populate arrays to be used for searching
-			startLocations.append(geneStart)
-			endLocations.append(geneEnd)
+			# populate geneInfo with relevant info
+			geneInfo.append(geneName)
+			geneInfo.append(geneStart)
+			geneInfo.append(geneEnd)
 
-			# populate the dictionaries
-			nameDict[geneId] = geneName
-			# start and end location dictionaries use GeneID as value
-			startDict[geneStart] = geneId
-			endDict[geneEnd] = geneId
+			genes[geneId] = geneInfo
 
 	inFile.close()
 
-	print "The chromosome to be searched is:", chromosome, "\nThere are", len(nameDict), "genes on this chromosome."
+	print "The chromosome to be searched is:", chromosome, "\nThere are", len(genes), "genes on this chromosome."
 
-	# create list of nearby genes downstream from the snp
-	sortedStartDictionary = sorted(startDict)
-	print "Searching for genes downstream from the snp."
-	nearbyStartLocations = binarySearch(sortedStartDictionary, snpLocation, numGenes, distance, first = 0, last = None)
-	downstreamGenes = []
+	# create dictionaries of nearby genes with respect to gene start and end locations
+	startLocations = {}
+	endLocations = {}
+	for gene in genes:
+		startLocations[gene] = genes[gene][1]
+		endLocations[gene] = genes[gene][2]
+
+	# sort start and end location dictionaries
+	sortedStartLocations = sorted(startLocations)
+	sortedEndLocations = sorted(endLocations)
+
+	# search for nearest genes with respect to start location
+	print "Searching for genes by start locations."
+	nearbyStartLocations = binarySearch(sortedStartLocations, snpLocation, numGenes, distance, first = 0, last = None)
+	genesByStart = []
+
 	for position in nearbyStartLocations:
-		downstreamGenes.append(startDict[position])
+		# obtain geneId from the position value
+		genesByStart.append(startLocations.keys()[startLocations.values().index(position)])
 
-	# create list of nearby genes upstream from the snp
-	sortedEndDictionary = sorted(endDict)
-	print "Searching for genes upstream from the snp."
-	nearbyEndLocations = binarySearch(sortedEndDictionary, snpLocation, numGenes, distance, first = 0, last = None)
-	upstreamGenes = []
-	for posiition in nearbyEndLocations:
-		upstreamGenes.append(endDict[posiition])
+	# search for nearest genes with respect to end location
+	print "Searching for genes by end locations."
+	nearbyEndLocations = binarySearch(sortedEndLocations, snpLocation, numGenes, distance, first = 0, last = None)
+	genesByEnd = []
 
-	print "Genes From Start Position:", downstreamGenes
-	print "Genes From End Position:", upstreamGenes
+	for position in nearbyEndLocations:
+		genesByEnd.append(endLocations.keys()[endLocations.values().index(position)])
+
+	print "Genes From Start Position:", genesByStart
+	print "Genes From End Position:", genesByEnd
 
 	# determine the closest genes to the snp
 	distanceFromSnpDict = {}
-	for gene in downstreamGenes:
-		for startLocation, geneId in startDict.items():
+	for gene in genesByStart:
+		for geneId, startLocation in startLocations.items():
 			if geneId == gene:
 				distanceFromSnpDict[gene] = abs(startLocation - snpLocation)
 		print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
-	for gene in upstreamGenes:
+	for gene in genesByEnd:
 		if gene not in distanceFromSnpDict:
-			for endLocation, geneId in endDict.items():
+			for geneId, endLocation in endLocations.items():
 				if geneId == gene:
 					distanceFromSnpDict[gene] = abs(endLocation - snpLocation)
 			print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
 		else:
 			# gene is already in the dictionary
 			# modify distance in dictionary only if new distance is less than current distance
-			for endLocation, geneId in endDict.items():
+			for geneId, endLocation in endLocations.items():
 				if (geneId == gene) and (abs(endLocation - snpLocation) < distanceFromSnpDict[gene]):
 					distanceFromSnpDict[gene] = abs(endLocation - snpLocation)
 			print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
@@ -252,11 +265,9 @@ for snp in snpFile:
 				# only one gene is near the snp
 				# analyze this gene
 				genesForAnalysis.append(gene)
-			else:
-				# len(closestDistances) == 0
+			else: # len(closestDistances) == 0
 				print "No gene is within 1mbp on either side of the snp."
-	else:
-		# genes have identical distances from snp
+	else: # genes have identical distances from snp
 		print "The snp is equidistant from genes."
 
 		for gene in distanceFromSnpDict:
@@ -265,7 +276,7 @@ for snp in snpFile:
 				genesForAnalysis.append(gene)
 
 	# read in the normalized tissue expression file
-	inFilename2 = "normalizedGTEx.tstat.txt"
+	inFilename2 = sys.argv[3]
 	inFile2 = open(inFilename2, 'r')
 
 	# store column labels in header row
@@ -273,12 +284,15 @@ for snp in snpFile:
 	headerLine = headerLine.rstrip('\r\n')
 	headers = headerLine.split('\t')
 
+	# subtract 1 because first column contains GeneID
+	numTissues = len(headers) - 1
+
 	if len(genesForAnalysis) != 0:
 		# there are genes to analyze
 		numGenesForAnalysis = len(genesForAnalysis)
-		print "Analyzing", numGenesForAnalysis, "genes:", genesForAnalysis # should be equal to numGenes
+		print "Analyzing", numGenesForAnalysis, "genes:", genesForAnalysis
 
-		ids = []
+		idsForTissueExpression = []
 
 		# create a matrix to hold tissue expressions for the genes to be searched
 		matrix = [[] for gene in range(numGenesForAnalysis)]
@@ -289,12 +303,9 @@ for snp in snpFile:
 			line = line.rstrip('\r\n')
 			tissues = line.split("\t")
 
-			# first column contains GeneID, not tissue
-			numTissues = len(tissues) - 1
-
 			# parse for ENSGIDs in genesForAnalysis
 			if tissues[0] in genesForAnalysis:
-				ids.append(tissues[0])
+				idsForTissueExpression.append(tissues[0])
 
 				# store the ranks for this ID
 				for i in range(numTissues):
@@ -303,11 +314,11 @@ for snp in snpFile:
 			
 			totalGenes += 1
 
-		print "There are", len(ids), "ids for which to look up tissue expression:", ids
+		print "There are", len(idsForTissueExpression), "ids for which to look up tissue expression:", idsForTissueExpression
 
 		# len(ids) should be the same as numGenesForAnalysis
-		if len(ids) != numGenesForAnalysis:
-			# add snp to list of snps whose nearest gene doesn't have tissue experssion data in the GTEx file
+		if len(idsForTissueExpression) != numGenesForAnalysis:
+			# add snp to list of snps whose nearest gene doesn't have tissue expression data in the GTEx file
 			snpName = snp[0] + ":" + snp[1]
 			snpsNoTissueExp.append(snpName)
 
@@ -316,8 +327,6 @@ for snp in snpFile:
 				# if it isn't already in the list
 				if (item not in ids) and (item not in idsWithoutTissueExpData):
 					idsWithoutTissueExpData.append(item)
-
-		numTissues = len(matrix[0])
 
 		# determine whether expression meets threshold for high expression
 		numTopRankingGenes = threshold * totalGenes
@@ -340,8 +349,9 @@ for snp in snpFile:
 		# create counter variable to determine how many tissue expression vectors have been written out
 		numOutputs = 0
 
+		nearestGenesOutput = snp + tab
 		for i in range(len(ids)):
-			output = ids[i] + tab + nameDict[ids[i]] + tab
+			output = snp + tab
 			for j in range(numTissues):
 				if j < (numTissues - 1):
 					output += str(expressionMatrix[i][j]) + tab
@@ -351,11 +361,27 @@ for snp in snpFile:
 			outFile.write(output)
 			numOutputs += 1
 
+			if i < (len(ids) - 1):
+				nearestGenesOutput += idsForTissueExpression[i] + tab
+			else:
+				nearestGenesOutput += idsForTissueExpression[i] + newline
+
+			nearestGenesFile.write(nearestGenesOutput)
+
 	else:
 		# there are no genes to analyze
 		numSnpsNoGenes += 1
-		output = "No genes were found within 1mbp on either side of the snp that was searched." + newline
+		output = snp + tab
+		for i in range(numTissues):
+			if i < (numTissues - 1):
+				output += 0 + tab
+			else:
+				output += 0 + newline
+
 		outFile.write(output)
+
+		nearestGenesOutput = "No genes were found within 1mbp on either side of the snp that was searched." + newline
+		nearestGenesFile.write(nearestGenesOutput)
 
 	print "Finished writing tissue expression lookup results onto output file."
 	inFile2.close()
@@ -386,4 +412,5 @@ missingGenesFile.write(missingGenesOutput)
 missingGenesFile.close()
 
 outFile.close()
+nearestGenesFile.close()
 snpFile.close()

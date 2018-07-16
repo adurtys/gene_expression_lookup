@@ -4,7 +4,7 @@
 # Description: This program proceses GENCODE Comprehensive Gene Annotation GTF File for the start and end locations of protein-coding genes. 
 # 	The input is "gencode.v19.annotation.gtf", and the output is "gene_annotations.txt", a file with five columns (tab separated).
 # 	The columns are chromosome name, GeneID, gene name, gene start location, and gene end location, respectively, for all protein-coding genes in the GENCODE file. 
-# Run Time: 1036 sec (~ 17 min)
+# Run Time: 15 sec
 
 #!/usr/bin/env python
 import sys
