@@ -38,6 +38,8 @@ then
 		missingGenesFile=missingGenes_$snpFile
 
 		echo "snpFile: $1"
+		echo "geneAnnotationsFile: $geneAnnotationsFile"
+		echo "tStatFile: $tStatFile"
 		echo "numGenesToSearch: $2"
 		echo "distanceFromSnp: $3"
 		echo "expressionThreshold: $4"
@@ -45,7 +47,7 @@ then
 		echo "lostSnpsFile: $lostSnpsFile"
 		echo "missingGenesFile: $missingGenesFile"
 
-		python ./expression_lookup_final.py $snpFile $geneAnnotationsFile $tStatFile $numGenesToSearch $distanceFromSnp $expressionThreshold $outFile $lostSnpsFile $missingGenesFile
+		python ./expression_lookup.py $snpFile $geneAnnotationsFile $tStatFile $numGenesToSearch $distanceFromSnp $expressionThreshold $outFile $lostSnpsFile $missingGenesFile
 	fi
 
 elif [ -f ./gene_annotations.txt]
