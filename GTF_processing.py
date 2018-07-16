@@ -114,7 +114,7 @@ for gene in genes:
 	genes[gene][2] = str(genes[gene][2])
 	genes[gene][3] = str(genes[gene][3])
 
-	output = gene
+	output = gene + tab
 	for i in range(len(genes[gene])):
 		if i == len(genes[gene]) - 1:
 			output += genes[gene][i] + newline
