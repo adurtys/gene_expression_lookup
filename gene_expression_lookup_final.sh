@@ -1,5 +1,5 @@
 # Date Created: 9 July 2018
-# Date Last Modified: 13 July 2018
+# Date Last Modified: 16 July 2018
 # Execution: gene_expression_lookup_final.sh snpFile numGenesToSearch distanceFromSnp expressionThreshold
 # snpFile is the name of the file containing the snps for which to search
 # numGenesToSearch is the number of genes closest to the snp for which to look up tissue expression
@@ -30,7 +30,10 @@ then
 		distanceFromSnp="$3"
 		expressionThreshold="$4"
 		
+		geneAnnotationsFile="./gene_annotations.txt"
+		tStatFile="./normalizedGTEx.tstat.txt"
 		outFile=geneExpressionLookupResults_$snpFile
+		nearestGenesFile=nearestGenes_$snpFile
 		lostSnpsFile=lostSnps_$snpFile
 		missingGenesFile=missingGenes_$snpFile
 
@@ -42,7 +45,7 @@ then
 		echo "lostSnpsFile: $lostSnpsFile"
 		echo "missingGenesFile: $missingGenesFile"
 
-		python ./expression_lookup_final.py $snpFile $numGenesToSearch $distanceFromSnp $expressionThreshold $outFile $lostSnpsFile $missingGenesFile
+		python ./expression_lookup_final.py $snpFile $geneAnnotationsFile $tStatFile $numGenesToSearch $distanceFromSnp $expressionThreshold $outFile $lostSnpsFile $missingGenesFile
 	fi
 
 elif [ -f ./gene_annotations.txt]
