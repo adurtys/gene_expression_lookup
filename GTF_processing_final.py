@@ -16,14 +16,14 @@ tstatFile = open(tstatFilename, 'r')
 tstatFile.readline()
 
 # make list of all geneIds in tstat file
-idsInGTEx = []
+idsInGTEx = {}
 for line in tstatFile:
 	line = line.rstrip('\r\n')
 
 	columns = line.split('\t')
 
 	ensgId = columns[0]
-	idsInGTEx.append(ensgId)
+	idsInGTEx[ensgId] = 0
 
 tstatFile.close()
 

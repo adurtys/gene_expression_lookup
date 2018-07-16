@@ -69,6 +69,7 @@ def rankList(anyList):
 			ranksDict[item] = sortedList.index(item)
 	else:
 		# list has duplicated items
+		print "List has duplicated item."
 		for item in anyList:
 			# the ranks of unique items are their indexes in the sorted list
 			if numOccurrences(anyList, item) == 1:

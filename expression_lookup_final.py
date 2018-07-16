@@ -66,7 +66,8 @@ def binarySearch(sortedList, number, numGenes, distance, first = 0, last = None)
 	mid = (first + last) // 2
 
 	# number was found
-	if number == sortedList[mid]:		
+	if number == sortedList[mid]:
+		print "number was found."	
 		# create list of number and closest numbers
 		locations.append(sortedList[mid])
 		for i in range(1, numGenes + 1):
@@ -206,8 +207,8 @@ for snp in snpFile:
 	for posiition in nearbyEndLocations:
 		upstreamGenes.append(endDict[posiition])
 
-	print "Downstream Genes:", downstreamGenes
-	print "Upstream Genes:", upstreamGenes
+	print "Genes From Start Position:", downstreamGenes
+	print "Genes From End Position:", upstreamGenes
 
 	# determine the closest genes to the snp
 	distanceFromSnpDict = {}
@@ -362,7 +363,7 @@ for snp in snpFile:
 print "There were", numSnps, "snps to search in the snpFile.txt file."
 print "There were", numSnpsNoGenes, "snps that did not have a nearby gene to analyze."
 print "There were", len(snpsNoTissueExp), "snps that did not have tissue expression data for their nearest gene."
-print "Found", len(idsWithoutTissueExpData), "GeneIDs that did not have tissue expression data."
+print "There were", len(idsWithoutTissueExpData), "GeneIDs that did not have tissue expression data."
 
 # output lost snps to output file
 lostSnpsFile = open(lostSnpsFilename, 'w')
