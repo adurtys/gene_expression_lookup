@@ -269,10 +269,26 @@ for snp in snpFile:
 	else: # genes have identical distances from snp
 		print "The snp is equidistant from genes."
 
-		for gene in distanceFromSnpDict:
-			# one more entry in list of genes to analyze than if there weren't duplicated values
-			if (distanceFromSnpDict[gene] in duplicates) and (distanceFromSnpDict[gene] < closestDistances[numGenes + 1]):
-				genesForAnalysis.append(gene)
+		for i in range(len(closestDistances)):
+			# append one more entry to genesForAnalysis (numGenes + 1) than if no duplicated values
+			# (assumes only equidistant from two gene)
+			if closestDistances[i] < closestDistances[numGenes + 1]:
+				if closestDistances[i] in duplicates:
+					# entry is a duplicated value --> add both entry and subsequent entry
+
+					# find gene corresponding to the distance in distanceFromSnpDict
+					index = distanceFromSnpDict.values().index(closestDistances[i])
+					gene1 = distanceFromSnpDict.keys()[index]
+					gene2 = distanceFromSnpDict.keys()[index + 1]
+
+					genesForAnalysis.append(gene1)
+					genesForAnalysis.append(gene2)
+				else: 
+					# entry is not a duplicated value --> add only the entry
+					index = distanceFromSnpDict.values().index(closestDistances[i])
+					gene = distanceFromSnpDict.keys()[index]
+
+					genesForAnalysis.append(gene)
 
 	# read in the normalized tissue expression file
 	inFilename2 = sys.argv[3]
@@ -300,7 +316,7 @@ for snp in snpFile:
 		geneIndex = 0
 		for line in inFile2:
 			line = line.rstrip('\r\n')
-			tissues = line.split("\t")
+			tissues = line.split('\t')
 
 			# parse for ENSGIDs in genesForAnalysis
 			if tissues[0] in genesForAnalysis:
@@ -347,33 +363,41 @@ for snp in snpFile:
 					# print out zeros for every tissue
 					expressionMatrix[i][j] = 0 # probably happens automatically but written explicitly
 
+		# create expression vector - only output one line per snp
+		# if more than one gene for analysis, combine the tissue expression vectors for both genes
+		expressionVector = [0 for tissue in range(numTissues)]
+
+		for i in range(numGenesForAnalysis):
+			for j in range(numTissues):
+				if matrix[i][j] == 1:
+					# update any tissue's expression if the expression of any gene meets threshold
+					expressionVector[j] = 1
+
 		# write header line onto new file once (only for first snp)
 		if numSnps == 1:
 			headerLineOutput = headerLine + newline
 			outFile.write(headerLineOutput)
 
-		# create counter variable to determine how many tissue expression vectors have been written out
-		numOutputs = 0
-
 		snpName = snp[0] + ":" + snp[1]
+
+		# write out expression vector
+		output = snpName + tab
+		for i in range(numTissues):
+			if i < (numTissues - 1):
+				output += str(expressionVector[i]) + tab
+			else: # add newline if last entry in the vector
+				output += str(expressionVector[i]) + newline
+		outFile.write(output)
+
+		# write out file containing nearest genes corresponding to each snp
 		nearestGenesOutput = snpName + tab
-		for i in range(len(idsForTissueExpression)):
-			output = snpName + tab
-			for j in range(numTissues):
-				if j < (numTissues - 1):
-					output += str(expressionMatrix[i][j]) + tab
-				else:
-					output += str(expressionMatrix[i][j]) + newline
+		for i in range(numGenesForAnalysis):
+			if i < (genesForAnalysis - 1):
+				nearestGenesOutput += genesForAnalysis[i] + tab + genes[genesForAnalysis[i]][0] + tab
+			else: # add newline if last entry in the vector
+				nearestGenesOutput += genesForAnalysis[i] + tab + genes[genesForAnalysis[i]][0] + newline
 
-			outFile.write(output)
-			numOutputs += 1
-
-			if i < (len(idsForTissueExpression) - 1):
-				nearestGenesOutput += idsForTissueExpression[i] + tab + genes[idsForTissueExpression[i]][0] + tab
-			else:
-				nearestGenesOutput += idsForTissueExpression[i] + tab + genes[idsForTissueExpression[i]][0] + newline
-
-			nearestGenesFile.write(nearestGenesOutput)
+		nearestGenesFile.write(nearestGenesOutput)
 
 	else:
 		# there are no genes to analyze
