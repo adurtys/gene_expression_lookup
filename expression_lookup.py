@@ -1,5 +1,5 @@
 # Date Created: 28 June 2018
-# Date Last Modified: 16 July 2018
+# Date Last Modified: 17 July 2018
 # Execution: python expression_lookup.py snpFilename geneAnnotationsFilename tstatFilename numGenes distance threshold
 # 	outFilename nearestGenesFilename lostSnpsFilename missingGenesFilename
 # 		numGenes is an int representing the number of closest genes on either side of the snp that should be analyzed 
@@ -364,7 +364,7 @@ for snp in snpFile:
 			if i < (len(idsForTissueExpression) - 1):
 				nearestGenesOutput += idsForTissueExpression[i] + tab + genes[idsForTissueExpression[i]][0] + tab
 			else:
-				nearestGenesOutput += idsForTissueExpression[i] + genes[idsForTissueExpression[i]][0] + newline
+				nearestGenesOutput += idsForTissueExpression[i] + tab + genes[idsForTissueExpression[i]][0] + newline
 
 			nearestGenesFile.write(nearestGenesOutput)
 
