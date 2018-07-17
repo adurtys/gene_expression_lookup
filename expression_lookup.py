@@ -383,9 +383,9 @@ for snp in snpFile:
 		output = snpName + tab
 		for i in range(numTissues):
 			if i < (numTissues - 1):
-				output += 0 + tab
+				output += "0" + tab
 			else:
-				output += 0 + newline
+				output += "0" + newline
 
 		outFile.write(output)
 
