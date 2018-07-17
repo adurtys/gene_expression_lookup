@@ -315,7 +315,6 @@ for snp in snpFile:
 
 		print "There are", len(idsForTissueExpression), "ids for which to look up tissue expression:", idsForTissueExpression
 
-		# len(ids) should be the same as numGenesForAnalysis
 		if len(idsForTissueExpression) != numGenesForAnalysis:
 			# add snp to list of snps whose nearest gene doesn't have tissue expression data in the GTEx file
 			snpName = snp[0] + ":" + snp[1]
@@ -324,7 +323,7 @@ for snp in snpFile:
 			for item in genesForAnalysis:
 				# if the GeneId isn't in the GTEx file, add it to the list of ids without tissue expression data
 				# if it isn't already in the list
-				if (item not in ids) and (item not in idsWithoutTissueExpData):
+				if (item not in idsForTissueExpression) and (item not in idsWithoutTissueExpData):
 					idsWithoutTissueExpData.append(item)
 
 		# determine whether expression meets threshold for high expression
