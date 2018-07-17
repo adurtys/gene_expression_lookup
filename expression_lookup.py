@@ -335,9 +335,17 @@ for snp in snpFile:
 		# if the rank for expression of a gene in a particular tissue type is greater than critRank, then that gene
 		# will be considered highly expressed in that tissue
 		for i in range(numGenesForAnalysis):
+			# for every nearby gene that was found
 			for j in range(numTissues):
-				if matrix[i][j] >= critRank:
-					expressionMatrix[i][j] = 1
+				# edit experssionMatrix for every tissue
+				if i < len(idsForTissueExpression):
+					# gene has tissue expression data in the GTEx file
+					if matrix[i][j] >= critRank:
+						expressionMatrix[i][j] = 1
+				else:
+					# gene does not have tissue expression data in the GTEx file
+					# print out zeros for every tissue
+					experssionMatrix[i][j] = 0 # probably happens automatically but written explicitly
 
 		# write header line onto new file once (only for first snp)
 		if numSnps == 1:
