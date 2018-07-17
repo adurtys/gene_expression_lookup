@@ -345,7 +345,7 @@ for snp in snpFile:
 				else:
 					# gene does not have tissue expression data in the GTEx file
 					# print out zeros for every tissue
-					experssionMatrix[i][j] = 0 # probably happens automatically but written explicitly
+					expressionMatrix[i][j] = 0 # probably happens automatically but written explicitly
 
 		# write header line onto new file once (only for first snp)
 		if numSnps == 1:
