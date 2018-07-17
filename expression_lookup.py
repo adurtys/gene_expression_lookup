@@ -161,8 +161,7 @@ for snp in snpFile:
 	inFilename = sys.argv[2]
 	inFile = open(inFilename, 'r')
 
-	# create data structures containing information pertaining to each gene
-
+	# create dictionary containing relevant information pertaining to each gene
 	genes = {}
 
 	for line in inFile:
@@ -200,8 +199,8 @@ for snp in snpFile:
 		endLocations[gene] = genes[gene][2]
 
 	# sort start and end location dictionaries
-	sortedStartLocations = sorted(startLocations)
-	sortedEndLocations = sorted(endLocations)
+	sortedStartLocations = sorted(startLocations.values())
+	sortedEndLocations = sorted(endLocations.values())
 
 	# search for nearest genes with respect to start location
 	print "Searching for genes by start locations."
@@ -349,9 +348,10 @@ for snp in snpFile:
 		# create counter variable to determine how many tissue expression vectors have been written out
 		numOutputs = 0
 
-		nearestGenesOutput = snp + tab
-		for i in range(len(ids)):
-			output = snp + tab
+		snpName = snp[0] + ":" + snp[1]
+		nearestGenesOutput = snpName + tab
+		for i in range(len(idsForTissueExpression)):
+			output = snpName + tab
 			for j in range(numTissues):
 				if j < (numTissues - 1):
 					output += str(expressionMatrix[i][j]) + tab
@@ -361,17 +361,19 @@ for snp in snpFile:
 			outFile.write(output)
 			numOutputs += 1
 
-			if i < (len(ids) - 1):
-				nearestGenesOutput += idsForTissueExpression[i] + tab
+			if i < (len(idsForTissueExpression) - 1):
+				nearestGenesOutput += idsForTissueExpression[i] + tab + genes[idsForTissueExpression[i]][0] + tab
 			else:
-				nearestGenesOutput += idsForTissueExpression[i] + newline
+				nearestGenesOutput += idsForTissueExpression[i] + genes[idsForTissueExpression[i]][0] + newline
 
 			nearestGenesFile.write(nearestGenesOutput)
 
 	else:
 		# there are no genes to analyze
 		numSnpsNoGenes += 1
-		output = snp + tab
+
+		snpName = snp[0] + ":" + snp[1]
+		output = snpName + tab
 		for i in range(numTissues):
 			if i < (numTissues - 1):
 				output += 0 + tab

@@ -88,7 +88,7 @@ for line in inFile:
 
 	# parse for genes that are either protein-coding or contained in the GTEx file
 	elif (geneType == "protein_coding") or (geneId in idsInGTEx):
-		# add relevant info to the geneInfo list
+		# populate geneInfo with relevant info
 		geneInfo.append(name)
 		geneInfo.append(chromosome)
 		geneInfo.append(geneStart)
