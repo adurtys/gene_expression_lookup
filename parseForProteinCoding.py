@@ -29,6 +29,8 @@ for line in geneAnnotationsFile:
 	columns = line.split('\t')
 
 	ensgId = columns[1]
+	ensgId = ensgId.split('.')
+	ensgId = ensgId[0]
 
 	proteinCodingGenes.append(ensgId)
 
@@ -47,13 +49,13 @@ if len(notFoundButProtCoding) == len(idsNotFound):
 else:
 	print len(notFoundButProtCoding), "genes in the inputted list of ENSGIds are protein-coding, according to GENCODE."
 
-# output these protein-coding genes as separate file
-newline = "\n"
-output = ""
-for protCodingGene in notFoundButProtCoding:
-	output += protCodingGene + newline
+# # output these protein-coding genes as separate file
+# newline = "\n"
+# output = ""
+# for protCodingGene in notFoundButProtCoding:
+# 	output += protCodingGene + newline
 
-outFilename = "proteinCoding_missingGenes.txt"
-outFile = open(outFilename, 'w')
-outFile.write(output)
-outFile.close()
+# outFilename = "proteinCoding_missingGenes.txt"
+# outFile = open(outFilename, 'w')
+# outFile.write(output)
+# outFile.close()
