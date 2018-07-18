@@ -12,13 +12,20 @@ for gene in genesToLookupFile:
 	genesToLookup[gene] = 0
 genesToLookupFile.close()
 
-expressionFileVectors = [[] for gene in range(len(genesToLookup))]
+headerline = expressionFile.readline()
+headerline = headerline.rstrip('\r\n')
+headers = headerline.split('\t')
+numColumns = len(headers)
+print "numColumns:", numColumns
+
+expressionFileVectors = [[0 in range(numColumns)] for gene in range(len(genesToLookup))]
+
 geneIndex = 0
 for expressionVector in expressionFile:
 	expressionVector = expressionVector.rstrip('\r\n')
 	tissues = expressionVector.split('\t')
 
-	numColumns = len(tissues)
+	print "numTissueColumns:", len(tissues)
 
 	geneId = tissues[0]
 	geneId = geneId.split('.')
