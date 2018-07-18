@@ -41,9 +41,11 @@ for i in range(len(expressionFileVectors)):
 	expressionOutput = expressionFileVectors[i][0] + tab
 
 	for j in range(len(expressionFileVectors[0])):
+		print "entered inner for loop!"
 		if (j != 0) and (allZeros == True):
+			print "parsing tissue expression"
 			if int(expressionFileVectors[i][j]) != 0:
-				print expressionFileVectors[i][0], expressionFileVectors[i][j]
+				print "expression isn't all zero for" expressionFileVectors[i][0], ":", expressionFileVectors[i][j]
 				allZeros = False
 
 	print "exited inner for loop!"
