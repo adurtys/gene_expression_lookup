@@ -4,7 +4,7 @@ genesToLookupFilename = "./genesInGTEx_v6p.txt"
 expressionFilename = "/project/voight_datasets/GTEx_V6p/GTEx_Analysis_v6p_RNA-seq_RNA-SeQCv1.1.8_gene_median_rpkm.gct"
 
 genesToLookupFile = open(genesToLookupFilename, 'r')
-expressionFile = open(genesToLookupFilename, 'r')
+expressionFile = open(expressionFilename, 'r')
 
 genesToLookup = {}
 for gene in genesToLookupFile:
@@ -15,6 +15,7 @@ genesToLookupFile.close()
 headerline = expressionFile.readline()
 headerline = headerline.rstrip('\r\n')
 headers = headerline.split('\t')
+
 numColumns = len(headers)
 print "numColumns:", numColumns
 
