@@ -38,14 +38,15 @@ outFile = open(outFilename, 'w')
 
 for i in range(len(expressionFileVectors)):
 	allZeros = True
-	expressionOutput = ""
+	expressionOutput = expressionFileVectors[i][0] + tab
 
 	while allZeros == False:
 		for j in range(len(expressionFileVectors[0])):
 			if j != 0:
 				if int(expressionFileVectors[i][j]) != 0:
+					expressionOutput += expressionFileVectors[i][i]
 					allZeros = True
-	
-	expressionOutput += expressionFileVectors[i][0] + tab + str(allZeros) + newline
+
+	expressionOutput += str(allZeros) + newline
 	outFile.write(expressionOutput)
 outFile.close()
