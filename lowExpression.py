@@ -12,6 +12,10 @@ for gene in genesToLookupFile:
 	genesToLookup[gene] = 0
 genesToLookupFile.close()
 
+# skip first two lines
+expressionFile.readline
+expressionFile.readline
+
 headerline = expressionFile.readline()
 headerline = headerline.rstrip('\r\n')
 headers = headerline.split('\t')
@@ -48,7 +52,6 @@ outFile = open(outFilename, 'w')
 
 print "len(expressionFileVectors):", len(expressionFileVectors)
 print "len(expressionFileVectors[0]):", len(expressionFileVectors[0])
-
 
 for i in range(len(expressionFileVectors)):
 	allZeros = True
