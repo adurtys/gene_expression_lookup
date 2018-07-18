@@ -40,13 +40,13 @@ for i in range(len(expressionFileVectors)):
 	allZeros = True
 	expressionOutput = expressionFileVectors[i][0] + tab
 
-	while allZeros == True:
-		for j in range(len(expressionFileVectors[0])):
-			if j != 0:
-				if int(expressionFileVectors[i][j]) != 0:
-					print expressionFileVectors[i][0], expressionFileVectors[i][j]
-					allZeros = False
+	for j in range(len(expressionFileVectors[0])):
+		if (j != 0) and (allZeros == True):
+			if int(expressionFileVectors[i][j]) != 0:
+				print expressionFileVectors[i][0], expressionFileVectors[i][j]
+				allZeros = False
 
+	print "exited inner for loop!"
 	expressionOutput += str(allZeros) + newline
 	outFile.write(expressionOutput)
 outFile.close()
