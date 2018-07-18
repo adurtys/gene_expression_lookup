@@ -47,4 +47,5 @@ for i in range(len(expressionFileVectors)):
 					allZeros = True
 	
 	expressionOutput += expressionFileVectors[i][0] + tab + str(allZeros) + newline
+	outFile.write(expressionOutput)
 outFile.close()
