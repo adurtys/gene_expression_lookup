@@ -28,7 +28,7 @@ for line in geneAnnotationsFile:
 
 	columns = line.split('\t')
 
-	ensgId = columns[1]
+	ensgId = columns[0]
 	ensgId = ensgId.split('.')
 	ensgId = ensgId[0]
 

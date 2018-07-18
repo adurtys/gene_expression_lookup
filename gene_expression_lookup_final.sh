@@ -1,6 +1,6 @@
 # Date Created: 9 July 2018
 # Date Last Modified: 16 July 2018
-# Execution: gene_expression_lookup_final.sh snpFile numGenesToSearch distanceFromSnp expressionThreshold
+# Execution: ./gene_expression_lookup_final.sh snpFile numGenesToSearch distanceFromSnp expressionThreshold
 # snpFile is the name of the file containing the snps for which to search
 # numGenesToSearch is the number of genes closest to the snp for which to look up tissue expression
 # distanceFromSnp is the maximum distance upstream and downstream from the snp for which to search for genes, in kbp.

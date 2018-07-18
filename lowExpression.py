@@ -13,8 +13,8 @@ for gene in genesToLookupFile:
 genesToLookupFile.close()
 
 # skip first two lines
-expressionFile.readline
-expressionFile.readline
+expressionFile.readline()
+expressionFile.readline()
 
 headerline = expressionFile.readline()
 headerline = headerline.rstrip('\r\n')
@@ -25,7 +25,7 @@ print "headerline:", headerline
 numColumns = len(headers)
 print "numColumns:", numColumns
 
-expressionFileVectors = [[0 in range(numColumns)] for gene in range(len(genesToLookup))]
+expressionFileVectors = [[] for gene in range(len(genesToLookup))]
 
 geneIndex = 0
 for expressionVector in expressionFile:
