@@ -1,5 +1,5 @@
 # Date Created: 28 June 2018
-# Date Last Modified: 17 July 2018
+# Date Last Modified: 18 July 2018
 # Execution: python expression_lookup.py snpFilename geneAnnotationsFilename tstatFilename numGenes distance threshold
 # 	outFilename nearestGenesFilename lostSnpsFilename missingGenesFilename
 # 		numGenes is an int representing the number of closest genes on either side of the snp that should be analyzed 
@@ -351,17 +351,19 @@ for snp in snpFile:
 		# if the rank for expression of a gene in a particular tissue type is greater than critRank, then that gene
 		# will be considered highly expressed in that tissue
 		for i in range(numGenesForAnalysis):
-			# for every nearby gene that was found
 			for j in range(numTissues):
-				# edit experssionMatrix for every tissue
 				if i < len(idsForTissueExpression):
-					# gene has tissue expression data in the GTEx file
-					if matrix[i][j] >= critRank:
-						expressionMatrix[i][j] = 1
+					if genesForAnalysis[i] in idsForTissueExpression:
+						# gene has tissue expression data in the GTEx file
+						if matrix[i][j] >= critRank:
+							expressionMatrix[i][j] = 1
+					else:
+						# gene doesn't have tissue expression in GTEx file
+						expressionMatrix[i][j] = 0
 				else:
-					# gene does not have tissue expression data in the GTEx file
+					# last gene in genesForAnalysis does not have tissue expression data in the GTEx file
 					# print out zeros for every tissue
-					expressionMatrix[i][j] = 0 # probably happens automatically but written explicitly
+					expressionMatrix[i][j] = 0
 
 		# create expression vector - only output one line per snp
 		# if more than one gene for analysis, combine the tissue expression vectors for both genes
@@ -369,8 +371,8 @@ for snp in snpFile:
 
 		for i in range(numGenesForAnalysis):
 			for j in range(numTissues):
-				if matrix[i][j] == 1:
-					# update any tissue's expression if the expression of any gene meets threshold
+				if expressionMatrix[i][j] == 1:
+					# update any tissue's expression if the expression of any gene  in genesForAnalysis meets threshold
 					expressionVector[j] = 1
 
 		# write header line onto new file once (only for first snp)
@@ -392,7 +394,7 @@ for snp in snpFile:
 		# write out file containing nearest genes corresponding to each snp
 		nearestGenesOutput = snpName + tab
 		for i in range(numGenesForAnalysis):
-			if i < (genesForAnalysis - 1):
+			if i < (numGenesForAnalysis - 1):
 				nearestGenesOutput += genesForAnalysis[i] + tab + genes[genesForAnalysis[i]][0] + tab
 			else: # add newline if last entry in the vector
 				nearestGenesOutput += genesForAnalysis[i] + tab + genes[genesForAnalysis[i]][0] + newline
