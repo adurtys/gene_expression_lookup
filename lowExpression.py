@@ -34,7 +34,7 @@ tab = "\t"
 newline = "\n"
 
 outFilename = "lowExpressionCheck.txt"
-outFile = outFilename.open(outFilename, 'w')
+outFile = open(outFilename, 'w')
 
 for i in range(len(expressionFileVectors)):
 	allZeros = True
@@ -46,4 +46,5 @@ for i in range(len(expressionFileVectors)):
 				if int(expressionFileVectors[i][j]) != 0:
 					allZeros = True
 	
-	expressionOutput += expressionFileVectors[i][0] + tab + allZeros + newline
+	expressionOutput += expressionFileVectors[i][0] + tab + str(allZeros) + newline
+outFile.close()
