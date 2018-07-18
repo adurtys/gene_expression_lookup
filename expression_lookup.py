@@ -393,8 +393,8 @@ for snp in snpFile:
 
 		# write out file containing nearest genes corresponding to each snp
 		nearestGenesOutput = snpName + tab
-		for i in range(numGenesForAnalysis):
-			if i < (numGenesForAnalysis - 1):
+		for i in range(len(idsForTissueExpression)):
+			if i < (len(idsForTissueExpression) - 1):
 				nearestGenesOutput += genesForAnalysis[i] + tab + genes[genesForAnalysis[i]][0] + tab
 			else: # add newline if last entry in the vector
 				nearestGenesOutput += genesForAnalysis[i] + tab + genes[genesForAnalysis[i]][0] + newline
@@ -415,7 +415,7 @@ for snp in snpFile:
 
 		outFile.write(output)
 
-		nearestGenesOutput = "No genes were found within 1mbp on either side of the snp that was searched." + newline
+		nearestGenesOutput = snpName + tab + "No genes were found within 1mbp on either side of the snp that was searched." + newline
 		nearestGenesFile.write(nearestGenesOutput)
 
 	print "Finished writing tissue expression lookup results onto output file."
