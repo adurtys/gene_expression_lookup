@@ -16,6 +16,8 @@ headerline = expressionFile.readline()
 headerline = headerline.rstrip('\r\n')
 headers = headerline.split('\t')
 
+print "headerline:", headerline
+
 numColumns = len(headers)
 print "numColumns:", numColumns
 
@@ -26,7 +28,7 @@ for expressionVector in expressionFile:
 	expressionVector = expressionVector.rstrip('\r\n')
 	tissues = expressionVector.split('\t')
 
-	print "numTissueColumns:", len(tissues)
+	# print "numTissueColumns:", len(tissues)
 
 	geneId = tissues[0]
 	geneId = geneId.split('.')
