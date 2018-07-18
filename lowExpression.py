@@ -36,16 +36,21 @@ newline = "\n"
 outFilename = "lowExpressionCheck.txt"
 outFile = open(outFilename, 'w')
 
+print "len(expressionFileVectors):", len(expressionFileVectors)
+print "len(expressionFileVectors[0]):", len(expressionFileVectors[0])
+
+
 for i in range(len(expressionFileVectors)):
 	allZeros = True
 	expressionOutput = expressionFileVectors[i][0] + tab
 
 	for j in range(len(expressionFileVectors[0])):
 		print "entered inner for loop!"
+		print "allZeros:", allZeros
 		if (j != 0) and (allZeros == True):
 			print "parsing tissue expression"
 			if int(expressionFileVectors[i][j]) != 0:
-				print "expression isn't all zero for" expressionFileVectors[i][0], ":", expressionFileVectors[i][j]
+				print "expression isn't all zero for", expressionFileVectors[i][0], ":", expressionFileVectors[i][j]
 				allZeros = False
 
 	print "exited inner for loop!"
