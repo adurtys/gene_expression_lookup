@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-genesToLookupFilename = "./geneInGTEx_v6p.txt"
+genesToLookupFilename = "./genesInGTEx_v6p.txt"
 expressionFilename = "/project/voight_datasets/GTEx_V6p/GTEx_Analysis_v6p_RNA-seq_RNA-SeQCv1.1.8_gene_median_rpkm.gct"
 
 genesToLookupFile = open(genesToLookupFilename, 'r')
@@ -14,7 +14,7 @@ genesToLookupFile.close()
 
 expressionFileVectors = [[] for gene in range(len(genesToLookup))]
 geneIndex = 0
-for expressionVector in expressionFileVectors:
+for expressionVector in expressionFile:
 	expressionVector = expressionVector.rstrip('\r\n')
 	tissues = expressionVector.split('\t')
 
@@ -40,10 +40,10 @@ for i in range(len(expressionFileVectors)):
 	allZeros = True
 	expressionOutput = ""
 
-	while allZeros = False:
-	for j in range(len(expressionFileVectors[0])):
-		if j != 0:
-			if int(expressionFileVectors[i][j]) != 0:
-				allZeros = True
+	while allZeros == False:
+		for j in range(len(expressionFileVectors[0])):
+			if j != 0:
+				if int(expressionFileVectors[i][j]) != 0:
+					allZeros = True
 	
 	expressionOutput += expressionFileVectors[i][0] + tab + allZeros + newline
