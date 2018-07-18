@@ -40,12 +40,12 @@ for i in range(len(expressionFileVectors)):
 	allZeros = True
 	expressionOutput = expressionFileVectors[i][0] + tab
 
-	while allZeros == False:
+	while allZeros == True:
 		for j in range(len(expressionFileVectors[0])):
 			if j != 0:
 				if int(expressionFileVectors[i][j]) != 0:
-					expressionOutput += expressionFileVectors[i][i]
-					allZeros = True
+					print expressionFileVectors[i][0], expressionFileVectors[i][j]
+					allZeros = False
 
 	expressionOutput += str(allZeros) + newline
 	outFile.write(expressionOutput)
