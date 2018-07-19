@@ -1,6 +1,10 @@
 #!/usr/bin/env python
+# execution: python lowExpression.py genesToLookupFilename
+# determines whether genes in input list have values of 0 for every tissue in GTEx_v6p
 
-genesToLookupFilename = "./genesInGTEx_v6p.txt"
+import sys
+
+genesToLookupFilename = sys.argv[1]
 expressionFilename = "/project/voight_datasets/GTEx_V6p/GTEx_Analysis_v6p_RNA-seq_RNA-SeQCv1.1.8_gene_median_rpkm.gct"
 
 genesToLookupFile = open(genesToLookupFilename, 'r')
@@ -56,7 +60,7 @@ for i in range(len(expressionFileVectors)):
 	for j in range(len(expressionFileVectors[0])):
 		# skip first two columns, containing geneId and geneName, respectively
 		if (j > 1) and (allZeros == True):
-			if int(expressionFileVectors[i][j]) != 0:
+			if float(expressionFileVectors[i][j]) != 0:
 				print "expression isn't all zero for", expressionFileVectors[i][0], ":", expressionFileVectors[i][j]
 				allZeros = False
 
