@@ -20,10 +20,7 @@ headerline = expressionFile.readline()
 headerline = headerline.rstrip('\r\n')
 headers = headerline.split('\t')
 
-print "headerline:", headerline
-
 numColumns = len(headers)
-print "numColumns:", numColumns
 
 expressionFileVectors = [[] for gene in range(len(genesToLookup))]
 
@@ -38,6 +35,8 @@ for expressionVector in expressionFile:
 	geneId = geneId.split('.')
 	geneId = geneId[0]
 
+	geneName = tissues[1]
+
 	if geneId in genesToLookup:
 		for i in range(numColumns):
 			expressionFileVectors[geneIndex].append(tissues[i])
@@ -50,23 +49,17 @@ newline = "\n"
 outFilename = "lowExpressionCheck.txt"
 outFile = open(outFilename, 'w')
 
-print "len(expressionFileVectors):", len(expressionFileVectors)
-print "len(expressionFileVectors[0]):", len(expressionFileVectors[0])
-
 for i in range(len(expressionFileVectors)):
 	allZeros = True
 	expressionOutput = expressionFileVectors[i][0] + tab
 
 	for j in range(len(expressionFileVectors[0])):
-		print "entered inner for loop!"
-		print "allZeros:", allZeros
-		if (j != 0) and (allZeros == True):
-			print "parsing tissue expression"
+		# skip first two columns, containing geneId and geneName, respectively
+		if (j > 1) and (allZeros == True):
 			if int(expressionFileVectors[i][j]) != 0:
 				print "expression isn't all zero for", expressionFileVectors[i][0], ":", expressionFileVectors[i][j]
 				allZeros = False
 
-	print "exited inner for loop!"
 	expressionOutput += str(allZeros) + newline
 	outFile.write(expressionOutput)
 outFile.close()

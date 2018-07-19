@@ -151,6 +151,7 @@ idsWithoutTissueExpData = []
 for snp in snpFile:
 	numSnps += 1
 	snp = snp.rstrip('\r\n')
+	print "snp to be searched:", snp
 
 	# process the snp
 	snp = snp.split(':')
@@ -393,11 +394,14 @@ for snp in snpFile:
 
 		# write out file containing nearest genes corresponding to each snp
 		nearestGenesOutput = snpName + tab
-		for i in range(len(idsForTissueExpression)):
-			if i < (len(idsForTissueExpression) - 1):
-				nearestGenesOutput += genesForAnalysis[i] + tab + genes[genesForAnalysis[i]][0] + tab
-			else: # add newline if last entry in the vector
-				nearestGenesOutput += genesForAnalysis[i] + tab + genes[genesForAnalysis[i]][0] + newline
+		if len(idsForTissueExpression) != 0: # snp has tissue expression data for its nearest gene
+			for i in range(len(idsForTissueExpression)):
+				if i < (len(idsForTissueExpression) - 1):
+					nearestGenesOutput += genesForAnalysis[i] + tab + genes[genesForAnalysis[i]][0] + tab
+				else: # add newline if last entry in the vector
+					nearestGenesOutput += genesForAnalysis[i] + tab + genes[genesForAnalysis[i]][0] + newline
+		else: # no tissue expression data for the nearest gene
+			nearestGenesOutput += newline
 
 		nearestGenesFile.write(nearestGenesOutput)
 
