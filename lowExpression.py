@@ -16,7 +16,7 @@ for gene in genesToLookupFile:
 	genesToLookup[gene] = 0
 genesToLookupFile.close()
 
-# skip first two lines
+# skip first two lines of GTEx-v6 file
 expressionFile.readline()
 expressionFile.readline()
 
@@ -50,7 +50,7 @@ expressionFile.close()
 tab = "\t"
 newline = "\n"
 
-outFilename = "lowExpressionCheck.txt"
+outFilename = "lowExpressionCheck_" + genesToLookupFilename + ".txt"
 outFile = open(outFilename, 'w')
 
 for i in range(len(expressionFileVectors)):
