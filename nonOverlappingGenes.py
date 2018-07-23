@@ -66,7 +66,7 @@ tstatGenesFile.write(tstatOutput)
 tstatGenesFile.close()
 
 # create output file for genes in GENCODE file and not in GTEx file
-gencodeGenesFilename = "genesNotInGTEx.txt"
+gencodeGenesFilename = "genesWithoutTstat.txt"
 gencodeGenesFile = open(gencodeGenesFilename, 'w')
 
 genesNotInGTEx = []

@@ -1,6 +1,6 @@
 # Date Created: 27 June 2018
 # Date Last Modified: 23 July 2018
-# Execution: python GTF_processing.py gencodeFilename tstatFilename
+# Execution: python GTF_processing.py gencodeFilename GTEx_filename tstatFilename
 # Description: This program proceses GENCODE Comprehensive Gene Annotation GTF File for the start and end locations of protein-coding genes. 
 # 	The input is "gencode.v19.annotation.gtf", and the output is "gene_annotations.txt", a file with five columns (tab separated).
 # 	The columns are chromosome name, GeneID, gene name, gene start location, and gene end location, respectively, for all protein-coding genes in the GENCODE file. 
@@ -10,25 +10,46 @@
 import sys
 
 # check to make sure file was run with correct number of arguments
-if len(sys.argv) != 3:
+if len(sys.argv) != 4:
 	print "ERROR: Incorrect number of command-line arguments!"
 
-# read in the GTEx file
-tstatFilename = sys.argv[2]
+# read in the GTEx_v6p file
+gtex_v6p_filename = sys.argv[2]
+gtex_v6p_file = open(gtex_v6p_filename, 'r')
+
+# skip header line
+gtex_v6p_file.readline()
+
+# make list of all geneIds in GTEx_v6p
+idsInGTEx_v6p = {}
+for line in gtex_v6p_file:
+	line = line.rstrip('\r\n')
+
+	columns = line.split('\t')
+
+	ensgId = columns[0]
+	ensgId = ensgId.split('.')
+	ensgId = ensgId[0]
+
+	idsInGTEx_v6p[ensgId] = 0
+gtex_v6p_file.close()
+
+# read in the tstat file
+tstatFilename = sys.argv[3]
 tstatFile = open(tstatFilename, 'r')
 
 # skip header line
 tstatFile.readline()
 
 # make list of all geneIds in tstat file
-idsInGTEx = {}
+idsInTstatFile = {}
 for line in tstatFile:
 	line = line.rstrip('\r\n')
 
 	columns = line.split('\t')
 
 	ensgId = columns[0]
-	idsInGTEx[ensgId] = 0
+	idsInTstatFile[ensgId] = 0
 
 tstatFile.close()
 
@@ -90,21 +111,24 @@ for line in inFile:
 			genes[geneId][3] = geneEnd
 
 	elif (geneId not in genes) and (chromosome not in chromosomesToExclude):
-		# parse for genes that are either protein-coding or contained in the GTEx file
-		if (geneType == "protein_coding") or (geneId in idsInGTEx):
-		# populate geneInfo with relevant info
-			geneInfo.append(name)
-			geneInfo.append(chromosome)
-			geneInfo.append(geneStart)
-			geneInfo.append(geneEnd)
-			geneInfo.append(geneType)
+		# parse for genes that are either protein-coding or contained in the tstat file
+		if (geneType == "protein_coding") or (geneId in idsInTstatFile):
+			# make sure gene is in GTEx_v6p
+			if geneId in idsInGTEx_v6p:
+				# populate geneInfo with relevant info
+				geneInfo.append(name)
+				geneInfo.append(chromosome)
+				geneInfo.append(geneStart)
+				geneInfo.append(geneEnd)
+				geneInfo.append(geneType)
 
-			genes[geneId] = geneInfo
+				genes[geneId] = geneInfo
 
 inFile.close()
 
 numGenes = len(genes)
 print "Writing", numGenes, "genes to the annotations file. These genes are either protein-coding or have tissue expression data in the GTEx file."
+print "Genes on chrX, chrY, and chrM have been excluded. Genes not in GTEx_v6p have also been excluded."
 
 # create a new file for start and end positions of only protein-coding genes
 outFilename = "gene_annotations.txt"
