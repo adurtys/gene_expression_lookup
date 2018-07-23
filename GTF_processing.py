@@ -1,5 +1,5 @@
 # Date Created: 27 June 2018
-# Date Last Modified: 16 July 2018
+# Date Last Modified: 23 July 2018
 # Execution: python GTF_processing.py gencodeFilename tstatFilename
 # Description: This program proceses GENCODE Comprehensive Gene Annotation GTF File for the start and end locations of protein-coding genes. 
 # 	The input is "gencode.v19.annotation.gtf", and the output is "gene_annotations.txt", a file with five columns (tab separated).
@@ -75,6 +75,10 @@ for line in inFile:
 	# create list to store relevant info
 	geneInfo = []
 
+	# exclude genes on chromosomes X, Y, and M
+	chromosomesToExclude = ["chrX", "chrY", "chrM"]
+	print chromosomesToExclude
+
 	# check if the current geneId is in the gene dictionary
 	if geneId in genes:
 		# compare start locations
@@ -86,10 +90,7 @@ for line in inFile:
 			# update end location
 			genes[geneId][3] = geneEnd
 
-
-	# exclude genes on chromosomes X, Y, and M
-	chromosomesToExclude = ["chrX", "chrY", "chrM"]
-	elif chromosome not in chromosomesToExclude:
+	elif (geneId not in genes) and (chromosome not in chromosomesToExclude):
 		# parse for genes that are either protein-coding or contained in the GTEx file
 		if (geneType == "protein_coding") or (geneId in idsInGTEx):
 		# populate geneInfo with relevant info
