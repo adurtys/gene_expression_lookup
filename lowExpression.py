@@ -50,7 +50,7 @@ expressionFile.close()
 tab = "\t"
 newline = "\n"
 
-outFilename = "lowExpressionCheck_" + genesToLookupFilename + ".txt"
+outFilename = "lowExpressionCheck_" + genesToLookupFilename
 outFile = open(outFilename, 'w')
 
 for i in range(len(expressionFileVectors)):
