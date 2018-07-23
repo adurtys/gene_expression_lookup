@@ -86,16 +86,20 @@ for line in inFile:
 			# update end location
 			genes[geneId][3] = geneEnd
 
-	# parse for genes that are either protein-coding or contained in the GTEx file
-	elif (geneType == "protein_coding") or (geneId in idsInGTEx):
-		# populate geneInfo with relevant info
-		geneInfo.append(name)
-		geneInfo.append(chromosome)
-		geneInfo.append(geneStart)
-		geneInfo.append(geneEnd)
-		geneInfo.append(geneType)
 
-		genes[geneId] = geneInfo
+	# exclude genes on chromosomes X, Y, and M
+	chromosomesToExclude = ["chrX", "chrY", "chrM"]
+	elif chromosome not in chromosomesToExclude:
+		# parse for genes that are either protein-coding or contained in the GTEx file
+		if (geneType == "protein_coding") or (geneId in idsInGTEx):
+		# populate geneInfo with relevant info
+			geneInfo.append(name)
+			geneInfo.append(chromosome)
+			geneInfo.append(geneStart)
+			geneInfo.append(geneEnd)
+			geneInfo.append(geneType)
+
+			genes[geneId] = geneInfo
 
 inFile.close()
 
