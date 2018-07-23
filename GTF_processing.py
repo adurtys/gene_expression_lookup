@@ -77,7 +77,6 @@ for line in inFile:
 
 	# exclude genes on chromosomes X, Y, and M
 	chromosomesToExclude = ["chrX", "chrY", "chrM"]
-	print chromosomesToExclude
 
 	# check if the current geneId is in the gene dictionary
 	if geneId in genes:
