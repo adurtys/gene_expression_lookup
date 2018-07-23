@@ -1,7 +1,7 @@
 # Date Created: 28 June 2018
 # Date Last Modified: 18 July 2018
 # Execution: python expression_lookup.py snpFilename geneAnnotationsFilename tstatFilename numGenes distance threshold
-# 	outFilename nearestGenesFilename lostSnpsFilename missingGenesFilename
+# 	outFilename nearestGenesFilename lostSnpsFilename missingGenesFilename processMissingSnps
 # 		numGenes is an int representing the number of closest genes on either side of the snp that should be analyzed 
 # 			with respect to expression in the tissues listed in "GTEx.tstat.tsv" file.
 # 		distance is a float representing the max distance (in kilobp) from the snp that the closest genes can be
@@ -29,12 +29,6 @@ import sys
 # than the value to be returned.
 def binarySearch(sortedList, number, numGenes, distance, first = 0, last = None):
 	locations = []
-
-	# only search for genes within 1mb of the snp
-	if distance < 0:
-		print "ERROR:", distance, " is an invalid input value for distance. Please enter a valid distance from the snp."
-	if distance > 1000:
-		distance = 1000
 
 	# convert distance (kilobp) to bp
 	distance = distance * 1000
@@ -110,17 +104,20 @@ def findDuplicates(anyList):
 	return duplicates
 
 # check to make sure file was run with correct number of arguments
-if len(sys.argv) != 11:
+if len(sys.argv) != 12:
 	print "ERROR: Incorrect number of command-line arguments!"
 
 # read in file containing snps
 snpFilename = sys.argv[1]
 snpFile = open(snpFilename, 'r')
 
-# read in arguments from user
 numGenes = int(sys.argv[4])
-distance = float(sys.argv[5])
 threshold = float(sys.argv[6])
+
+# only begin search within 1 mb of snp
+distance = float(sys.argv[5])
+if distance > 1000:
+	distance = 1000
 
 # create new file that will contain the results of the expression lookup
 outFilename = sys.argv[7]
@@ -135,6 +132,9 @@ lostSnpsFilename = sys.argv[9]
 
 # create new file that will contain genes associated with snps in the snpFile that didn't have tissue expression data
 missingGenesFilename = sys.argv[10]
+
+# determine how to process snps with missing data
+processMissingSnps = sys.argv[11]
 
 tab = "\t"
 newline = "\n"
@@ -267,6 +267,94 @@ for snp in snpFile:
 				genesForAnalysis.append(gene)
 			else: # len(closestDistances) == 0
 				print "No gene is within 1mbp on either side of the snp."
+				if processMissingSnps == "I":
+					print "Finding the next closest genes to the snp."
+					while len(closestDistances) == 0:
+						# increase distance within which to search
+						distance *= 2
+
+						# search for next nearest genes with respect to start locations
+						nextNearestStartLocations = binarySearch(sortedEndLocations, snpLocation, numGenes, distance, first = 0, last = None)
+						nextNearestGenesByStart = []
+
+						for position in nextNearestStartLocations:
+							nextNearestGenesByStart.append(startLocations.keys()[startLocations.values().index(position)])
+
+						# search for next nearest genes with respect to end locations
+						nextNearestEndLocations = binarySearch(sortedEndLocations, snpLocation, numGenes, distance, first = 0, last = None)
+						nextNearestGenesByEnd = []
+
+						for position in nextNearestEndLocations:
+							nextNearestGenesByEnd.append(endLocations.keys()[endLocations.values().index(position)])
+
+						# determine the closest genes to the snp
+						distanceFromSnpDict = {}
+						for gene in genesByStart:
+							for geneId, startLocation in startLocations.items():
+								if geneId == gene:
+									distanceFromSnpDict[gene] = abs(startLocation - snpLocation)
+							print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
+						for gene in genesByEnd:
+							if gene not in distanceFromSnpDict:
+								for geneId, endLocation in endLocations.items():
+									if geneId == gene:
+										distanceFromSnpDict[gene] = abs(endLocation - snpLocation)
+								print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
+							else:
+								# gene is already in the dictionary
+								# modify distance in dictionary only if new distance is less than current distance
+								for geneId, endLocation in endLocations.items():
+									if (geneId == gene) and (abs(endLocation - snpLocation) < distanceFromSnpDict[gene]):
+										distanceFromSnpDict[gene] = abs(endLocation - snpLocation)
+								print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
+
+						closestDistances = sorted(distanceFromSnpDict.values())
+						print "Closest Distances:", closestDistances
+
+					# there are now genes to search
+					# check if there are any duplicate distances in distanceFromSnpDict
+					duplicates = findDuplicates(closestDistances)
+
+					if len(duplicates) == 0:
+						print "The snp is not equidistant from genes."
+						# no genes have identical distances from the snp
+						for gene in distanceFromSnpDict:
+							if len(closestDistances) > 1:
+								# more than one gene is near the snp
+								# only add the distances less than closestDistances[numGenes]
+								if distanceFromSnpDict[gene] < closestDistances[numGenes]:
+									genesForAnalysis.append(gene)
+							elif len(closestDistances) == 1:
+								# only one gene is near the snp
+								# analyze this gene
+								genesForAnalysis.append(gene)
+							else:
+								print "ERROR: Something is wrong with finding next closest gene."
+
+					else: # genes have identical distances from snp
+							print "The snp is equidistant from genes."
+
+							for i in range(len(closestDistances)):
+								# append one more entry to genesForAnalysis (numGenes + 1) than if no duplicated values
+								# (assumes only equidistant from two gene)
+								if closestDistances[i] < closestDistances[numGenes + 1]:
+									if closestDistances[i] in duplicates:
+										# entry is a duplicated value --> add both entry and subsequent entry
+
+										# find gene corresponding to the distance in distanceFromSnpDict
+										index = distanceFromSnpDict.values().index(closestDistances[i])
+										gene1 = distanceFromSnpDict.keys()[index]
+										gene2 = distanceFromSnpDict.keys()[index + 1]
+
+										genesForAnalysis.append(gene1)
+										genesForAnalysis.append(gene2)
+									else: 
+										# entry is not a duplicated value --> add only the entry
+										index = distanceFromSnpDict.values().index(closestDistances[i])
+										gene = distanceFromSnpDict.keys()[index]
+
+										genesForAnalysis.append(gene)
+
 	else: # genes have identical distances from snp
 		print "The snp is equidistant from genes."
 
@@ -360,11 +448,24 @@ for snp in snpFile:
 							expressionMatrix[i][j] = 1
 					else:
 						# gene doesn't have tissue expression in GTEx file
-						expressionMatrix[i][j] = 0
+						if processMissingSnps == "Z":
+							expressionMatrix[i][j] = 0
+						elif processMissingSnps == "H":
+							expressionMatrix[i][j] = ""
+						elif processMissingSnps == "I":
+							# find next closest gene, even if greater than 1 mb away
+						else:
+							print "ERROR: Something is wrong with processMissingSnps."
 				else:
 					# last gene in genesForAnalysis does not have tissue expression data in the GTEx file
-					# print out zeros for every tissue
-					expressionMatrix[i][j] = 0
+						if processMissingSnps == "Z":
+							expressionMatrix[i][j] = 0
+						elif processMissingSnps == "H":
+							expressionMatrix[i][j] = ""
+						elif processMissingSnps == "I":
+							# find next closest gene, even if greater than 1 mb away
+						else:
+							print "ERROR: Something is wrong with processMissingSnps."
 
 		# create expression vector - only output one line per snp
 		# if more than one gene for analysis, combine the tissue expression vectors for both genes
@@ -411,12 +512,22 @@ for snp in snpFile:
 
 		snpName = snp[0] + ":" + snp[1]
 		output = snpName + tab
-		for i in range(numTissues):
-			if i < (numTissues - 1):
-				output += "0" + tab
-			else:
-				output += "0" + newline
 
+		if processMissingSnps == "Z":
+			for i in range(numTissues):
+				if i < (numTissues - 1):
+					output += "0" + tab
+				else:
+					output += "0" + newline
+		elif processMissingSnps == "H":
+			for i in range(numTissues):
+				if i < (numTissues - 1):
+					output += "" + tab
+				else:
+					output += "" + newline
+		else:
+			print "ERROR: Something is wrong with processing missing snps when there is no gene within 1mb."
+		
 		outFile.write(output)
 
 		nearestGenesOutput = snpName + tab + "No genes were found within 1mbp on either side of the snp that was searched." + newline
