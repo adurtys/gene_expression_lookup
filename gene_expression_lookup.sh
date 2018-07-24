@@ -61,6 +61,12 @@ do
 		s)
 			snpFile="$OPTARG"
 			echo "File containing snps: $snpFile"
+
+			# create output filenames
+			outFile=lookupResults_$snpFile
+			nearestGenesFile=nearestGenes_$snpFile
+			lostSnpsFile=lostSnps_$snpFile
+			missingGenesFile=missingGenes_$snpFile
 			;;
 		t)
 			# GTEx t-statistics file has been normalized
@@ -102,4 +108,5 @@ else
 fi
 
 # conduct expression lookup
-python ./expression_lookup.py $snpFile $geneAnnotationsFile $tStatFile $numNearestGenesToSearch $distanceFromSnp $expressionThreshold $processMissingSnps
+python ./expression_lookup.py $snpFile $geneAnnotationsFile $tStatFile $numNearestGenesToSearch $distanceFromSnp $expressionThreshold $outFile $nearestGenesFile $lostSnpsFile $missingGenesFile $processMissingSnps
+
