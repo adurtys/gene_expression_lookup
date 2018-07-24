@@ -454,6 +454,7 @@ for snp in snpFile:
 							expressionMatrix[i][j] = ""
 						elif processMissingSnps == "I":
 							# find next closest gene, even if greater than 1 mb away
+							print "ERROR: TODO (flag I)"
 						else:
 							print "ERROR: Something is wrong with processMissingSnps."
 				else:

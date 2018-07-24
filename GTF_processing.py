@@ -1,7 +1,7 @@
 # Date Created: 27 June 2018
 # Date Last Modified: 23 July 2018
-# Execution: python GTF_processing.py gencodeFilename GTEx_filename tstatFilename
-# Description: This program proceses GENCODE Comprehensive Gene Annotation GTF File for the start and end locations of protein-coding genes. 
+# Execution: python GTF_processing.py gencodeFilename GTEx_filename tstatFilename onlyProteinCoding
+# Description: TODO (UPDATE) This program proceses GENCODE Comprehensive Gene Annotation GTF File for the start and end locations of protein-coding genes. 
 # 	The input is "gencode.v19.annotation.gtf", and the output is "gene_annotations.txt", a file with five columns (tab separated).
 # 	The columns are chromosome name, GeneID, gene name, gene start location, and gene end location, respectively, for all protein-coding genes in the GENCODE file. 
 # Run Time: 15 sec
@@ -10,8 +10,12 @@
 import sys
 
 # check to make sure file was run with correct number of arguments
-if len(sys.argv) != 4:
+if len(sys.argv) != 5:
 	print "ERROR: Incorrect number of command-line arguments!"
+
+# determine whether to include only protein-coding genes or all genes in GTEx_v6p
+onlyProteinCoding = sys.argv[4]
+if onlyProteinCoding == "true":
 
 # read in the GTEx_v6p file
 gtex_v6p_filename = sys.argv[2]
@@ -111,18 +115,34 @@ for line in inFile:
 			genes[geneId][3] = geneEnd
 
 	elif (geneId not in genes) and (chromosome not in chromosomesToExclude):
-		# parse for genes that are either protein-coding or contained in the tstat file
-		if (geneType == "protein_coding") or (geneId in idsInTstatFile):
-			# make sure gene is in GTEx_v6p
-			if geneId in idsInGTEx_v6p:
-				# populate geneInfo with relevant info
-				geneInfo.append(name)
-				geneInfo.append(chromosome)
-				geneInfo.append(geneStart)
-				geneInfo.append(geneEnd)
-				geneInfo.append(geneType)
+		# parse for genes that are either depending on whether onlyProteinCoding == true
+		if onlyProteinCoding == "true":
+			print "Only including protein-coding genes from GENCODE in the gene annotations file."
+			if geneType == "protein_coding":
+				# make sure gene is in GTEx_v6p
+				if geneId in idsInGTEx_v6p:
+					# populate geneInfo with relevant info
+					geneInfo.append(name)
+					geneInfo.append(chromosome)
+					geneInfo.append(geneStart)
+					geneInfo.append(geneEnd)
+					geneInfo.append(geneType)
 
-				genes[geneId] = geneInfo
+					genes[geneId] = geneInfo
+
+		else:
+			print "Including protein-coding genes and genes contained in the t-stat file."
+			if (geneType == "protein_coding") or (geneId in idsInTstatFile):
+				# make sure gene is in GTEx_v6p
+				if geneId in idsInGTEx_v6p:
+					# populate geneInfo with relevant info
+					geneInfo.append(name)
+					geneInfo.append(chromosome)
+					geneInfo.append(geneStart)
+					geneInfo.append(geneEnd)
+					geneInfo.append(geneType)
+
+					genes[geneId] = geneInfo
 
 inFile.close()
 

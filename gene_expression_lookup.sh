@@ -85,6 +85,7 @@ do
 	# determine whether / how to process GENCODE file
 	if [ "$processGencode" = true ]
 	then
+		echo "Have to process GENCODE file."
 		if [ "$onlyProtCoding" = true ]
 		then
 			echo "Processing GENCODE file. Only including protein-coding genes."
@@ -95,6 +96,8 @@ do
 		fi
 
 		geneAnnotationsFile="./gene_annotations.txt"
+	else
+		echo "GENCODE file has already been processed."
 	fi
 
 	# conduct expression lookup
