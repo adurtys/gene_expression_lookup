@@ -141,15 +141,84 @@ processMissingSnps = sys.argv[11]
 tab = "\t"
 newline = "\n"
 
-numSnps = 0
-	
-# create counter variable for snps that didn't have a nearby gene
+# create counter variable for snps that didn't have a gene within 1 mb
 numSnpsNoGenes = 0
+snpsNoNearbyGenes = []
 
 # create lists for snps and genes without corresponding tissue expression data in GTEx file
 snpsNoTissueExp = []
 idsWithoutTissueExpData = []
 
+# make dictionary of t-stats, using geneId as key and list of tissue-expression vectors as the value
+tissueExpressionTstats = {}
+
+# read in the normalized tissue expression file
+tstatFilename = sys.argv[3]
+tstatFile = open(tstatFilename, 'r')
+
+# store column labels in header row
+headerLine = tstatFile.readline()
+headerLine = headerLine.rstrip('\r\n')
+headers = headerLine.split('\t')
+
+# subtract 1 because first column contains GeneID
+numTissues = len(headers) - 1
+
+for line in tstatFile:
+	line = line.rstrip('\r\n')
+
+	columns = line.split('\t')
+	numTissues = len(columns) - 1
+
+	ensgId = columns[0]
+
+	tstats = []
+
+	for i in range(numTissues):
+		tstats.append(int(columns[i + 1]))
+
+	tissueExpressionTstats[ensgId] = tstats
+
+tstatFile.close()
+
+totalGenes = len(tissueExpressionTstats)
+print "Finished reading in t-stat file, which contained tissue expression t statistics for", totalGenes, "genes."
+
+# determine whether expression meets threshold for high expression
+numTopRankingGenes = threshold * totalGenes
+critRank = totalGenes - numTopRankingGenes
+
+# read in gene annotations file
+inFilename = sys.argv[2]
+inFile = open(inFilename, 'r')
+
+# create dictionary containing relevant information pertaining to each gene
+genes = {}
+
+for line in inFile:
+	line = line.rstrip('\r\n')
+	
+	# split line on tab, return list of columns
+	columns = line.split('\t')
+	geneId = columns[0]
+	geneName = columns[1]
+	geneChrom = columns[2]
+	geneStart = int(columns[3])
+	geneEnd = int(columns[4])
+
+	geneInfo = []
+
+	# populate geneInfo with relevant info
+	geneInfo.append(geneChrom)
+	geneInfo.append(geneName)
+	geneInfo.append(geneStart)
+	geneInfo.append(geneEnd)
+
+	genes[geneInfo] = geneInfo
+
+inFile.close()
+
+numSnps = 0
 for snp in snpFile:
 	numSnps += 1
 	snp = snp.rstrip('\r\n')
@@ -160,46 +229,17 @@ for snp in snpFile:
 	chromosome = snp[0]
 	snpLocation = int(snp[1])
 
-	# read in gene annotations file
-	inFilename = sys.argv[2]
-	inFile = open(inFilename, 'r')
-
-	# create dictionary containing relevant information pertaining to each gene
-	genes = {}
-
-	for line in inFile:
-		line = line.rstrip('\r\n')
-		
-		# split line on tab, return list of columns
-		columns = line.split('\t')
-
-		geneId = columns[0]
-		geneName = columns[1]
-		geneChrom = columns[2]
-		geneStart = int(columns[3])
-		geneEnd = int(columns[4])
-
-		geneInfo = []
-
-		# parse for chromosome specified by user
-		if geneChrom == chromosome:
-			# populate geneInfo with relevant info
-			geneInfo.append(geneName)
-			geneInfo.append(geneStart)
-			geneInfo.append(geneEnd)
-
-			genes[geneId] = geneInfo
-
-	inFile.close()
-
-	print "The chromosome to be searched is:", chromosome, "\nThere are", len(genes), "genes on this chromosome."
-
+	print "The chromosome to be searched is:", chromosome
+			
 	# create dictionaries of nearby genes with respect to gene start and end locations
 	startLocations = {}
 	endLocations = {}
+
 	for gene in genes:
-		startLocations[gene] = genes[gene][1]
-		endLocations[gene] = genes[gene][2]
+		# parse for chromosome specified by user
+		if genes[gene][0] == chromsome:
+			startLocations[gene] = genes[gene][2]
+			endLocations[gene] = genes[gene][3]
 
 	# sort start and end location dictionaries
 	sortedStartLocations = sorted(startLocations.values())
@@ -258,17 +298,55 @@ for snp in snpFile:
 		print "The snp is not equidistant from genes."
 		# no genes have identical distances from the snp
 		for gene in distanceFromSnpDict:
-			if len(closestDistances) > 1:
-				# more than one gene is near the snp
-				# only add the distances less than closestDistances[numGenes]
-				if distanceFromSnpDict[gene] < closestDistances[numGenes]:
-					genesForAnalysis.append(gene)
-			elif len(closestDistances) == 1:
-				# only one gene is near the snp
-				# analyze this gene
-				genesForAnalysis.append(gene)
+			if len(closestDistances) != 0:
+				# at least one gene is near the snp
+				if processMissingSnps == "I":
+					# check if the first numGenes are in the t-stat file
+					for i in range(numGenes):
+						index = distanceFromSnpDict.values().index(closestDistances[i])
+						geneToCheck = distanceFromSnpDict.keys()[index]
+						if geneToCheck in tissueExpressionTstats: # checks if gene has t-stat in GTEx file
+							if len(closestDistances) == 1:
+								# only one gene is near the snp
+								# analyze this gene
+								genesForAnalysis.append(gene)								
+							else:
+								# more than one gene is near the snp
+								# add numGenes to genesForAnalysis
+
+								if distanceFromSnpDict[gene] < closestDistances[numGenes]:
+									genesForAnalysis.append(gene)
+						else: # gene is not in t-stat file --> find next nearest gene in t-stat file
+							j = i
+							newGeneToCheck = "gene"
+							while newGeneToCheck not in tissueExpressionTstats: # find the next closest gene with t-stat
+								j += 1
+								if j < len(closestDistances):
+									newIndex = distanceFromSnpDict.values().index(closestDistances[j])
+									newGeneToCheck = distanceFromSnpDict.keys()[newIndex]
+								else:
+									print "Haven't found a gene in closestDistances that has t-stat for tissue expression." #TODO: DEAL WITH THIS? 
+
+							if distanceFromSnpDict[gene] < closestDistances[numGenes]:
+								genesForAnalysis.append(gene)
+				else: # processMissingSnps != I
+					# don't have to find next nearest genes if nearest genes don't have t-stat
+					if len(closestDistances) > 1:
+					# more than one gene is near the snp
+					# only add the distances less than closestDistances[numGenes]
+						if distanceFromSnpDict[gene] < closestDistances[numGenes]:
+							genesForAnalysis.append(gene)
+					elif len(closestDistances) == 1:
+						# only one gene is near the snp
+						# analyze this gene
+						genesForAnalysis.append(gene)
+
 			else: # len(closestDistances) == 0
+				# no gene is near the snp
 				print "No gene is within 1mbp on either side of the snp."
+				numSnpsNoGenes += 1
+				snpsNoNearbyGenes.append(snp)
+
 				if processMissingSnps == "I":
 					print "Finding the next closest genes to the snp."
 					while len(closestDistances) == 0:
@@ -302,8 +380,7 @@ for snp in snpFile:
 									if geneId == gene:
 										distanceFromSnpDict[gene] = abs(endLocation - snpLocation)
 								print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
-							else:
-								# gene is already in the dictionary
+							else: # gene is already in the dictionary
 								# modify distance in dictionary only if new distance is less than current distance
 								for geneId, endLocation in endLocations.items():
 									if (geneId == gene) and (abs(endLocation - snpLocation) < distanceFromSnpDict[gene]):
@@ -313,51 +390,51 @@ for snp in snpFile:
 						closestDistances = sorted(distanceFromSnpDict.values())
 						print "Closest Distances:", closestDistances
 
-					# there are now genes to search
-					# check if there are any duplicate distances in distanceFromSnpDict
-					duplicates = findDuplicates(closestDistances)
+						# there are now genes to search
+						# check if there are any duplicate distances in distanceFromSnpDict
+						duplicates = findDuplicates(closestDistances)
 
-					if len(duplicates) == 0:
-						print "The snp is not equidistant from genes."
-						# no genes have identical distances from the snp
-						for gene in distanceFromSnpDict:
-							if len(closestDistances) > 1:
-								# more than one gene is near the snp
-								# only add the distances less than closestDistances[numGenes]
-								if distanceFromSnpDict[gene] < closestDistances[numGenes]:
-									genesForAnalysis.append(gene)
-							elif len(closestDistances) == 1:
-								# only one gene is near the snp
-								# analyze this gene
-								genesForAnalysis.append(gene)
-							else:
-								print "ERROR (line 334): Something is wrong with finding next closest gene."
-
-					else: # genes have identical distances from snp
-							print "The snp is equidistant from genes."
-
-							for i in range(len(closestDistances)):
-								# append one more entry to genesForAnalysis (numGenes + 1) than if no duplicated values
-								# (assumes only equidistant from two gene)
-								if closestDistances[i] < closestDistances[numGenes + 1]:
-									if closestDistances[i] in duplicates:
-										# entry is a duplicated value --> add both entry and subsequent entry
-
-										# find gene corresponding to the distance in distanceFromSnpDict
-										index = distanceFromSnpDict.values().index(closestDistances[i])
-										gene1 = distanceFromSnpDict.keys()[index]
-										gene2 = distanceFromSnpDict.keys()[index + 1]
-
-										genesForAnalysis.append(gene1)
-										genesForAnalysis.append(gene2)
-									else: 
-										# entry is not a duplicated value --> add only the entry
-										index = distanceFromSnpDict.values().index(closestDistances[i])
-										gene = distanceFromSnpDict.keys()[index]
-
+						if len(duplicates) == 0:
+							print "The snp is not equidistant from genes."
+							# no genes have identical distances from the snp
+							for gene in distanceFromSnpDict:
+								if len(closestDistances) > 1:
+									# more than one gene is near the snp
+									# only add the distances less than closestDistances[numGenes]
+									if distanceFromSnpDict[gene] < closestDistances[numGenes]:
 										genesForAnalysis.append(gene)
+								elif len(closestDistances) == 1:
+									# only one gene is near the snp
+									# analyze this gene
+									genesForAnalysis.append(gene)
+								else:
+									print "ERROR (line 411): Something is wrong with finding next closest gene."
 
-	else: # genes have identical distances from snp
+							else: # genes have identical distances from snp
+								print "The snp is equidistant from genes."
+
+								for i in range(len(closestDistances)):
+									# append one more entry to genesForAnalysis (numGenes + 1) than if no duplicated values
+									# (assumes only equidistant from two gene)
+									if closestDistances[i] < closestDistances[numGenes + 1]:
+										if closestDistances[i] in duplicates:
+											# entry is a duplicated value --> add both entry and subsequent entry
+
+											# find gene corresponding to the distance in distanceFromSnpDict
+											index = distanceFromSnpDict.values().index(closestDistances[i])
+											gene1 = distanceFromSnpDict.keys()[index]
+											gene2 = distanceFromSnpDict.keys()[index + 1]
+
+											genesForAnalysis.append(gene1)
+											genesForAnalysis.append(gene2)
+										else: 
+											# entry is not a duplicated value --> add only the entry
+											index = distanceFromSnpDict.values().index(closestDistances[i])
+											gene = distanceFromSnpDict.keys()[index]
+
+											genesForAnalysis.append(gene)
+
+	else: # genes have identical distances from snp len(duplicates) != 0
 		print "The snp is equidistant from genes."
 
 		for i in range(len(closestDistances)):
@@ -381,44 +458,17 @@ for snp in snpFile:
 
 					genesForAnalysis.append(gene)
 
-	# read in the normalized tissue expression file
-	inFilename2 = sys.argv[3]
-	inFile2 = open(inFilename2, 'r')
-
-	# store column labels in header row
-	headerLine = inFile2.readline()
-	headerLine = headerLine.rstrip('\r\n')
-	headers = headerLine.split('\t')
-
-	# subtract 1 because first column contains GeneID
-	numTissues = len(headers) - 1
-
-	if len(genesForAnalysis) != 0:
-		# there are genes to analyze
+	if len(genesForAnalysis) != 0: # there are genes to analyze
 		numGenesForAnalysis = len(genesForAnalysis)
 		print "Analyzing", numGenesForAnalysis, "genes:", genesForAnalysis
 
 		idsForTissueExpression = []
 
-		# create a matrix to hold tissue expressions for the genes to be searched
-		matrix = [[] for gene in range(numGenesForAnalysis)]
-
-		totalGenes = 0
-		geneIndex = 0
-		for line in inFile2:
-			line = line.rstrip('\r\n')
-			tissues = line.split('\t')
-
-			# parse for ENSGIDs in genesForAnalysis
-			if tissues[0] in genesForAnalysis:
-				idsForTissueExpression.append(tissues[0])
-
-				# store the ranks for this ID
-				for i in range(numTissues):
-					matrix[geneIndex].append(int(tissues[i + 1]))
-				geneIndex += 1
-			
-			totalGenes += 1
+		# parse tissueExpressionTstats for genes in genesForAnalysis
+		for gene in genesForAnalysis:
+			if gene in tissueExpressionTstats:
+				# if the gene has a t-stat
+				idsForTissueExpression.append(gene)
 
 		print "There are", len(idsForTissueExpression), "ids for which to look up tissue expression:", idsForTissueExpression
 
@@ -428,91 +478,105 @@ for snp in snpFile:
 			snpsNoTissueExp.append(snpName)
 
 			for item in genesForAnalysis:
-				# if the GeneId isn't in the GTEx file, add it to the list of ids without tissue expression data
-				# if it isn't already in the list
+				# if the GeneId isn't in the GTEx file, add it to the list of ids without tissue expression data if it isn't already in the list
 				if (item not in idsForTissueExpression) and (item not in idsWithoutTissueExpData):
 					idsWithoutTissueExpData.append(item)
+		
+		# create expression vector dictionary with respect to gene --> key = geneId, value = vector
+		geneExpression = {}
 
-		# determine whether expression meets threshold for high expression
-		numTopRankingGenes = threshold * totalGenes
-		critRank = totalGenes - numTopRankingGenes
+		for gene in genesForAnalysis:
+			vector = []
 
-		expressionMatrix = [[0 for tissue in range(numTissues)] for gene in range(numGenesForAnalysis)]
-
-		# if the rank for expression of a gene in a particular tissue type is greater than critRank, then that gene
-		# will be considered highly expressed in that tissue
-		for i in range(numGenesForAnalysis):
-			for j in range(numTissues):
-				if i < len(idsForTissueExpression):
-					if genesForAnalysis[i] in idsForTissueExpression:
-						# gene has tissue expression data in the GTEx file
-						if matrix[i][j] >= critRank:
-							expressionMatrix[i][j] = 1
+			if gene in idsForTissueExpression:
+				for i in range(numTissues):
+				# gene has tissue expression data in GTEx file
+				# if rank for expression of a gene in a particular tissue is greater than critRank, that gene will be considered highly expressed (1) in that tissue
+					if tissueExpressionTstats[gene][i] >= critRank:
+						vector.append(1)
 					else:
-						# gene doesn't have tissue expression in GTEx file
-						if processMissingSnps == "Z":
-							expressionMatrix[i][j] = 0
-						elif processMissingSnps == "H":
-							expressionMatrix[i][j] = ""
-						elif processMissingSnps == "I":
-							# find next closest gene with tissue expression in GTEx file, even if greater than 1 mb away
-							print "ERROR: TODO (flag I)"
-						else:
-							print "ERROR (line 461): Something is wrong with processMissingSnps."
+						vector.append(0)
+			else:
+				# gene doesn't have tissue expression in GTEx file
+				if processMissingSnps == "Z":
+					for i in range(numTissues):
+						vector.append(0)
+				elif processMissingSnps == "H":
+					for i in range(numTissues):
+						vector.append("")
+				elif processMissingSnps == "I":
+					# should have been dealt with before?
+					print "ERROR (line 509): something wrong if processMissingSnps == I"
 				else:
-					# last gene in genesForAnalysis does not have tissue expression data in the GTEx file
-						if processMissingSnps == "Z":
-							expressionMatrix[i][j] = 0
-						elif processMissingSnps == "H":
-							expressionMatrix[i][j] = ""
-						elif processMissingSnps == "I":
-							# find next closest gene with tissue expression in GTEx file, even if greater than 1 mb away
-							print "ERROR: TODO (flag I)"
-						else:
-							print "ERROR (line 472): Something is wrong with processMissingSnps."
+					print "ERROR (line 511): Something is wrong with processMissingSnps."
 
-		# create expression vector - only output one line per snp
-		# if more than one gene for analysis, combine the tissue expression vectors for both genes
-		expressionVector = [0 for tissue in range(numTissues)]
+			geneExpression[gene] = vector
 
-		for i in range(numGenesForAnalysis):
-			for j in range(numTissues):
-				if expressionMatrix[i][j] == 1:
-					# update any tissue's expression if the expression of any gene  in genesForAnalysis meets threshold
-					expressionVector[j] = 1
+		# create expression vector dictionary with respect to snp --> key = snp, value = combined vector of all vectors for nearest genes
+		expressionVector = {}
+
+		snpName = snp[0] + ":" + snp[1]
+		indexesForHighThreshold = []
+
+		for gene in genesForAnalysis:
+			if numGenesForAnalysis == 1:
+				expressionVector[snpName] = geneExpression[gene]
+			else:
+				# determine indexes for which tissue expression is 1
+				for i in range(numTissues):
+					if geneExpression[gene][i] == 1:
+						indexesForHighThreshold.append(i)
+
+		combinedVector = []
+		for i in range(numTissues):
+			combinedVector.append(0)
+
+		# update tissue expression vector if expression of any gene in genesForAnalysis meets the threshold
+		for i in range(numTissues):
+			if i in indexesForHighThreshold:
+				combinedVector[i] = 0
+
+		expressionVector[snpName] = combinedVector
 
 		# write header line onto new file once (only for first snp)
 		if numSnps == 1:
 			headerLineOutput = headerLine + newline
 			outFile.write(headerLineOutput)
 
-		snpName = snp[0] + ":" + snp[1]
-
 		# write out expression vector
 		output = snpName + tab
+
+		print "len(expressionVector):", len(expressionVector) # should always be 1
+
 		for i in range(numTissues):
 			if i < (numTissues - 1):
-				output += str(expressionVector[i]) + tab
+				output += str(expressionVector[snpName][i]) + tab
 			else: # add newline if last entry in the vector
-				output += str(expressionVector[i]) + newline
+				output += str(expressionVector[snpName][i]) + newline
 		outFile.write(output)
 
 		# write out file containing nearest genes corresponding to each snp
 		nearestGenesOutput = snpName + tab
-		if len(idsForTissueExpression) != 0: # snp has tissue expression data for its nearest gene
-			for i in range(len(idsForTissueExpression)):
-				if i < (len(idsForTissueExpression) - 1):
-					nearestGenesOutput += genesForAnalysis[i] + tab + genes[genesForAnalysis[i]][0] + tab
-				else: # add newline if last entry in the vector
-					nearestGenesOutput += genesForAnalysis[i] + tab + genes[genesForAnalysis[i]][0] + newline
-		else: # no tissue expression data for the nearest gene
-			nearestGenesOutput += newline
+
+		for gene in genesForAnalysis:
+			if processMissingSnps == "I":
+			# all snps should have nearest gene
+				for i in range(len(idsForTissueExpression)):
+					if i < (len(idsForTissueExpression) - 1):
+						nearestGenesOutput += genesForAnalysis[i] + tab + genes[genesForAnalysis[i]][0] + tab
+					else: # add newline if last entry in the vector
+						nearestGenesOutput += genesForAnalysis[i] + tab + genes[genesForAnalysis[i]][0] + newline
+			else: # no tissue expression data for the nearest gene
+				if len(idsForTissueExpression) == 0: # no tissue expression data for the nearest gene
+					if processMissingSnps != "I":
+						nearestGenesOutput += newline
+					else:
+						print "ERROR (line 574): Something is wrong, because if processMissingSnps == 'I', then all snps should have a nearest gene."
 
 		nearestGenesFile.write(nearestGenesOutput)
 
 	else:
 		# there are no genes to analyze
-		numSnpsNoGenes += 1
 
 		snpName = snp[0] + ":" + snp[1]
 		output = snpName + tab
@@ -530,7 +594,7 @@ for snp in snpFile:
 				else:
 					output += "" + newline
 		else:
-			print "ERROR (line 533): Something is wrong with processing missing snps when there is no gene within 1mb."
+			print "ERROR (line 597): Something is wrong with processing missing snps when there is no gene within 1mb."
 		
 		outFile.write(output)
 
