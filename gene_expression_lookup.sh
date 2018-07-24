@@ -1,5 +1,5 @@
 # Date Created: 9 July 2018
-# Date Last Modified: 23 July 2018
+# Date Last Modified: 24 July 2018
 # Execution: ./gene_expression_lookup_final.sh (TODO WITH FLAGSS!)
 # Description: Shell script for tissue expression lookup of genes near specified snps. First, ensures that both the 
 # 	GENCODE GTF file and GTEx t-statistics file have been processed. Then analyzes expression of genes closest to snps
@@ -81,26 +81,25 @@ do
 			exit 1
 			;;
 	esac
+done
 
-	# determine whether / how to process GENCODE file
-	if [ "$processGencode" = true ]
+# determine whether / how to process GENCODE file
+if [ "$processGencode" = true ]
+then
+	echo "Have to process GENCODE file."
+	if [ "$onlyProtCoding" = true ]
 	then
-		echo "Have to process GENCODE file."
-		if [ "$onlyProtCoding" = true ]
-		then
-			echo "Processing GENCODE file. Only including protein-coding genes."
-			python ./GTF_processing.py gencode.v19.annotation.gtf genesInGTEx_v6p.txt $tStatFile true
-		else [ "$onlyProtCoding" = false ]
-			echo "Processing GENCODE file. Including all genes in tstat file in addition to protein-coding genes."
-			python ./GTF_processing.py gencode.v19.annotation.gtf genesInGTEx_v6p.txt $tStatFile false
-		fi
-
-		geneAnnotationsFile="./gene_annotations.txt"
-	else
-		echo "GENCODE file has already been processed."
+		echo "Processing GENCODE file. Only including protein-coding genes."
+		python ./GTF_processing.py gencode.v19.annotation.gtf genesInGTEx_v6p.txt $tStatFile true
+	else [ "$onlyProtCoding" = false ]
+		echo "Processing GENCODE file. Including all genes in tstat file in addition to protein-coding genes."
+		python ./GTF_processing.py gencode.v19.annotation.gtf genesInGTEx_v6p.txt $tStatFile false
 	fi
 
-	# conduct expression lookup
-	python ./expression_lookup.py $snpFile $geneAnnotationsFile $tStatFile $numNearestGenesToSearch $distanceFromSnp $expressionThreshold $processMissingSnps
+	geneAnnotationsFile="./gene_annotations.txt"
+else
+	echo "GENCODE file has already been processed."
+fi
 
-done
+# conduct expression lookup
+python ./expression_lookup.py $snpFile $geneAnnotationsFile $tStatFile $numNearestGenesToSearch $distanceFromSnp $expressionThreshold $processMissingSnps

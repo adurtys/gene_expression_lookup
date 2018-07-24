@@ -103,9 +103,11 @@ def findDuplicates(anyList):
 
 	return duplicates
 
+print "Arguments passed into expression_lookup.py:", sys.argv[1:]
+
 # check to make sure file was run with correct number of arguments
 if len(sys.argv) != 12:
-	print "ERROR: Incorrect number of command-line arguments!"
+	print "ERROR (expression_lookup.py line 108): Incorrect number of command-line arguments!"
 
 # read in file containing snps
 snpFilename = sys.argv[1]
