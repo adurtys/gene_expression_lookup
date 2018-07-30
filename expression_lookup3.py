@@ -118,7 +118,7 @@ geneAnnotationsFile.close()
 print "Finished reading in gene annotations file."
 
 # read in genes in the gene annotations file that aren't contained in t-statistics file
-genesWithoutTstat = nonOverlappingGenes.getGenesWithoutTstat()
+genesWithoutTstats = nonOverlappingGenes.getGenesWithoutTstat(tstatFilename, geneAnnotationsFilename)
 
 # create dictionary containing output vectors for each snp
 snpOutputDict = {}

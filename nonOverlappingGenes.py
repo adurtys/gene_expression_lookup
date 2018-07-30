@@ -17,7 +17,7 @@ if len(sys.argv) != 3:
 tstatFilename = sys.argv[1]
 annotationsFilename = sys.argv[2]
 
-genesWithoutTstat = {}
+genesWithoutTstatsDict = {}
 
 def main(tstatisticsFilename, geneAnnotationsFilename):
 	# read in t-statistics file
@@ -64,22 +64,21 @@ def main(tstatisticsFilename, geneAnnotationsFilename):
 	output = ""
 	for item in idsInGeneAnnotationsFile:
 		# only add new ids to outFile once
-		if (item not in idsInTstatFile) and (item not in genesWithoutTstat):
-			genesWithoutTstat[item] = 0
+		if (item not in idsInTstatFile) and (item not in genesWithoutTstatsDict):
+			genesWithoutTstatsDict[item] = 0
 			output += item + newline
 
 	outFile.write(output)
 	outFile.close()
 
-	print "There are", len(genesWithoutTstat), "genes in the gene annotations file but that do not have tissue expression t-statistics."
+	print "There are", len(genesWithoutTstatsDict), "genes in the gene annotations file but that do not have tissue expression t-statistics."
 
 # create function to access genesWithoutTstat
 def getGenesWithoutTstat(tstatisticsFilename, geneAnnotationsFilename):
-	main(tstatisticsFilename, geneAnnotationsFilename)
-	return genesWithoutTstat.keys()
+	return genesWithoutTstatsDict.keys()
 
 if __name__ == "__main__":
 	main(tstatFilename, annotationsFilename)
 
-test = getGenesWithoutTstat(tstatFilename, annotationsFilename)
-print "Testing getGenesWithoutTstat:", test
+genesWithoutTstats = getGenesWithoutTstat(tstatFilename, annotationsFilename)
+print "Genes without tissue-expression t-statistics:", genesWithoutTstats
