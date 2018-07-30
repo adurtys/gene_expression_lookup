@@ -6,7 +6,6 @@
 # argv3: filename for file containing tissue expression t-statistics
 # argv4: boolean for whether gene annotations file should include only protein-coding genes ("true") or all genes that have tissue expression t-statistics,
 # 	regardless of whether or not they are protein-coding ("false")
-#		default: include all genes that have tissue expression t-statistics
 # Description: processes GENCODE Comprehensive Gene Annotation GTF file for start and end locations of autosomal genes. Output is "gene_annotations.txt",
 #	a tab-separated file containing six columns: chromosome name, gene ID, gene name, gene start location, gene end location, and feature type (whether the gene
 # 	is protein-coding or not).
@@ -23,6 +22,11 @@ if len(sys.argv) != 5:
 
 # determine whether to include only protein-coding genes or all genes in GTEx_v6p
 onlyProteinCoding = sys.argv[4]
+
+if onlyProteinCoding == "true":
+	print "Only including protein-coding genes from GENCODE in the gene annotations file."
+elif onlyProteinCoding == "false":
+	print "Including protein-coding genes and genes contained in the t-stat file."
 
 # read in the GTEx_v6p file
 gtex_v6p_filename = sys.argv[2]
@@ -124,7 +128,6 @@ for line in inFile:
 	elif (geneId not in genes) and (chromosome not in chromosomesToExclude):
 		# parse for genes that are either depending on whether onlyProteinCoding == true
 		if onlyProteinCoding == "true":
-			print "Only including protein-coding genes from GENCODE in the gene annotations file."
 			if geneType == "protein_coding":
 				# make sure gene is in GTEx_v6p
 				if geneId in idsInGTEx_v6p:
@@ -137,8 +140,7 @@ for line in inFile:
 
 					genes[geneId] = geneInfo
 
-		else:
-			print "Including protein-coding genes and genes contained in the t-stat file."
+		elif onlyProteinCoding == "false":
 			if (geneType == "protein_coding") or (geneId in idsInTstatFile):
 				# make sure gene is in GTEx_v6p
 				if geneId in idsInGTEx_v6p:
@@ -150,6 +152,8 @@ for line in inFile:
 					geneInfo.append(geneType)
 
 					genes[geneId] = geneInfo
+		else:
+			print "ERROR (GTF_processing.py line 155): invalid value for onlyProteinCoding:", onlyProteinCoding
 
 inFile.close()
 
