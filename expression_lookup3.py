@@ -6,7 +6,7 @@
 # argv2: gene annotations filename
 # argv3: filename for file containing rank-orders of the tissue expression t-statistics
 # argv4: number of nearest genes to the snp for which to conduct the tissue expression lookup
-# argv5: distance from the snp for which to look for nearby genes
+# argv5: distance from the snp for which to look for nearby genes (in kbp)
 # argv6: the percent of top ranks of t-statistic that should be considered "highly expressed" for each tissue (expressed as a 
 #	decimal - ex: 0.10, 0.05)
 # argv7: filename for output file containing tissue expression vectors for nearest gene(s) to each snp
@@ -396,7 +396,7 @@ for snp in snpFile:
 						print "Not including this gene in the snp's final tissue expression output."
 						index += 1
 
-	print "There are", len(genesToAnalyze), "genes to analyze for tissue expression:" genesToAnalyze
+	print "There are", len(genesToAnalyze), "genes to analyze for tissue expression:", genesToAnalyze
 
 	if (processMissingSnps == "I") and (len(genesToAnalyze) == 0):
 		# couldn't find a gene in distanceFromSnpDict that was within the distance specified and also had tissue expression t-statistics

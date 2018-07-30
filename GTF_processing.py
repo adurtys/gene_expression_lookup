@@ -1,5 +1,5 @@
 # Date Created: 27 June 2018
-# Date Last Modified: 26 July 2018
+# Date Last Modified: 30 July 2018
 # Execution: python GTF_processing.py gencodeFilename GTEx_filename tstatFilename onlyProteinCoding
 # argv1: GENCODE GTF filename
 # argv2: GTEx v6p filename
@@ -11,7 +11,7 @@
 # 	is protein-coding or not).
 # 	if onlyProteinCoding is true, will include only autosomal protein-coding genes included in GTEx v6p. Otherwise, will include all autosomal genes included
 # 	in both GTEx v6p and the t-statistics file.  
-# Run Time: 15 sec
+# Run Time: 16 sec
 
 #!/usr/bin/env python
 import sys

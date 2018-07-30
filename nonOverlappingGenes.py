@@ -5,7 +5,7 @@
 # argv2: filename for gene annotations file
 # Description: finds genes listed in gene annotations file but which do not have tissue expression t-statistics in GTEx.
 # 	Outputs these genes in "genesWithoutTstat.txt"
-# Run Time: 10 sec
+# Run Time: 1 sec
 
 #!/usr/bin/env python
 import sys
