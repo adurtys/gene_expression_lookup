@@ -75,10 +75,8 @@ def main(tstatisticsFilename, geneAnnotationsFilename):
 
 # create function to access genesWithoutTstat
 def getGenesWithoutTstat(tstatisticsFilename, geneAnnotationsFilename):
+	main(tstatisticsFilename, geneAnnotationsFilename)
 	return genesWithoutTstatsDict.keys()
 
 if __name__ == "__main__":
 	main(tstatFilename, annotationsFilename)
-
-genesWithoutTstats = getGenesWithoutTstat(tstatFilename, annotationsFilename)
-print "Genes without tissue-expression t-statistics:", genesWithoutTstats
