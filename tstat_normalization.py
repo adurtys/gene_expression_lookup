@@ -1,6 +1,7 @@
 # Date Created: 3 July 2018
 # Date Last Modified: 16 July 2018
-# Execution: python tstat_normalization_final.py tstatFilename
+# Execution: python tstat_normalization.py tstatFilename
+# argv1: filename for file containing tissue expression t-statistics
 # Description: This program rank-normalizes the t statistics in the "GTEx.tstat.tsv" file, which is formatted 
 # 	such that each row is a gene, and each column is the t statistic for the expression of that gene in the tissue 
 # 	corresponding to that column.
@@ -100,14 +101,14 @@ def rankList(anyList):
 
 # check to make sure file was run with correct number of arguments
 if len(sys.argv) != 2:
-	print "ERROR: Incorrect number of command-line arguments!"
+	print "ERROR (tstat_normaliation.py line 104): Incorrect number of command-line arguments!"
 
 # read in the tstat file
-inFilename = sys.argv[1]
-inFile = open(inFilename, 'r')
+tstatFilename = sys.argv[1]
+tstatFile = open(tstatFilename, 'r')
 
 # store column labels in header row
-headerLine = inFile.readline()
+headerLine = tstatFile.readline()
 headerLine = headerLine.rstrip('\r\n')
 headers = headerLine.split('\t')
 
@@ -120,7 +121,7 @@ matrix = [[] for tissue in range(numTissues)]
 # create list for ENSGIDs
 ids = []
 
-for line in inFile:
+for line in tstatFile:
 	line = line.rstrip('\r\n')
 	tissues = line.split('\t')
 
@@ -131,7 +132,7 @@ for line in inFile:
 	for i in range(numTissues):
 		matrix[i].append(float(tissues[i + 1]))
 
-inFile.close()
+tstatFile.close()
 numGenes = len(matrix[0])
 
 # initialize a new matrix to store the ranks

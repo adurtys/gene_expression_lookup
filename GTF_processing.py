@@ -1,9 +1,17 @@
 # Date Created: 27 June 2018
-# Date Last Modified: 23 July 2018
+# Date Last Modified: 26 July 2018
 # Execution: python GTF_processing.py gencodeFilename GTEx_filename tstatFilename onlyProteinCoding
-# Description: TODO (UPDATE) This program proceses GENCODE Comprehensive Gene Annotation GTF File for the start and end locations of protein-coding genes. 
-# 	The input is "gencode.v19.annotation.gtf", and the output is "gene_annotations.txt", a file with five columns (tab separated).
-# 	The columns are chromosome name, GeneID, gene name, gene start location, and gene end location, respectively, for all protein-coding genes in the GENCODE file. 
+# argv1: GENCODE GTF filename
+# argv2: GTEx v6p filename
+# argv3: filename for file containing tissue expression t-statistics
+# argv4: boolean for whether gene annotations file should include only protein-coding genes ("true") or all genes that have tissue expression t-statistics,
+# 	regardless of whether or not they are protein-coding ("false")
+#		default: include all genes that have tissue expression t-statistics
+# Description: processes GENCODE Comprehensive Gene Annotation GTF file for start and end locations of autosomal genes. Output is "gene_annotations.txt",
+#	a tab-separated file containing six columns: chromosome name, gene ID, gene name, gene start location, gene end location, and feature type (whether the gene
+# 	is protein-coding or not).
+# 	if onlyProteinCoding is true, will include only autosomal protein-coding genes included in GTEx v6p. Otherwise, will include all autosomal genes included
+# 	in both GTEx v6p and the t-statistics file.  
 # Run Time: 15 sec
 
 #!/usr/bin/env python
@@ -11,11 +19,10 @@ import sys
 
 # check to make sure file was run with correct number of arguments
 if len(sys.argv) != 5:
-	print "ERROR: Incorrect number of command-line arguments!"
+	print "ERROR (GTF_processing.py line 22): Incorrect number of command-line arguments!"
 
 # determine whether to include only protein-coding genes or all genes in GTEx_v6p
 onlyProteinCoding = sys.argv[4]
-if onlyProteinCoding == "true":
 
 # read in the GTEx_v6p file
 gtex_v6p_filename = sys.argv[2]
@@ -149,6 +156,22 @@ inFile.close()
 numGenes = len(genes)
 print "Writing", numGenes, "genes to the annotations file. These genes are either protein-coding or have tissue expression data in the GTEx file."
 print "Genes on chrX, chrY, and chrM have been excluded. Genes not in GTEx_v6p have also been excluded."
+
+# create data structures containing relevant information --> these data structures can be accessed in other python scripts
+geneIds = genes.keys()
+geneNames = []
+geneChromosomes = []
+geneStartLocations = []
+geneEndLocations = []
+geneType = []
+
+for gene in genes:
+	geneNames.append(genes[gene][0])
+	geneChromosomes.append(genes[gene][1])
+	geneStartLocations.append(genes[gene][2])
+	geneEndLocations.append(genes[gene][3])
+	geneType.append(genes[gene][4])
+
 
 # create a new file for start and end positions of only protein-coding genes
 outFilename = "gene_annotations.txt"

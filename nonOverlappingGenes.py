@@ -1,9 +1,10 @@
 # Date Created: 11 July 2018
-# Date Last Modified: 16 July 2018
+# Date Last Modified: 26 July 2018
 # Execution: python nonOverlappingGenes.py tstatFilename geneAnnotationsFilename
-# Description: Finds genes listed in the gene_annotations file (containing only the protein-coding genes from
-# 	the GENCODE GTF file) but that do not have tissue expression data in the GTEx file, and vice versa. Prints out these 
-# 	non-overlapping genes into separate files, namely "genesNotInGencode.txt" and "genesNotInGTEx.txt", respectively.
+# argv1: filename for file containing tissue expression t-statistics
+# argv2: filename for gene annotations file
+# Description: finds genes listed in gene annotations file but which do not have tissue expression t-statistics in GTEx.
+# 	Outputs these genes in "genesWithoutTstat.txt"
 # Run Time: 10 sec
 
 #!/usr/bin/env python
@@ -11,23 +12,24 @@ import sys
 
 # check to make sure file was run with correct number of arguments
 if len(sys.argv) != 3:
-	print "ERROR: Incorrect number of command-line arguments!"
+	print "ERROR (nonOverlappingGenes.py line 15): Incorrect number of command-line arguments!"
 
-# read in GTEx t-statistics file
+# read in t-statistics file
 tstatFilename = sys.argv[1]
 tstatFile = open(tstatFilename, 'r')
 
 # skip header line
 headerLine = tstatFile.readline()
 
-# parse GTEx file for GeneIds
-idsInTstatFile = []
+# parse t-statistics file for gene IDs
+idsInTstatFile = {}
 for line in tstatFile:
 	line = line.rstrip('\r\n')
 	tissues = line.split('\t')
+	geneId = tissues[0]
 
-	# add ENSGID, found in first column, to the list
-	idsInTstatFile.append(tissues[0])
+	# add gene ID to dictionary
+	idsInTstatFile[geneId] = 0
 
 tstatFile.close()
 
@@ -35,8 +37,8 @@ tstatFile.close()
 annotationsFilename = sys.argv[2]
 annotationsFile = open(annotationsFilename, 'r')
 
-# parse file for GeneIds
-idsInGencodeFile = []
+# parse gene annotations file for gene ids
+idsInGeneAnnotationsFile = {}
 for line in annotationsFile:
    	line = line.rstrip('\r\n')
 	
@@ -44,41 +46,26 @@ for line in annotationsFile:
 	columns = line.split('\t')
 	geneId = columns[0]
 
-	# add ENSGID to the list
-	idsInGencodeFile.append(geneId)
+	# add gene ID to dictionary
+	idsInGeneAnnotationsFile[geneId] = 0
 
 annotationsFile.close()
 
 newline = "\n"
 
-# create output file for genes in GTEx file and not in GENCODE file
-tstatGenesFilename = "genesNotInAnnotationsFile.txt"
-tstatGenesFile = open(tstatGenesFilename, 'w')
-
-genesNotInGencode = []
-tstatOutput = ""
-for item in idsInTstatFile:
-	if (item not in idsInGencodeFile) and (item not in genesNotInGencode):
-		genesNotInGencode.append(item)
-		tstatOutput += item + newline
-
-tstatGenesFile.write(tstatOutput)
-tstatGenesFile.close()
-
 # create output file for genes in GENCODE file and not in GTEx file
-gencodeGenesFilename = "genesWithoutTstat.txt"
-gencodeGenesFile = open(gencodeGenesFilename, 'w')
+outFilename = "genesWithoutTstat.txt"
+outFile = open(outFilename, 'w')
 
-genesNotInGTEx = []
-gencodeOutput = ""
-for item in idsInGencodeFile:
+genesWithoutTstat = {}
+output = ""
+for item in idsInGeneAnnotationsFile:
 	# only add new ids to outFile once
-	if (item not in idsInTstatFile) and (item not in genesNotInGTEx):
-		genesNotInGTEx.append(item)
-		gencodeOutput += item + newline
+	if (item not in idsInTstatFile) and (item not in genesWithoutTstat):
+		genesWithoutTstat[item] = 0
+		output += item + newline
 
-gencodeGenesFile.write(gencodeOutput)
-gencodeGenesFile.close()
+outFile.write(output)
+outFile.close()
 
-print "There are", len(genesNotInGencode), "genes in the GTEx file but not in the gene annotations file."
-print "There are", len(genesNotInGTEx), "genes in the gene annotations file but not in the GTEx file."
+print "There are", len(genesWithoutTstat), "genes in the gene annotations file but that do not have tissue expression t-statistics."

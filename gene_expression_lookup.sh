@@ -4,6 +4,7 @@
 # Description: Shell script for tissue expression lookup of genes near specified snps. First, ensures that both the 
 # 	GENCODE GTF file and GTEx t-statistics file have been processed. Then analyzes expression of genes closest to snps
 # 	listed in the snp file.
+# 	Note: files used in the flags must be contained in the working directory. 
 
 #!/usr/bin/env bash
 
