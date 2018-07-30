@@ -27,6 +27,68 @@
 #!/usr/bin/env python
 import sys, bisect, nonOverlappingGenes
 
+"""
+Listed below are the functions used in the script.
+
+"""
+# Input: a = sorted list (ascending order); x = item to search for in sorted list; n = number of nearest values to x to identify; 
+#	side = whether values returned should be to the right or left of x in a
+# Output: list of n nearest values to x in a
+# Description: function returns a list of n nearest values to x in sorted list a
+def nearestNumbers(a, x, n, side):
+	nearestIndexes = []
+
+	if x in a:
+		nearestIndexes.append(a.index(x))
+
+	if side == "right": # look for values greater than x
+		i = bisect.bisect_left(a, x)
+		if i != len(a):
+			while len(nearestIndexes) < n:
+				if i not in nearestIndexes: # x not in a
+					nearestIndexes.append(i)
+					i += 1
+				else: # x in a
+					i += 1
+					nearestIndexes.append(i)
+	elif side == "left": # look for values less than x
+		i = bisect.bisect_left(a, x)
+		if i != len(a):
+			while len(nearestIndexes) < n:
+				if i not in nearestIndexes: # x not in a
+					nearestIndexes.append(i - 1)
+					i -= 1
+				else: # x in a
+					i -= 1
+					nearestIndexes.append(i)
+	else:
+		print "ERROR: Invalid input value for side. Two options are 'right' and 'left'."
+	print nearestIndexes
+
+	# create list of values in sorted array corresponding to each index
+	nearestValues = []
+	for j in range(len(nearestIndexes)):
+		index = nearestIndexes[j]
+		nearestValues.append(a[index])
+	
+	return nearestValues
+
+# Input: a list
+# Output: a list of items that are present in the list more than once
+# Description: finds items that are present more than once in the inputted list 
+def findDuplicates(anyList):
+	seen = set()
+	duplicates = []
+
+	for item in anyList:
+		if item in seen and item not in duplicates:
+			duplicates.append(item)
+		else:
+			seen.add(item)
+
+	return duplicates
+
+# MAIN SCRIPT:
 # error-check for correct number of command-line arguments
 print "Arguments passed into expression_lookup3.py:", sys.argv[1:]
 if len(sys.argv) != 10:
@@ -511,65 +573,3 @@ print "There were", len(noNearbyGene), "snps which did not have a gene within th
 print "There were", len(noTissueExpression), "snps which did not have tissue-expression t-statistics for their nearest gene(s):", noTissueExpression.keys()
 print "In total, there were", len(genesWithoutTsats), "genes in the geneAnnotationsFile that did not have corresponding tissue-expression t-statistics."
 print "These cases of distant genes or missing tissue expression t-statistics were dealt with as specified by the processMissingSnps flag:", processMissingSnps
-
-"""
-Below are the functions used in the script.
-
-"""
-
-# Input: a = sorted list (ascending order); x = item to search for in sorted list; n = number of nearest values to x to identify; 
-#	side = whether values returned should be to the right or left of x in a
-# Output: list of n nearest values to x in a
-# Description: function returns a list of n nearest values to x in sorted list a
-def nearestNumbers(a, x, n, side):
-	nearestIndexes = []
-
-	if x in a:
-		nearestIndexes.append(a.index(x))
-
-	if side == "right": # look for values greater than x
-		i = bisect.bisect_left(a, x)
-		if i != len(a):
-			while len(nearestIndexes) < n:
-				if i not in nearestIndexes: # x not in a
-					nearestIndexes.append(i)
-					i += 1
-				else: # x in a
-					i += 1
-					nearestIndexes.append(i)
-	elif side == "left": # look for values less than x
-		i = bisect.bisect_left(a, x)
-		if i != len(a):
-			while len(nearestIndexes) < n:
-				if i not in nearestIndexes: # x not in a
-					nearestIndexes.append(i - 1)
-					i -= 1
-				else: # x in a
-					i -= 1
-					nearestIndexes.append(i)
-	else:
-		print "ERROR: Invalid input value for side. Two options are 'right' and 'left'."
-	print nearestIndexes
-
-	# create list of values in sorted array corresponding to each index
-	nearestValues = []
-	for j in range(len(nearestIndexes)):
-		index = nearestIndexes[j]
-		nearestValues.append(a[index])
-	
-	return nearestValues
-
-# Input: a list
-# Output: a list of items that are present in the list more than once
-# Description: finds items that are present more than once in the inputted list 
-def findDuplicates(anyList):
-	seen = set()
-	duplicates = []
-
-	for item in anyList:
-		if item in seen and item not in duplicates:
-			duplicates.append(item)
-		else:
-			seen.add(item)
-
-	return duplicates

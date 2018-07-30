@@ -10,11 +10,6 @@
 #!/usr/bin/env python
 import sys
 
-# check to make sure file was run with correct number of arguments
-print "Arguments passed into nonOverlappingGenes.py:", sys.argv[1:]
-if len(sys.argv) != 3:
-	print "ERROR (nonOverlappingGenes.py line 15): Incorrect number of command-line arguments!"
-
 tstatFilename = sys.argv[1]
 annotationsFilename = sys.argv[2]
 
@@ -72,7 +67,7 @@ def main(tstatisticsFilename, geneAnnotationsFilename):
 	outFile.write(output)
 	outFile.close()
 
-	print "There are", len(genesWithoutTstatsDict), "genes in the gene annotations file but that do not have tissue expression t-statistics."
+	print "There are", len(genesWithoutTstatsDict), "genes in", geneAnnotationsFilename, "that do not have tissue expression t-statistics."
 
 # create function to access genesWithoutTstat
 def getGenesWithoutTstat(tstatisticsFilename, geneAnnotationsFilename):
