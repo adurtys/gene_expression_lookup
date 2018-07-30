@@ -2,21 +2,27 @@
 # Date Last Modified: 30 July 2018
 # Execution: python expression_lookup3.py snpFilename geneAnnotationsFilename tstatFilename numGenes distanceFromSnp
 #	threshold outFilename nearestGenesFilename processMissingSnps
-# argv1: filename for file containing snps to search
+# argv1: filename for file containing snps to search (each snp is listed on its own line, in the format "chr#:location")
 # argv2: gene annotations filename
 # argv3: filename for file containing rank-orders of the tissue expression t-statistics
-# argv4: numGenes is the number of nearest genes to the snp for which to include in tissue expression lookup
-# argv5: distanceFromSnp is the distance from the snp for which to look for nearby genes
-# argv6: threshold is the percent of top ranks of t-statistic that should be considered "highly expressed" for
-# 	each tissue (expressed as a decimal - ex: 0.10, 0.05)
+# argv4: number of nearest genes to the snp for which to conduct the tissue expression lookup
+# argv5: distance from the snp for which to look for nearby genes
+# argv6: the percent of top ranks of t-statistic that should be considered "highly expressed" for each tissue (expressed as a 
+#	decimal - ex: 0.10, 0.05)
 # argv7: filename for output file containing tissue expression vectors for nearest gene(s) to each snp
 # argv8: filename for output file containing nearest gene(s) to each snp
 # argv9: flag for how to process snps whose nearest gene has missing tissue expression data, either because there is no
-#	gene within the specified distance from the snp or beacuse the nearest gene(s) don't have tissue expressino t-statistics
+#	gene within the specified distance from the snp or beacuse the nearest gene(s) don't have tissue expression t-statistics
 #	if processMissingSnps == "I": find the next nearest gene to the snp that contains tissue expression t-statistics
 #	if processMissingSnps == "Z": the tissue expression vector should contain 0 for every tissue
 #	if processMissingSnps == "H": do not include snp in final output file of tissue expression vectors
-# Description: TODO
+# Description: finds the nearest numGenes to each snp in snpFilename, then assesses whether or not this gene's tissue expression
+# 	t-statistics meet the threshold for high expression in each tissue. Outputs a vector of expression in each tissue for every snp,
+#	where 1 indicates the nearest gene to the snp is meets the threshold for high expression in a particular tissue. If there is
+#	no gene within the specified distance of the snp, or if the nearest gene does not have corresponding tissue-expression
+#	t-statistics, these snps are processed as specified in the processMissingSnps flag. Also outputs a file containing each snp
+#	and its corresponding nearest numGenes that were used when creating the expression vector.
+# Runtime: 
 
 #!/usr/bin/env python
 import sys, bisect, nonOverlappingGenes
