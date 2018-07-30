@@ -8,18 +8,20 @@
 # Run Time: 1 sec
 
 #!/usr/bin/env python
+import sys
+
+# check to make sure file was run with correct number of arguments
+if len(sys.argv) != 3:
+	print "ERROR (nonOverlappingGenes.py line 15): Incorrect number of command-line arguments!"
+
+tstatFilename = sys.argv[1]
+annotationsFilename = sys.argv[2]
+
 genesWithoutTstat = {}
 
-def main(tstatFilename, geneAnnotationsFilename):
-	import sys
-
-	# check to make sure file was run with correct number of arguments
-	if len(sys.argv) != 3:
-		print "ERROR (nonOverlappingGenes.py line 15): Incorrect number of command-line arguments!"
-
+def main(tstatisticsFilename, geneAnnotationsFilename):
 	# read in t-statistics file
-	tstatFilename = sys.argv[1]
-	tstatFile = open(tstatFilename, 'r')
+	tstatFile = open(tstatisticsFilename, 'r')
 
 	# skip header line
 	headerLine = tstatFile.readline()
@@ -37,8 +39,7 @@ def main(tstatFilename, geneAnnotationsFilename):
 	tstatFile.close()
 
 	# read in gene_annotations file
-	annotationsFilename = sys.argv[2]
-	annotationsFile = open(annotationsFilename, 'r')
+	annotationsFile = open(geneAnnotationsFilename, 'r')
 
 	# parse gene annotations file for gene ids
 	idsInGeneAnnotationsFile = {}
@@ -73,8 +74,12 @@ def main(tstatFilename, geneAnnotationsFilename):
 	print "There are", len(genesWithoutTstat), "genes in the gene annotations file but that do not have tissue expression t-statistics."
 
 # create function to access genesWithoutTstat
-def getGenesWithoutTstat():
+def getGenesWithoutTstat(tstatisticsFilename, geneAnnotationsFilename):
+	main(tstatisticsFilename, geneAnnotationsFilename)
 	return genesWithoutTstat.keys()
 
-test = getGenesWithoutTstat()
+if __name__ == "__main__":
+	main(tstatFilename, annotationsFilename)
+
+test = getGenesWithoutTstat(tstatFilename, annotationsFilename)
 print "Testing getGenesWithoutTstat:", test
