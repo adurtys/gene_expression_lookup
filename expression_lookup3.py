@@ -112,13 +112,14 @@ for line in geneAnnotationsFile:
 	geneInfo.append(geneStart)
 	geneInfo.append(geneEnd)
 
-	geneAnnotations[geneInfo] = geneInfo
+	geneAnnotations[geneId] = geneInfo
 
 geneAnnotationsFile.close()
 print "Finished reading in gene annotations file."
 
 # read in genes in the gene annotations file that aren't contained in t-statistics file
 genesWithoutTstats = nonOverlappingGenes.getGenesWithoutTstat(tstatFilename, geneAnnotationsFilename)
+print "There are", len(genesWithoutTstats), "genes in", geneAnnotationsFilename, "that do not have tissue expression t-statistics."
 
 # create dictionary containing output vectors for each snp
 snpOutputDict = {}

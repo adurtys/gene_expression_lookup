@@ -11,6 +11,7 @@
 import sys
 
 # check to make sure file was run with correct number of arguments
+print "Arguments passed into nonOverlappingGenes.py:", sys.argv[1:]
 if len(sys.argv) != 3:
 	print "ERROR (nonOverlappingGenes.py line 15): Incorrect number of command-line arguments!"
 
