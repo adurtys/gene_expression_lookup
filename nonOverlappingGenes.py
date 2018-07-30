@@ -69,3 +69,7 @@ outFile.write(output)
 outFile.close()
 
 print "There are", len(genesWithoutTstat), "genes in the gene annotations file but that do not have tissue expression t-statistics."
+
+# create function to access genesWithoutTstat
+def getGenesWithoutTstat():
+	return genesWithoutTstat.keys()
