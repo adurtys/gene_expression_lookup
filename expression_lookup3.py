@@ -198,7 +198,7 @@ for snp in snpFile:
 	# process the snp
 	snp = snp.split(':')
 	chromosome = snp[0]
-	snpLocation = snp[1]
+	snpLocation = int(snp[1])
 	snpName = chromosome + ":" + snpLocation
 
 	# create dictionaries of nearby genes with respect to gene start and end locations
