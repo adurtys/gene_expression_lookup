@@ -1,5 +1,5 @@
 # Date Created: 11 July 2018
-# Date Last Modified: 30 July 2018
+# Date Last Modified: 31 July 2018
 # Execution: python nonOverlappingGenes.py tstatFilename geneAnnotationsFilename
 # argv1: filename for file containing tissue expression t-statistics
 # argv2: filename for gene annotations file
@@ -66,8 +66,6 @@ def main(tstatisticsFilename, geneAnnotationsFilename):
 
 	outFile.write(output)
 	outFile.close()
-
-	print "There are", len(genesWithoutTstatsDict), "genes in", geneAnnotationsFilename, "that do not have tissue expression t-statistics."
 
 # create function to access genesWithoutTstat
 def getGenesWithoutTstat(tstatisticsFilename, geneAnnotationsFilename):
