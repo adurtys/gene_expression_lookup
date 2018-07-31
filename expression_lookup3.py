@@ -299,10 +299,10 @@ for snp in snpFile:
 	expectedNumGenesToAnalyze = numGenes
 
 	if len(duplicates) == 0: # snp is not equidistant from genes
-		while len(genesToAnalyze) < expectedNumGenesToAnalyze:
-			index = 0
+		index = 0
+		while index < len(distanceFromSnpDict):
 			print "len(genesToAnalyze):", len(genesToAnalyze)
-			while index < len(distanceFromSnpDict):
+			while len(genesToAnalyze) < expectedNumGenesToAnalyze:
 				currentGeneId = genesToCheck[index]
 				distanceToCheck = distanceFromSnpDict[currentGeneId]
 				
