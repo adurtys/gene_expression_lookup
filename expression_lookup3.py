@@ -297,14 +297,13 @@ for snp in snpFile:
 
 	# default assumption is that the snp is not equidistant from genes, so the expected number of genes to analyze will be the number of genes specified by the user
 	expectedNumGenesToAnalyze = numGenes
-	print "expected number of genes to analyze:", expectedNumGenesToAnalyze
 
 	if len(duplicates) == 0: # snp is not equidistant from genes
 		index = 0
 		while len(genesToAnalyze) < expectedNumGenesToAnalyze and (index < len(distanceFromSnpDict)):			
 			currentGeneId = genesToCheck[index]
 			distanceToCheck = distanceFromSnpDict[currentGeneId]
-			print "index:", index
+
 			# check whether distance of currentGeneId is within specified distance from snp
 			if distanceToCheck < distanceFromSnp:
 				if currentGeneId not in genesWithoutTstats:
@@ -564,7 +563,7 @@ for snp in snpFile:
 	nearestGenesFile.write(nearestGeneOutput)
 
 outFile.close()
-nearestGenesFilename.close()
+nearestGenesFile.close()
 snpFile.close()
 
 print "There were", numSnps, "snps for which to conduct the tissue expression lookup."
