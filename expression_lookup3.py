@@ -280,6 +280,7 @@ for snp in snpFile:
 					distanceFromSnpDict[gene] = abs(endLocation - snpLocation)
 		print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
 
+	print "Genes closest to the snp:", distanceFromSnpDict
 	# sort distanceFromSnpDict by distances
 	closestDistances = sorted(distanceFromSnpDict.values())
 
@@ -303,6 +304,7 @@ for snp in snpFile:
 			while index < len(distanceFromSnpDict):
 				currentGeneId = genesToCheck[index]
 				distanceToCheck = distanceFromSnpDict[currentGeneId]
+				print "Checking distnace of", currentGeneId, "from snp. This gene is", distanceToCheck, "bp away from the snp."
 				
 				# check whether distance of currentGeneId is within specified distance from snp
 				if distanceToCheck < distanceFromSnp:
@@ -339,7 +341,7 @@ for snp in snpFile:
 					if processMissingSnps == "I":
 						print "Continuing to assess this gene anyway, because it is one of the nearest", numGenes, "genes to the snp."
 
-						if currentGeneId not in genesWithoutTsats:
+						if currentGeneId not in genesWithoutTstats:
 							# gene has tissue expression t-statistics
 							genesToAnalyze.append(currentGeneId)
 							index += 1
