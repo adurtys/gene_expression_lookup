@@ -570,5 +570,5 @@ print "There were", numSnps, "snps for which to conduct the tissue expression lo
 print "There were", len(equidistantFromGenes), "instances in which a snp was equidistant from two genes:", equidistantFromGenes.keys()
 print "There were", len(noNearbyGene), "snps which did not have a gene within the distance specified:", noNearbyGene.keys()
 print "There were", len(noTissueExpression), "snps which did not have tissue-expression t-statistics for their nearest gene(s):", noTissueExpression.keys()
-print "In total, there were", len(genesWithoutTsats), "genes in the geneAnnotationsFile that did not have corresponding tissue-expression t-statistics."
+print "In total, there were", len(genesWithoutTstats), "genes in the geneAnnotationsFile that did not have corresponding tissue-expression t-statistics."
 print "These cases of distant genes or missing tissue expression t-statistics were dealt with as specified by the processMissingSnps flag:", processMissingSnps
