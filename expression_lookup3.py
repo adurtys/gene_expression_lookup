@@ -301,9 +301,7 @@ for snp in snpFile:
 
 	if len(duplicates) == 0: # snp is not equidistant from genes
 		index = 0
-		while len(genesToAnalyze) < expectedNumGenesToAnalyze and (index < len(distanceFromSnpDict)):
-			print "len(genesToAnalyze):", len(genesToAnalyze), "index:", index
-			
+		while len(genesToAnalyze) < expectedNumGenesToAnalyze and (index < len(distanceFromSnpDict)):			
 			currentGeneId = genesToCheck[index]
 			distanceToCheck = distanceFromSnpDict[currentGeneId]
 			print "index:", index
@@ -374,17 +372,61 @@ for snp in snpFile:
 		# assuming gene is only equidistant from two genes (and from one pair of genes) --> store one more gene than what was specified
 		expectedNumGenesToAnalyze = numGenes + 1
 
-		while len(genesToAnalyze) < expectedNumGenesToAnalyze:
-			index = 0
-			while index < len(distanceFromSnpDict):
-				currentGeneId = genesToCheck[index]
-				distanceToCheck = distanceFromSnpDict[currentGeneId]
+		index = 0
+		while len(genesToAnalyze) < expectedNumGenesToAnalyze and (index < len(distanceFromSnpDict)):
+			currentGeneId = genesToCheck[index]
+			distanceToCheck = distanceFromSnpDict[currentGeneId]
 
-				# check whether distance of currentGeneId is within specified distance from snp
-				if distanceToCheck < distanceFromSnp:
-					if currentGeneId not in genesWithoutTstats:
+			# check whether distance of currentGeneId is within specified distance from snp
+			if distanceToCheck < distanceFromSnp:
+				if currentGeneId not in genesWithoutTstats:
+					# gene has tissue expression t-statistics
+
+					if currentGeneId in duplicates: # snp is equidistant from this gene and the next gene in the list
+						nextGeneId = genesToCheck[index + 1]
+
+						print snpName, "is equidistant from", currentGeneId, "and", nextGeneId
+						print "Will proceed by analyzing both genes."
+							
+						genesToAnalyze.append(currentGeneId)
+						genesToAnalyze.append(nextGeneId)
+						index += 2 # increment index by two because assessed and added both current and subsequent genes
+
+					else: # snp isn't equidistnat from this gene and another --> add only this gene
+						genesToAnalyze.append(currentGeneId)
+						index += 1
+
+				else: # gene does not have tissue expression t-statistics
+					print "(expression_lookup3 line 400): One of the", numGenes, "nearest genes to the snp,", currentGeneId, "doesn't have tissue-expression t-statistic."
+						
+					# add snp to noTissueExpression (value = currentGeneId)
+					noTissueExpression[snpName] = currentGeneId
+
+					# proceed depending on method specified by processMissingSnps
+					if processMissingSnps == "I":
+						print "Finding next nearest gene within distance and containing tissue-expression t-statistics."
+						index += 1
+					elif processMissingSnps == "Z":
+						print "Tissue expression vector for this gene will be 0 for every tissue."
+							
+						# add gene to genesToAnalyze
+						genesToAnalyze.append(currentGeneId)
+						index += 1
+					elif processMissingSnps == "H":
+						print "Not including this gene in the snp's in final tissue expression output."
+						index += 1
+			else: # currentGeneId is further from snp than specified by distanceFromSnp
+				print "(expression_lookup3 line 419) One of the", numGenes, "nearest genes to the snp,", currentGeneId, "isn't within the distance specified from the snp."
+					
+				# add snp to noNearbyGene (value = currentGeneId)
+				noNearbyGene[snpName] = currentGeneId
+
+				# proceed depending on method specified by processMissingSnps
+				if processMissingSnps == "I":
+					print "Continuing to assess this gene anyway, because it is one of the nearest", numGenes, "genes to the snp."
+
+					if currentGeneId not in genesWithoutTsats:
 						# gene has tissue expression t-statistics
-
 						if currentGeneId in duplicates: # snp is equidistant from this gene and the next gene in the list
 							nextGeneId = genesToCheck[index + 1]
 
@@ -395,72 +437,27 @@ for snp in snpFile:
 							genesToAnalyze.append(nextGeneId)
 							index += 2 # increment index by two because assessed and added both current and subsequent genes
 
-						else: # snp isn't equidistnat from this gene and another --> add only this gene
+						else: # snp isn't equidistant from this gene and another --> add only this gene
 							genesToAnalyze.append(currentGeneId)
 							index += 1
 
 					else: # gene does not have tissue expression t-statistics
-						print "(expression_lookup3 line 400): One of the", numGenes, "nearest genes to the snp,", currentGeneId, "doesn't have tissue-expression t-statistic."
-						
-						# add snp to noTissueExpression (value = currentGeneId)
+						print "(expression_lookup3 line 445) One of the", numGenes, "nearest genes to the snp,", currentGeneId, "doesn't have a tissue-expression t-statistic."
+							
+						# add snp to noTissueExpression
 						noTissueExpression[snpName] = currentGeneId
 
-						# proceed depending on method specified by processMissingSnps
-						if processMissingSnps == "I":
-							print "Finding next nearest gene within distance and containing tissue-expression t-statistics."
-							index += 1
-						elif processMissingSnps == "Z":
-							print "Tissue expression vector for this gene will be 0 for every tissue."
-							
-							# add gene to genesToAnalyze
-							genesToAnalyze.append(currentGeneId)
-							index += 1
-						elif processMissingSnps == "H":
-							print "Not including this gene in the snp's in final tissue expression output."
-							index += 1
-				else: # currentGeneId is further from snp than specified by distanceFromSnp
-					print "(expression_lookup3 line 419) One of the", numGenes, "nearest genes to the snp,", currentGeneId, "isn't within the distance specified from the snp."
-					
-					# add snp to noNearbyGene (value = currentGeneId)
-					noNearbyGene[snpName] = currentGeneId
-
-					# proceed depending on method specified by processMissingSnps
-					if processMissingSnps == "I":
-						print "Continuing to assess this gene anyway, because it is one of the nearest", numGenes, "genes to the snp."
-
-						if currentGeneId not in genesWithoutTsats:
-							# gene has tissue expression t-statistics
-							if currentGeneId in duplicates: # snp is equidistant from this gene and the next gene in the list
-								nextGeneId = genesToCheck[index + 1]
-
-								print snpName, "is equidistant from", currentGeneId, "and", nextGeneId
-								print "Will proceed by analyzing both genes."
-							
-								genesToAnalyze.append(currentGeneId)
-								genesToAnalyze.append(nextGeneId)
-								index += 2 # increment index by two because assessed and added both current and subsequent genes
-
-							else: # snp isn't equidistnat from this gene and another --> add only this gene
-								genesToAnalyze.append(currentGeneId)
-								index += 1
-
-						else: # gene does not have tissue expression t-statistics
-							print "(expression_lookup3 line 445) One of the", numGenes, "nearest genes to the snp,", currentGeneId, "doesn't have a tissue-expression t-statistic."
-							
-							# add snp to noTissueExpression
-							noTissueExpression[snpName] = currentGeneId
-
-							print "Finding the next nearest gene containing tissue-expression t-statistics."
-							index += 1
-					elif processMissingSnps == "Z":
-						print "Tissue expression for this gene will be 0 for every tissue."
-
-						# add gene to genesToAnalyze
-						genesToAnalyze.append(currentGeneId)
+						print "Finding the next nearest gene containing tissue-expression t-statistics."
 						index += 1
-					elif processMissingSnps == "H":
-						print "Not including this gene in the snp's final tissue expression output."
-						index += 1
+				elif processMissingSnps == "Z":
+					print "Tissue expression for this gene will be 0 for every tissue."
+
+					# add gene to genesToAnalyze
+					genesToAnalyze.append(currentGeneId)
+					index += 1
+				elif processMissingSnps == "H":
+					print "Not including this gene in the snp's final tissue expression output."
+					index += 1
 
 	print "There are", len(genesToAnalyze), "genes to analyze for tissue expression:", genesToAnalyze
 
@@ -523,7 +520,7 @@ for snp in snpFile:
 			for i in range(numTissues):
 				if geneVectorDict[gene][i] == 1:
 					# modify the snp output vector if the tissue expression for any gene in the geneVector dictionary has 
-					snpOutputVector[snp][i] = 1
+					snpOutputVector[i] = 1
 
 		# use snpOutputVector as the key in the output dictionary
 		snpOutputDict[snpName] = snpOutputVector
