@@ -264,19 +264,19 @@ for snp in snpFile:
 	# determine closest genes to the snp
 	distanceFromSnpDict = {} # key = geneId, value = distance from snp
 	for gene in genesByStartLocation:
-		for geneId, startLocation in nearbyStartLocations.items():
-			if geneId == gene: # add gene to dictionary containing distances from the snp
+		for startLocation in nearbyStartLocations:
+			if genesByStartLocation[gene] == startLocation: # add gene to dictionary containing distances from the snp
 				distanceFromSnpDict[gene] = abs(startLocation - snpLocation)
 		print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
-	for gene in genesByEnd:
+	for gene in genesByEndLocation:
 		if gene not in distanceFromSnpDict:
-			for geneId, endLocation in nearbyEndLocations.items():
-				if geneId == gene: # add gene to the dictionary
+			for endLocation in nearbyEndLocations:
+				if genesByEndLocation[gene] == endLocation: # add gene to the dictionary
 					distanceFromSnpDict[gene] = abs(endLocation - snpLocation)
 		else: # gene is already in distanceFromSnpDict
 			# only modify distance if new distance is less than previous distance
-			for geneId, endLocation in nearbyEndLocations.items():
-				if (geneId == gene) and (abs(endLocation - snpLocation) < distanceFromSnpDict[gene]):
+			for endLocation in nearbyEndLocations:
+				if (genesByEndLocation[gene] == endLocation) and (abs(endLocation - snpLocation) < distanceFromSnpDict[gene]):
 					distanceFromSnpDict[gene] = abs(endLocation - snpLocation)
 		print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
 
