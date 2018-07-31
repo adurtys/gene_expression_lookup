@@ -6,7 +6,7 @@
 # argv2: gene annotations filename
 # argv3: filename for file containing rank-orders of the tissue expression t-statistics
 # argv4: number of nearest genes to the snp for which to conduct the tissue expression lookup
-# argv5: distance from the snp for which to look for nearby genes (in kbp)
+# argv5: distance from the snp for which to look for nearby genes (in kilobp)
 # argv6: the percent of top ranks of t-statistic that should be considered "highly expressed" for each tissue (expressed as a 
 #	decimal - ex: 0.10, 0.05)
 # argv7: filename for output file containing tissue expression vectors for nearest gene(s) to each snp
@@ -99,7 +99,7 @@ snpFilename = sys.argv[1]
 geneAnnotationsFilename = sys.argv[2]
 tstatFilename = sys.argv[3]
 numGenes = int(sys.argv[4])
-distanceFromSnp = float(sys.argv[5])
+distanceFromSnp = float(sys.argv[5]) * 1000 # multiply by 1000 to convert kilobp to bp
 threshold = float(sys.argv[6])
 outFilename = sys.argv[7]
 nearestGenesFilename = sys.argv[8]
@@ -301,10 +301,10 @@ for snp in snpFile:
 	if len(duplicates) == 0: # snp is not equidistant from genes
 		while len(genesToAnalyze) < expectedNumGenesToAnalyze:
 			index = 0
+			print "len(genesToAnalyze):", len(genesToAnalyze)
 			while index < len(distanceFromSnpDict):
 				currentGeneId = genesToCheck[index]
 				distanceToCheck = distanceFromSnpDict[currentGeneId]
-				print "Checking distnace of", currentGeneId, "from snp. This gene is", distanceToCheck, "bp away from the snp."
 				
 				# check whether distance of currentGeneId is within specified distance from snp
 				if distanceToCheck < distanceFromSnp:
