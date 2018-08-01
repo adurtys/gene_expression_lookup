@@ -22,7 +22,7 @@
 #	no gene within the specified distance of the snp, or if the nearest gene does not have corresponding tissue-expression
 #	t-statistics, these snps are processed as specified in the processMissingSnps flag. Also outputs a file containing each snp
 #	and its corresponding nearest numGenes that were used when creating the expression vector.
-# Runtime: ~1 second per snp
+# Runtime: < 1 second per snp
 
 #!/usr/bin/env python
 import sys, bisect, nonOverlappingGenes
@@ -232,7 +232,7 @@ for snp in snpFile:
 
 		if geneId in genesByStartLocation:
 			# error check --> in this case, we are overwriting values and something is wrong
-			print "ERROR (expression_lookup3.py line 236): Gene ID already in genesByStart."
+			print "ERROR (expression_lookup3.py line 236):", geneId, "already in genesByStartLocation."
 		
 		genesByStartLocation[geneId] = position
 
@@ -470,8 +470,94 @@ for snp in snpFile:
 
 		index = 0
 		while (index < len(distanceFromSnpDict)) and (len(genesToAnalyze) != expectedNumGenesToAnalyze):
-			# increase the distance from the snp within which to search for genes
-			distanceFromSnp *= 2
+			distanceFromSnp *= 2 # increase distance from the snp within which to search for genes
+			numGenes *= 2 # increase number of genes to find
+
+			# search for nearest genes with respect to start location
+			print "Searching for nearest genes with respect to gene start location."
+			rightStartLocations = nearestNumbers(sortedStartLocations, snpLocation, numGenes, side="right")
+			leftStartLocations = nearestNumbers(sortedStartLocations, snpLocation, numGenes, side="left")
+			
+			# create list of nearby start locations on either side of the gene
+			nearbyStartLocations = leftStartLocations + rightStartLocations
+
+			# create dictionary of nearby genes with respect to start location (key = geneID, value = position)
+			genesByStartLocation = {}
+
+			for position in nearbyStartLocations:
+				# obtain gene ID from the position value
+				geneId = geneStartLocations.keys()[geneStartLocations.values().index(position)]
+
+				if geneId in genesByStartLocation:
+					# error check --> in this case, we are overwriting values and something is wrong
+					print "ERROR (expression_lookup3.py line 236): Gene ID already in genesByStart."
+				
+				genesByStartLocation[geneId] = position
+
+			print "Nearby genes with respect to gene start locations:", genesByStartLocation
+
+			print "Searching for nearest genes with respect to gene end location."
+			rightEndLocations = nearestNumbers(sortedEndLocations, snpLocation, numGenes, side="right")
+			leftEndLocations = nearestNumbers(sortedEndLocations, snpLocation, numGenes, side="left")
+
+			# create list of nearby end locations on either side of the gene
+			nearbyEndLocations = leftEndLocations + rightEndLocations
+
+			# create list of nearby genes with respect to end location
+			genesByEndLocation = {}
+
+			for position in nearbyEndLocations:
+				# obtain gene ID from the position value
+				geneId = geneEndLocations.keys()[geneEndLocations.values().index(position)]
+
+				if geneId in genesByEndLocation:
+					# error check--> in this case, we are overwriting values and something is wrong
+					print "ERROR (expression_lookup3.py line 258): Gene ID already in genesByEnd."
+
+				genesByEndLocation[geneId] = position
+
+			print "Nearby genes with respect to gene end locations:", genesByEndLocation
+
+			# determine closest genes to the snp
+			distanceFromSnpDict = {} # key = geneId, value = distance from snp
+			for gene in genesByStartLocation:
+				for startLocation in nearbyStartLocations:
+					if genesByStartLocation[gene] == startLocation: # add gene to dictionary containing distances from the snp
+						distanceFromSnpDict[gene] = abs(startLocation - snpLocation)
+				print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
+			for gene in genesByEndLocation:
+				if gene not in distanceFromSnpDict:
+					for endLocation in nearbyEndLocations:
+						if genesByEndLocation[gene] == endLocation: # add gene to the dictionary
+							distanceFromSnpDict[gene] = abs(endLocation - snpLocation)
+				else: # gene is already in distanceFromSnpDict
+					# only modify distance if new distance is less than previous distance
+					for endLocation in nearbyEndLocations:
+						if (genesByEndLocation[gene] == endLocation) and (abs(endLocation - snpLocation) < distanceFromSnpDict[gene]):
+							distanceFromSnpDict[gene] = abs(endLocation - snpLocation)
+				print gene, "is", distanceFromSnpDict[gene], "bp away from the snp."
+
+			print "Genes closest to the snp:", distanceFromSnpDict
+			# sort distanceFromSnpDict by distances
+			closestDistances = sorted(distanceFromSnpDict.values())
+
+			# check if there are equidistant genes
+			duplicates = findDuplicates(closestDistances)
+
+			# obtain geneIds in the same order as would correspond to the distances after having been sorted in ascending order
+			genesToCheck = []
+			for i in range(len(closestDistances)):
+				sortedGeneId = distanceFromSnpDict.keys()[distanceFromSnpDict.values().index(closestDistances[i])]
+				genesToCheck.append(sortedGeneId)
+
+			# determine whether each gene in distanceFromSnpDict should be analyzed for tissue expression
+			genesToAnalyze = []
+
+			# create dictionary containing output vectors for each gene being analyzed for a given snp (key = geneId, value = list of outputs (0 if low expression, 1 if high expression))
+			geneVectorDict = {}
+			geneVector = []
+
+			# NOTE: didn't modify expectedNumGenesToAnalyze because still only want however many genes was initially inputted by the user
 
 			if len(duplicates) == 0: # snp is not equidistant from genes
 				currentGeneId = genesToCheck[index]

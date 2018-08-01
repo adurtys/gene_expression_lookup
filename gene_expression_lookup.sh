@@ -1,5 +1,5 @@
 # Date Created: 9 July 2018
-# Date Last Modified: 24 July 2018
+# Date Last Modified: 1 August 2018
 # Execution: ./gene_expression_lookup_final.sh (TODO WITH FLAGSS!)
 # Description: Shell script for tissue expression lookup of genes near specified snps. First, ensures that both the 
 # 	GENCODE GTF file and GTEx t-statistics file have been processed. Then analyzes expression of genes closest to snps
@@ -66,8 +66,6 @@ do
 			# create output filenames
 			outFile=lookupResults_$snpFile
 			nearestGenesFile=nearestGenes_$snpFile
-			lostSnpsFile=lostSnps_$snpFile
-			missingGenesFile=missingGenes_$snpFile
 			;;
 		t)
 			# GTEx t-statistics file has been normalized
@@ -109,5 +107,5 @@ else
 fi
 
 # conduct expression lookup
-python ./expression_lookup.py $snpFile $geneAnnotationsFile $tStatFile $numNearestGenesToSearch $distanceFromSnp $expressionThreshold $outFile $nearestGenesFile $lostSnpsFile $missingGenesFile $processMissingSnps
+python ./expression_lookup.py $snpFile $geneAnnotationsFile $tStatFile $numNearestGenesToSearch $distanceFromSnp $expressionThreshold $outFile $nearestGenesFile $processMissingSnps
 
