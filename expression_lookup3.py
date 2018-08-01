@@ -26,7 +26,6 @@
 
 #!/usr/bin/env python
 import sys, bisect, nonOverlappingGenes
-
 """
 Listed below are the functions used in the script.
 
@@ -232,7 +231,8 @@ for snp in snpFile:
 
 		if geneId in genesByStartLocation:
 			# error check --> overwriting values incorrectly if old position is different from new position for the same gene
-			print "ERROR (expression_lookup3.py line 236):", geneId, "already in genesByStartLocation, with the old position,", genesByStartLocation[geneId], "- we are rewriting this position with the new position,", position
+			if position != genesByStartLocation[geneId]:
+				print "ERROR (expression_lookup3.py line 236):", geneId, "already in genesByStartLocation, with the old position,", genesByStartLocation[geneId], "- we are rewriting this position with the new position,", position
 		
 		genesByStartLocation[geneId] = position
 
@@ -254,7 +254,8 @@ for snp in snpFile:
 
 		if geneId in genesByEndLocation:
 			# error check--> in this case, we are overwriting values and something is wrong
-			print "ERROR (expression_lookup3.py line 258):", geneId, "already in genesByEndLocation, with the old position,", genesByEndLocation[geneId], "- we are rewriting this position with the new position,", position
+			if position != genesByEndLocation[geneId]:
+				print "ERROR (expression_lookup3.py line 258):", geneId, "already in genesByEndLocation, with the old position,", genesByEndLocation[geneId], "- we are rewriting this position with the new position,", position
 
 		genesByEndLocation[geneId] = position
 
@@ -492,7 +493,8 @@ for snp in snpFile:
 
 				if geneId in genesByStartLocation:
 					# error check --> in this case, we are overwriting values and something is wrong
-					print "ERROR (expression_lookup3.py line 495):", geneId, "already in genesByStartLocation, with the old position,", genesByStartLocation[geneId], "- we are rewriting this position with the new position,", position
+					if position != genesByStartLocation[geneId]:
+						print "ERROR (expression_lookup3.py line 497):", geneId, "already in genesByStartLocation, with the old position,", genesByStartLocation[geneId], "- we are rewriting this position with the new position,", position
 		
 				genesByStartLocation[geneId] = position
 
@@ -514,7 +516,8 @@ for snp in snpFile:
 
 				if geneId in genesByEndLocation:
 					# error check--> in this case, we are overwriting values and something is wrong
-					print "ERROR (expression_lookup3.py line 517):", geneId, "already in genesByEndLocation, with the old position,", genesByEndLocation[geneId], "- we are rewriting this position with the new position,", position
+					if position != genesByEndLocation[geneId]:
+						print "ERROR (expression_lookup3.py line 520):", geneId, "already in genesByEndLocation, with the old position,", genesByEndLocation[geneId], "- we are rewriting this position with the new position,", position
 		
 				genesByEndLocation[geneId] = position
 
@@ -572,7 +575,7 @@ for snp in snpFile:
 						genesToAnalyze.append(currentGeneId)
 						index += 1
 					else: # gene does not have tissue expression t-statistics
-						print "(expression_lookup3 line 576): One of the", newNumGenes, "nearest genes to the snp,", currentGeneId, "doesn't have tissue-expression t-statistic."
+						print "(expression_lookup3 line 578): One of the", newNumGenes, "nearest genes to the snp,", currentGeneId, "doesn't have tissue-expression t-statistic."
 							
 						# add snp to noTissueExpression (value = currentGeneId)
 						noTissueExpression[snpName] = currentGeneId
@@ -581,7 +584,7 @@ for snp in snpFile:
 						index += 1
 
 				else: # currentGeneId is further from snp than specified by distanceFromSnp
-					print "(expression_lookup3 line 585) One of the", newNumGenes, "nearest genes to the snp,", currentGeneId, "isn't within the distance specified from the snp."
+					print "(expression_lookup3 line 587) One of the", newNumGenes, "nearest genes to the snp,", currentGeneId, "isn't within the distance specified from the snp."
 					
 					# add snp to noNearbyGene (value = currentGeneId)
 					noNearbyGene[snpName] = currentGeneId
@@ -594,7 +597,7 @@ for snp in snpFile:
 						index += 1
 
 					else: # gene does not have tissue expression t-statistics
-						print "(expression_lookup3 line 598) One of the", newNumGenes, "nearest genes to the snp,", currentGeneId, "doesn't have a tissue-expression t-statistic."
+						print "(expression_lookup3 line 600) One of the", newNumGenes, "nearest genes to the snp,", currentGeneId, "doesn't have a tissue-expression t-statistic."
 							
 						# add snp to noTissueExpression
 						noTissueExpression[snpName] = currentGeneId
@@ -634,7 +637,7 @@ for snp in snpFile:
 							index += 1
 
 					else: # gene does not have tissue expression t-statistics
-						print "(expression_lookup3 line 639): One of the", newNumGenes, "nearest genes to the snp,", currentGeneId, "doesn't have tissue-expression t-statistic."
+						print "(expression_lookup3 line 640): One of the", newNumGenes, "nearest genes to the snp,", currentGeneId, "doesn't have tissue-expression t-statistic."
 								
 						# add snp to noTissueExpression (value = currentGeneId)
 						noTissueExpression[snpName] = currentGeneId
@@ -643,7 +646,7 @@ for snp in snpFile:
 						index += 1
 
 				else: # currentGeneId is further from snp than specified by distanceFromSnp
-					print "(expression_lookup3 line 648) One of the", newNumGenes, "nearest genes to the snp,", currentGeneId, "isn't within the distance specified from the snp."
+					print "(expression_lookup3 line 649) One of the", newNumGenes, "nearest genes to the snp,", currentGeneId, "isn't within the distance specified from the snp."
 							
 					# add snp to noNearbyGene (value = currentGeneId)
 					noNearbyGene[snpName] = currentGeneId
@@ -667,7 +670,7 @@ for snp in snpFile:
 							index += 1
 
 					else: # gene does not have tissue expression t-statistics
-						print "(expression_lookup3 line 672) One of the", newNumGenes, "nearest genes to the snp,", currentGeneId, "doesn't have a tissue-expression t-statistic."
+						print "(expression_lookup3 line 673) One of the", newNumGenes, "nearest genes to the snp,", currentGeneId, "doesn't have a tissue-expression t-statistic."
 								
 						# add snp to noTissueExpression
 						noTissueExpression[snpName] = currentGeneId
@@ -683,7 +686,7 @@ for snp in snpFile:
 		for gene in genesToAnalyze:
 			if (gene in noNearbyGene.values()) or (gene in noTissueExpression.values()): # would only keep such a gene if processMissingSnps == Z or I (not if it equals H)
 				if processMissingSnps == "H":
-					print "ERROR (expression_lookup3.py line 688):", gene, "is being analyzed, but either doesn't have t-statistic or isn't within the specified distance of the snp."
+					print "ERROR (expression_lookup3.py line 689):", gene, "is being analyzed, but either doesn't have t-statistic or isn't within the specified distance of the snp."
 					
 				else: # processMissingSnps == Z
 					# expression vector is 0 for every tissue for the gene
@@ -703,7 +706,7 @@ for snp in snpFile:
 				geneVectorDict[gene] = geneVector
 	else: # len(genesToAnalyze) != expectedNumGenesToAnalyze (this should only be the case for processMissingSnps = H)
 		if processMissingSnps != "H":
-			print "ERROR (expression_lookup3.py line 708): Not analyzing the same number of genes as was specified by the user."
+			print "ERROR (expression_lookup3.py line 709): Not analyzing the same number of genes as was specified by the user."
 			
 		if len(genesToAnalyze) != 0: # there are genes to analyze for the snp
 			for gene in genesToAnalyze:
@@ -742,7 +745,7 @@ for snp in snpFile:
 	else: # don't include snp in the dictionary (or the output file) if no gene expression vector was stored for it
 		# len(geneVectorDict == 0) (can only occur if processMissingSnps == H and len(genesToAnalyze) = 0)
 		if (processMissingSnps != "H") or len(genesToAnalyze != 0):
-			print "ERROR (expression_lookup3.py line 747): Error processing expression vectors."
+			print "ERROR (expression_lookup3.py line 748): Error processing expression vectors."
 
 		print "Excluding", snpName, "from the output file because there are no genes with tissue expression associated with it."
 
