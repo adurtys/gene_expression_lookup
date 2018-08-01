@@ -43,34 +43,33 @@ def nearestNumbers(a, x, n, side):
 
 	if side == "right": # look for values greater than x
 		i = bisect.bisect_left(a, x)
-		if i != len(a):
-			while len(nearestIndexes) < n:
-				if i not in nearestIndexes: # x not in a
-					nearestIndexes.append(i)
-					i += 1
-				else: # x in a
-					i += 1
-					nearestIndexes.append(i)
+		while len(nearestIndexes) < n:
+			if i not in nearestIndexes: # x not in a
+				nearestIndexes.append(i)
+				i += 1
+			else: # x in a
+				i += 1
+				nearestIndexes.append(i)
 	elif side == "left": # look for values less than x
 		i = bisect.bisect_left(a, x)
-		if i != len(a):
-			while len(nearestIndexes) < n:
-				if i not in nearestIndexes: # x not in a
-					nearestIndexes.append(i - 1)
-					i -= 1
-				else: # x in a
-					i -= 1
-					nearestIndexes.append(i)
+		while len(nearestIndexes) < n:
+			if i not in nearestIndexes: # x not in a
+				nearestIndexes.append(i - 1)
+				i -= 1
+			else: # x in a
+				i -= 1
+				nearestIndexes.append(i)
 	else:
-		print "ERROR(expression_lookup3.py line 65): Invalid input value for side. Two options are 'right' and 'left'."
+		print "ERROR: Invalid input value for side. Two options are 'right' and 'left'."
 	print nearestIndexes
 
 	# create list of values in sorted array corresponding to each index
 	nearestValues = []
 	for j in range(len(nearestIndexes)):
 		index = nearestIndexes[j]
-		nearestValues.append(a[index])
-	
+		if index < len(a):
+			nearestValues.append(a[index])
+
 	return nearestValues
 
 # Input: a list
