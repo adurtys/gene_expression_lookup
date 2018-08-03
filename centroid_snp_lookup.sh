@@ -13,7 +13,7 @@ done
 
 # create one file with centroid snps for all chromosomes
 echo "Combining individual chromosome files into one file, 'centroidSnps.txt'"
-for j in centoidSnps_final_grouped_snps_chr*.txt
+for j in centroidSnps_final_grouped_snps_chr*.txt
 do
 	if [ $j = 0 ]
 	then
