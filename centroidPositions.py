@@ -42,7 +42,9 @@ for group in snpGroupsDict:
 	print "working on group", group, "which has the snps:", snpGroupsDict[group]
 	groupSnpLocations = []
 
-	for groupedSnp in snpGroupsDict[group]:
+	for i in range(len(snpGroupsDict[group])):
+		groupedSnp = snpGroupsDict[group][i]
+
 		# process the snp
 		groupedSnp = groupedSnp.split(':')
 		chromosome = groupedSnp[0]
@@ -50,8 +52,8 @@ for group in snpGroupsDict:
 
 		groupSnpLocations.append(snpLocation)
 
-		# process the chromosome
-		if snpGroupsDict[group][0] == groupedSnp:
+		if len(centroidSnps == 0) and (i == 0):
+			# obtain chromosome number
 			chromosomeNumber = int(chromosome.strip("chr"))
 			print "These grouped snps are for chromosome", chromosomeNumber
 
