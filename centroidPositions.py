@@ -39,7 +39,7 @@ centroidSnps = {}
 
 chromosomeNumber = -1
 for group in snpGroupsDict:
-	print "working on group", group
+	print "working on group", group, "which has the snps:", snpGroupsDict[group]
 	groupSnpLocations = []
 
 	for groupedSnp in snpGroupsDict[group]:
