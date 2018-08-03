@@ -39,7 +39,6 @@ centroidSnps = {}
 
 chromosomeNumber = -1
 for group in snpGroupsDict:
-	print "working on group", group, "which has the snps:", snpGroupsDict[group]
 	groupSnpLocations = []
 
 	for i in range(len(snpGroupsDict[group])):
@@ -52,7 +51,7 @@ for group in snpGroupsDict:
 
 		groupSnpLocations.append(snpLocation)
 
-		if len(centroidSnps == 0) and (i == 0):
+		if (len(centroidSnps) == 0) and (i == 0):
 			# obtain chromosome number
 			chromosomeNumber = int(chromosome.strip("chr"))
 			print "These grouped snps are for chromosome", chromosomeNumber
@@ -73,7 +72,7 @@ outFile = open(outFilename, 'w')
 
 for group in centroidSnps:
 	groupName = "Chr" + str(chromosomeNumber) + "_Group_" + str(group)
-	centroidSnp = str(centroidSnps[group])
+	centroidSnp = "chr" + str(chromosomeNumber) + ":" + str(centroidSnps[group])
 
 	output += groupName + tab + centroidSnp + newline
 
