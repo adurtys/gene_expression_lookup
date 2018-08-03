@@ -39,6 +39,7 @@ centroidSnps = {}
 
 chromosomeNumber = -1
 for group in snpGroupsDict:
+	print "working on group", group
 	groupSnpLocations = []
 
 	for groupedSnp in snpGroupsDict[group]:
@@ -58,10 +59,10 @@ for group in snpGroupsDict:
 	maxSnpLocation = max(groupSnpLocations)
 	centroidSnpLocation = (minSnpLocation + maxSnpLocation) / 2.0
 
-	centroidSnps[group] = centroidSnpLocation
+	centroidSnps[group] = int(centroidSnpLocation)
 
 tab = "\t"
-newline = "\t"
+newline = "\n"
 
 output = ""
 
