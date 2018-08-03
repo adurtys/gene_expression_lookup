@@ -71,11 +71,10 @@ for group in snpGroupsDict:
 	nearestGenes = nearestGeneToSnps.values()
 
 	uniqNearestGenes = collections.Counter(nearestGenes).keys()
-	print "There are", len(uniqNearestGenes), "for snps in group", group
 
-	# if len(uniqNearestGenes) != 1:
+	if len(uniqNearestGenes) != 1:
 		# snps in the group don't all have the same gene
-		# TODO: fix this
+		print "There are", len(uniqNearestGenes), "nearest genes for snps in group", group
 
 
 
