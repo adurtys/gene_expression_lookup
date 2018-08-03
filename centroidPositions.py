@@ -1,6 +1,6 @@
 # Date Created: 24 July 2018
 # Date Last Modified: 3 August 2018
-# Execution: python centroidPositions.py groupedSnpsFilename geneAnnotationsFilename
+# Execution: python centroidPositions.py groupedSnpsFilename
 # Description: TODO
 
 #!/usr/bin/env python
@@ -69,7 +69,7 @@ outFilename = "centroidSnps_" + groupedSnpsFilename
 outFile = open(outFilename, 'w')
 
 for group in centroidSnps:
-	groupName = "Chr" + chromosomeNumber + "_Group_" + group
+	groupName = "Chr" + str(chromosomeNumber) + "_Group_" + str(group)
 	centroidSnp = str(centroidSnps[group])
 
 	output += groupName + tab + centroidSnp + newline
