@@ -8,37 +8,6 @@ import sys
 
 # read in command-line arguments
 groupedSnpsFilename = sys.argv[1]
-geneAnnotationsFilename = sys.argv[2]
-
-# create dictionary containing relevant information pertaining to each gene in the gene annotations file (key = geneId; value = list of info [geneChrom, geneName, geneStart, geneEnd])
-geneAnnotations = {}
-
-# populate this dictionary by parsing gene annotations file
-geneAnnotationsFile = open(geneAnnotationsFilename, 'r')
-
-for line in geneAnnotationsFile:
-	line = line.rstrip('\r\n')
-	
-	# split line on tab, return list of columns
-	columns = line.split('\t')
-	geneId = columns[0]
-	geneName = columns[1]
-	geneChrom = columns[2]
-	geneStart = int(columns[3])
-	geneEnd = int(columns[4])
-
-	geneInfo = []
-
-	# populate geneInfo with relevant info
-	geneInfo.append(geneChrom)
-	geneInfo.append(geneName)
-	geneInfo.append(geneStart)
-	geneInfo.append(geneEnd)
-
-	geneAnnotations[geneId] = geneInfo
-
-geneAnnotationsFile.close()
-print "Finished reading in gene annotations file."
 
 # create dictionary that will store groups as keys and the snps in each group as values
 snpGroupsDict = {}
@@ -63,11 +32,12 @@ for line in groupedSnpsFile:
 		snpsInEachGroup.append(snp)
 		snpGroupsDict[groupNumber] = snpsInEachGroup
 groupedSnpsFile.close()
-print "There are", len(snpGroupsDict), "groups on this chromosome."
+print "There are", len(snpGroupsDict), "groups."
 
 # create dictionary that will store the group number as the key and the centroid snp as its value
 centroidSnps = {}
 
+chromosomeNumber = -1
 for group in snpGroupsDict:
 	groupSnpLocations = []
 
@@ -78,6 +48,11 @@ for group in snpGroupsDict:
 		snpLocation = int(groupedSnp[1])
 
 		groupSnpLocations.append(snpLocation)
+
+		# process the chromosome
+		if snpGroupsDict[group][0] == groupedSnp:
+			chromosomeNumber = int(chromosome.strip("chr"))
+			print "These grouped snps are for chromosome", chromosomeNumber
 
 	minSnpLocation = min(groupSnpLocations)
 	maxSnpLocation = max(groupSnpLocations)
@@ -94,13 +69,9 @@ outFilename = "centroidSnps_" + groupedSnpsFilename
 outFile = open(outFilename, 'w')
 
 for group in centroidSnps:
-	output += group + tab + str(centroidSnps[group]) + newline
+	groupName = "Chr" + chromosomeNumber + "_Group_" + group
+	centroidSnp = str(centroidSnps[group])
+
+	output += groupName + tab + centroidSnp + newline
 
 outFile.write(output)
-
-
-	
-
-
-
-
