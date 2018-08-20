@@ -131,9 +131,9 @@ for snp in lipidTestingSnps:
 
 	for i in range(numTissues):
 		if i < (numTissues - 1):
-			lipidTestingOutput += lipidTestingSnps[i + 2] + tab
+			lipidTestingOutput += lipidTestingSnps[snp][i + 2] + tab
 		else: # create new line at the end of each vector
-			lipidTestingOutput += lipidTestingSnps[i + 2] + newline
+			lipidTestingOutput += lipidTestingSnps[snp][i + 2] + newline
 
 lipidTestingOutFile.write(lipidTestingOutput)
 lipidTestingOutFile.close()
@@ -148,9 +148,9 @@ for snp in lipidTrainingSnps:
 
 	for i in range(numTissues):
 		if i < (numTissues - 1):
-			lipidTrainingOutput += lipidTrainingSnps[i + 2] + tab
+			lipidTrainingOutput += lipidTrainingSnps[snp][i + 2] + tab
 		else: # create new line at the end of each vector
-			lipidTrainingOutput += lipidTrainingSnps[i + 2] + newline
+			lipidTrainingOutput += lipidTrainingSnps[snp][i + 2] + newline
 
 lipidTrainingOutFile.write(lipidTrainingOutput)
 lipidTrainingOutFile.close()
@@ -165,9 +165,9 @@ for snp in T2DLikeTestingSnps:
 
 	for i in range(numTissues):
 		if i < (numTissues - 1):
-			T2DLikeTestingOutput += T2DLikeTestingSnps[i + 2] + tab
+			T2DLikeTestingOutput += T2DLikeTestingSnps[snp][i + 2] + tab
 		else: # create new line at the end of each vector
-			T2DLikeTestingOutput += T2DLikeTestingSnps[i + 2] + newline
+			T2DLikeTestingOutput += T2DLikeTestingSnps[snp][i + 2] + newline
 
 T2DLikeTestingOutFile.write(T2DLikeTestingOutput)
 T2DLikeTestingOutFile.close()
@@ -182,9 +182,9 @@ for snp in T2DLikeTrainingSnps:
 
 	for i in range(numTissues):
 		if i < (numTissues - 1):
-			T2DLikeTrainingOutput += T2DLikeTrainingSnps[i + 2] + tab
+			T2DLikeTrainingOutput += T2DLikeTrainingSnps[snp][i + 2] + tab
 		else: # create new line at the end of each vector
-			T2DLikeTrainingOutput += T2DLikeTrainingSnps[i + 2] + newline
+			T2DLikeTrainingOutput += T2DLikeTrainingSnps[snp][i + 2] + newline
 
 T2DLikeTrainingOutFile.write(T2DLikeTrainingOutput)
 T2DLikeTrainingOutFile.close()
