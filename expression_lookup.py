@@ -1,8 +1,9 @@
 # Date Created: 25 July 2018
-# Date Last Modified: 1 August 2018
+# Date Last Modified: 20 August 2018
 # Execution: python expression_lookup.py snpFilename geneAnnotationsFilename tstatFilename numGenes distanceFromSnp
 #	threshold outFilename nearestGenesFilename processMissingSnps
-# argv1: filename for file containing snps to search (each snp is listed on its own line, in the format "chr#:location")
+# argv1: filename for file containing centroid snps to search (there are two columns in this file - the first is the group number
+#	for each centroid snp, the second is the snp itself; each snp is listed on its own line in the format "chr#:location")
 # argv2: gene annotations filename
 # argv3: filename for file containing rank-orders of the tissue expression t-statistics
 # argv4: number of nearest genes to the snp for which to conduct the tissue expression lookup
@@ -86,7 +87,7 @@ def findDuplicates(anyList):
 
 	return duplicates
 
-# MAIN SCRIPT:
+# MAIN SCRIPT
 # error-check for correct number of command-line arguments
 print "Arguments passed into expression_lookup3.py:", sys.argv[1:]
 if len(sys.argv) != 10:
@@ -181,17 +182,22 @@ print "Finished reading in gene annotations file."
 genesWithoutTstats = nonOverlappingGenes.getGenesWithoutTstat(tstatFilename, geneAnnotationsFilename)
 print "There are", len(genesWithoutTstats), "genes in", geneAnnotationsFilename, "that do not have tissue expression t-statistics."
 
-# create dictionary containing output vectors for each snp
+# create dictionary containing output vectors for each snp --> key = snpName, value = tissue expression vector
 snpOutputDict = {}
 
 # parse file containing snps to search
 snpFile = open(snpFilename, 'r')
 
 numSnps = 0
-for snp in snpFile:
+for line in snpFile:
 	numSnps += 1
-	snp = snp.rstrip('\r\n')
-	print "snp to search:", snp
+	line = line.rstrip('\r\n')
+	columns = line.split('\t')
+
+	snpGroup = columns[0]
+	snp = columns[1]
+
+	print "The centroid snp (to be searched) for", snpGroup, "is:", snp
 
 	# process the snp
 	snp = snp.split(':')
@@ -757,13 +763,22 @@ for snp in snpFile:
 	newline = "\n"
 
 	if numSnps == 1:
+		# edit headerLine so that first column is snp (not ENSGID)
+		numLabels = len(headers)
+		newHeaderLine = ""
+		for i in range(numLabels):
+			if i == numLabels - 1:
+				newHeaderLine += headers[i + 1]
+			else: # add tab between each header
+				newHeaderLine += headers[i + 1] + tab
+
 		# write header line onto the new output file if the snp being analyzed is the first snp in the list
-		headerLineOutput = headerLine + newline
+		headerLineOutput = "snp" + tab + newHeaderLine + newline
 		outFile.write(headerLineOutput)
 
 	# create expression lookup file if the snp is to be included in the output file
 	if snpName in snpOutputDict:
-		output = snpName + tab
+		output = snpGroup + tab
 		for i in range(numTissues):
 			if i < (numTissues - 1):
 				output += str(snpOutputDict[snpName][i]) + tab
@@ -772,7 +787,7 @@ for snp in snpFile:
 		outFile.write(output)
 
 	# create file containing nearest genes to each snp, determined as specified by processMissingSnps
-	nearestGeneOutput = snpName + tab
+	nearestGeneOutput = snpGroup + tab + snpName + tab
 	for i in range(len(genesToAnalyze)):
 		if i < (len(genesToAnalyze) - 1):
 			nearestGeneOutput += genesToAnalyze[i] + tab

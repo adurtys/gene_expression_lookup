@@ -1,7 +1,7 @@
 # Date Created: 3 August 2018
-# Date Last Modified: 3 August 2018
-# Execution:
-# Description:
+# Date Last Modified: 20 August 2018
+# Execution: ./centroid_snp_lookup.sh
+# Description: TODO
 
 #!/usr/bin/env bash
 
