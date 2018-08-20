@@ -59,12 +59,12 @@ headers = headerLine.split('\t')
 numTissues = len(headers) - 1
 
 # create data structures for the different snp types --> key = snp, value = expression vector
-numIndexSnps = 0
-numControlSnps = 0
 lipidTestingSnps = {}
 lipidTrainingSnps = {}
 T2DLikeTestingSnps = {}
 T2DLikeTrainingSnps = {}
+
+snpsNotInSnpTypeDict = {}
 
 # populate expression vector dictionary
 for line in expressionVectorTableFile:
@@ -80,10 +80,6 @@ for line in expressionVectorTableFile:
 			vector.append(columns[i + 1])
 
 		snpType = snpTypeDict[snp][1]
-		if snpType == "index":
-			numIndexSnps += 1
-		else: # snpType == "control"
-			numControlSnps += 1
 
 		# add snp and type to beginning of vector
 		vector.insert(0, snp)
@@ -97,7 +93,18 @@ for line in expressionVectorTableFile:
 			T2DLikeTestingSnps[snp] = vector
 		else: # snpSource == "T2Dlike_training"
 			T2DLikeTrainingSnps[snp] = vector
+	else: # snp not in snpTypeDict
+		snpsNotInSnpTypeDict[snp] = -1
 
+totalNumSnps = len(lipidTestingSnps) + len(lipidTrainingSnps) + len(T2DLikeTestingSnps) + len(T2DLikeTrainingSnps)
+print "There were", totalNumSnps, "snps in total."
+print "There were", len(lipidTestingSnps), "lipid testing snps."
+print "There were", len(lipidTrainingSnps), "lipid training snps."
+print "There were", len(T2DLikeTestingSnps), "T2D-like testing snps."
+print "There were", len(T2DLikeTrainingSnps), "T2D-like training snps."
+print "There were", len(snpsNotInSnpTypeDict), "snps that did not have a snp type specified in the input file. These snps were discarded."
+
+print "Creating an output file for each of the four types of snp."
 # create output files
 lipidTestingOutFilename = "lipid_testing_expression_ML_table.txt"
 lipidTrainingOutFilename = "lipid_training_expression_ML_table.txt"
@@ -190,3 +197,4 @@ T2DLikeTrainingOutFile.write(T2DLikeTrainingOutput)
 T2DLikeTrainingOutFile.close()
 
 expressionVectorTableFile.close()
+print "Finished creating output files."
