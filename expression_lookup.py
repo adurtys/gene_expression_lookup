@@ -762,18 +762,18 @@ for line in snpFile:
 	tab = "\t"
 	newline = "\n"
 
-	if numSnps == 1:
-		# edit headerLine so that first column is snp (not ENSGID)
-		numLabels = len(headers)
-		newHeaderLine = ""
-		for i in range(numLabels):
-			if i == numLabels - 1:
-				newHeaderLine += headers[i + 1]
-			else: # add tab between each header
-				newHeaderLine += headers[i + 1] + tab
+	# copy all labels from original header line except for the first label (ENSGID)
+	numLabels = len(headers)
+	newHeaderLine = ""
+	for i in range(numLabels):
+		if i == numLabels - 1:
+			newHeaderLine += headers[i + 1]
+		else: # add tab between each header
+			newHeaderLine += headers[i + 1] + tab
 
+	if numSnps == 1:
 		# write header line onto the new output file if the snp being analyzed is the first snp in the list
-		headerLineOutput = "snp" + tab + newHeaderLine + newline
+		headerLineOutput = "snp" + tab + newHeaderLine + newline # edited headerLine so that first column is snp (not ENSGID)
 		outFile.write(headerLineOutput)
 
 	# create expression lookup file if the snp is to be included in the output file
