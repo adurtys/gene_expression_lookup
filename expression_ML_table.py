@@ -27,6 +27,7 @@ for line in groupedSnpTypesFile:
 	snp = columns[0]
 	snpType = columns[1] # "index" or "control"
 
+	snpSource = ""
 	# determine snp type (lipid or T2D-like, testing or training) --> TODO: CHECK THAT THIS WAS DONE CORRECTLY!
 	if lineNum in range(2, 1682):
 		snpSource = "lipid_testing"
