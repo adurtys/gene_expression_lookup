@@ -80,36 +80,32 @@ for line in expressionVectorTableFile:
 
 	snp = columns[0]
 
-	# determine snp type from dictionary
-	if snp not in snpTypeDict:
-		print "ERROR: cannot determine snp type for", snp, "because this snp isn't in any of the lipid or T2D-like testing or training files." # TODO: Deal with this
-		snpType = "none"
-		numSnpsNoType += 1
-	else:
+	# determine snp type from dictionary --> discard snps not in snpTypeDict
+	if snp in snpTypeDict:
 		snpType = snpTypeDict[snp][1]
 		if snpType == "index":
 			numIndexSnps += 1
 		else: # snpType == "control"
 			numControlSnps += 1
 
-	if snpTypeDict[snp][2] == "lipid_testing":
-		numLipidTestingSnps += 1
-	elif snpTypeDict[snp][2] == "lipid_training":
-		numLipidTrainingSnps += 1
-	elif snpTypeDict[snp][2] == "T2Dlike_testing":
-		numT2DLikeTestingSnps += 1
-	else: # snpSource == "T2Dlike_training"
-		numT2DLikeTrainingSnps += 1
-	
-	vector = []
-	for i in range(numTissues):
-		vector.append(columns[i + 1])
+		if snpTypeDict[snp][2] == "lipid_testing":
+			numLipidTestingSnps += 1
+		elif snpTypeDict[snp][2] == "lipid_training":
+			numLipidTrainingSnps += 1
+		elif snpTypeDict[snp][2] == "T2Dlike_testing":
+			numT2DLikeTestingSnps += 1
+		else: # snpSource == "T2Dlike_training"
+			numT2DLikeTrainingSnps += 1
+		
+		vector = []
+		for i in range(numTissues):
+			vector.append(columns[i + 1])
 
-	# add snp and type (index for all?? (TODO)) to beginning of vector
-	vector.insert(0, snp)
-	vector.insert(1, snpType)
+		# add snp and type (index for all?? (TODO)) to beginning of vector
+		vector.insert(0, snp)
+		vector.insert(1, snpType)
 
-	expressionVectorDictionary[snp] = vector
+		expressionVectorDictionary[snp] = vector
 
 totalNumSnps = len(expressionVectorDictionary)
 if (numIndexSnps + numControlSnps != totalNumSnps):
