@@ -10,7 +10,7 @@ import sys
 expressionVectorTableFilename = sys.argv[1]
 expressionVectorTableFile = open(expressionVectorTableFilename, 'r')
 
-outFilename = expression_ML_table.txt
+outFilename = "expression_ML_table.txt"
 outFile = open(outFilename, 'w')
 
 # make dictionary storing expression vectors --> key = snp, value = expression vector
