@@ -129,13 +129,13 @@ tab = "\t"
 newline = "\n"
 
 # copy all labels from original header line except for the first label (ENSGID)
-numLabels = len(headers)
+numLabels = len(headers) - 1
 newHeaderLine = ""
 for i in range(numLabels):
-	if i == numLabels - 1:
-		newHeaderLine += headers[i + 1]
-	else: # add tab between each header
+	if i < (numLabels - 1): # add tab between each header
 		newHeaderLine += headers[i + 1] + tab
+	else: # i == (numLabels - 1) --> on the last label
+		newHeaderLine += headers[i + 1]
 
 numTissues = len(headers) - 1 # subtract 1 because first column contains gene ID
 
