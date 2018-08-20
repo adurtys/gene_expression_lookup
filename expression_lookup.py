@@ -125,6 +125,18 @@ headerLine = tstatFile.readline()
 headerLine = headerLine.rstrip('\r\n')
 headers = headerLine.split('\t')
 
+tab = "\t"
+newline = "\n"
+
+# copy all labels from original header line except for the first label (ENSGID)
+numLabels = len(headers)
+newHeaderLine = ""
+for i in range(numLabels):
+	if i == numLabels - 1:
+		newHeaderLine += headers[i + 1]
+	else: # add tab between each header
+		newHeaderLine += headers[i + 1] + tab
+
 numTissues = len(headers) - 1 # subtract 1 because first column contains gene ID
 
 for line in tstatFile:
@@ -759,18 +771,6 @@ for line in snpFile:
 	nearestGenes[snpName] = genesToAnalyze
 
 	# create output files
-	tab = "\t"
-	newline = "\n"
-
-	# copy all labels from original header line except for the first label (ENSGID)
-	numLabels = len(headers)
-	newHeaderLine = ""
-	for i in range(numLabels):
-		if i == numLabels - 1:
-			newHeaderLine += headers[i + 1]
-		else: # add tab between each header
-			newHeaderLine += headers[i + 1] + tab
-
 	if numSnps == 1:
 		# write header line onto the new output file if the snp being analyzed is the first snp in the list
 		headerLineOutput = "snp" + tab + newHeaderLine + newline # edited headerLine so that first column is snp (not ENSGID)
