@@ -1,0 +1,7 @@
+(Intercept)	-2.913749265
+FOXA2	0.668153897
+islet_diff_CpGregions_hg19.bed	0.448044729
+NKX2.2	0.329245952
+PancIslt.EnhA	0.118296882
+PDX1	0.106744796
+prostate_gland_transcription_profiling_by_array_assay_ENCFF001SOE.bed	0.053514704

@@ -106,6 +106,8 @@ else
 	echo "GENCODE file has already been processed."
 fi
 
+# TODO: figure out whether or not to normalize GTEx tstat file
+
 # conduct expression lookup
 python ./expression_lookup.py $snpFile $geneAnnotationsFile $tStatFile $numNearestGenesToSearch $distanceFromSnp $expressionThreshold $outFile $nearestGenesFile $processMissingSnps
 

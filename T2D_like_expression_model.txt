@@ -1,0 +1,13 @@
+(Intercept)	-2.803204557
+Pancreas	0.602849064
+Thyroid	0.447174811
+Adrenal_Gland	0.436789032
+Brain_Frontal_Cortex_.BA9.	0.269929025
+Small_Intestine_Terminal_Ileum	0.142602349
+Cells_Transformed_fibroblasts	0.060990289
+Testis	-0.011485718
+Nerve_Tibial	-0.032595738
+Whole_Blood	-0.205155212
+Minor_Salivary_Gland	-0.303130856
+Brain_Putamen_.basal_ganglia.	-0.343324335
+Lung	-0.491940496
