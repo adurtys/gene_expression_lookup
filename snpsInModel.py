@@ -84,7 +84,7 @@ for line in T2DLikeTestingSnpsFile:
 	T2DLikeTestingSnpsDict[snpGroup] = info
 
 numT2DLikeTestingSnps = len(T2DLikeTestingSnpsDict)
-print "Finished reading in the", T2DLikeTestingSnpsFile, "file, which contained", numT2DLikeTestingSnps, "T2D-like testing snps."
+print "Finished reading in the", T2DLikeTestingSnpsFilename, "file, which contained", numT2DLikeTestingSnps, "T2D-like testing snps."
 
 # read in T2D-like training snps
 T2DLikeTrainingSnpsFile = open(T2DLikeTrainingSnpsFilename, 'r')
@@ -107,7 +107,7 @@ for line in T2DLikeTrainingSnpsFile:
 	T2DLikeTrainingSnpsDict[snpGroup] = info
 
 numT2DLikeTrainingSnps = len(T2DLikeTrainingSnpsDict)
-print "Finished reading in the", T2DLikeTrainingSnpsFile, "file, which contained", numT2DLikeTrainingSnps, "T2D-like training snps."
+print "Finished reading in the", T2DLikeTrainingSnpsFilename, "file, which contained", numT2DLikeTrainingSnps, "T2D-like training snps."
 
 totalSnps = numLipidTestingSnps + numLipidTrainingSnps + numT2DLikeTestingSnps + numT2DLikeTrainingSnps
 print "There are", totalSnps, "being written to the output file."

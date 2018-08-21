@@ -1,5 +1,5 @@
 # Date Created: 20 August 2018
-# Date Last Modified: 20 August 2018
+# Date Last Modified: 21 August 2018
 # Execution: python expression_ML_table.py groupedSnpTypesFilename expressionVectorTableFilename
 # argv1: filename for file containing snp type for each group of snps
 # argv2: filename for file containing grouped snp gene expression lookup results (determined by the centroid snp's expression for each group)
@@ -18,33 +18,24 @@ snpTypeDict = {}
 # ignore header line in groupedSnpTypesFilename
 groupedSnpTypesFile.readline()
 
-lineNum = 0
+numSnps = 0
 for line in groupedSnpTypesFile:
-	lineNum += 1
+	numSnps += 1
 	line = line.rstrip('\r\n')
 	columns = line.split('\t')
 
-	snp = columns[0]
+	snpGroup = columns[0]
 	snpType = columns[1] # "index" or "control"
-
-	snpSource = ""
-	# determine snp type (lipid or T2D-like, testing or training) --> TODO: CHECK THAT THIS WAS DONE CORRECTLY!
-	if lineNum in range(2, 1682):
-		snpSource = "lipid_testing"
-	elif lineNum in range(1682, 5026):
-		snpSource = "lipid_training"
-	elif lineNum in range(5026, 6066):
-		snpSource = "T2Dlike_testing"
-	elif lineNum in range(6066, 8098):
-		snpSource = "T2Dlike_training"
+	snpCategory = columns[2]
 
 	info = []
-	info.append(snp)
+	info.append(snpGroup)
 	info.append(snpType)
-	info.append(snpSource)
+	info.append(snpCategory)
 
-	snpTypeDict[snp] = info
+	snpTypeDict[snpGroup] = info
 
+print "Finished reading in the", groupedSnpTypesFilename, "file, which contained", numSnps, "snps."
 groupedSnpTypesFile.close()
 
 expressionVectorTableFilename = sys.argv[2]
@@ -80,18 +71,20 @@ for line in expressionVectorTableFile:
 			vector.append(columns[i + 1])
 
 		snpType = snpTypeDict[snp][1]
+		snpCategory = snpTypeDict[snp][2]
 
 		# add snp and type to beginning of vector
 		vector.insert(0, snp)
 		vector.insert(1, snpType)
 
-		if snpTypeDict[snp][2] == "lipid_testing":
+		# snp category determines the dictionary in which the snp will be stored
+		if (snpCategory == "lipidTesting"):
 			lipidTestingSnps[snp] = vector
-		elif snpTypeDict[snp][2] == "lipid_training":
+		elif (snpCategory == "lipidTraining"):
 			lipidTrainingSnps[snp] = vector
-		elif snpTypeDict[snp][2] == "T2Dlike_testing":
+		elif (snpCategory == "T2DLikeTesting"):
 			T2DLikeTestingSnps[snp] = vector
-		else: # snpSource == "T2Dlike_training"
+		else: # snpCategory == "T2DLikeTraining"
 			T2DLikeTrainingSnps[snp] = vector
 	else: # snp not in snpTypeDict
 		snpsNotInSnpTypeDict[snp] = -1
@@ -103,6 +96,9 @@ print "There were", len(lipidTrainingSnps), "lipid training snps."
 print "There were", len(T2DLikeTestingSnps), "T2D-like testing snps."
 print "There were", len(T2DLikeTrainingSnps), "T2D-like training snps."
 print "There were", len(snpsNotInSnpTypeDict), "snps that did not have a snp type specified in the input file. These snps were discarded."
+
+if numSnps != totalNumSnps:
+	print "ERROR: some snps are being lost!" # TODO: deal with this
 
 print "Creating an output file for each of the four types of snp."
 # create output files
