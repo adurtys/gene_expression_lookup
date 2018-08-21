@@ -100,15 +100,20 @@ print "There were", len(snpsNotInSnpTypeDict), "snps that did not have a snp typ
 if numSnps != totalNumSnps:
 	print "ERROR: some snps are being lost!" # TODO: deal with this
 	for snp in snpTypeDict:
-		snpCategory = snpTypeDict[snp][2]
-		if (snpCategory == "lipidTesting") and (snp not in lipidTestingSnps):
-			print snp, "is a lipid testing snp but is not in the lipid testing dictionary."
-		elif (snpCategory == "lipidTraining") and (snp not in lipidTrainingSnps):
-			print snp, "is a lipid training snp but is not in the lipid training dictionary."
-		elif (snpCategory == "T2DLikeTesting") and (snp not in T2DLikeTestingSnps):
-			print snp, "is a T2D-like testing snp but is not in the T2D-like testing dictionary."
-		elif (snpCategory == "T2DLikeTraining") and (snp not in T2DLikeTrainingSnps):
-			print snp, "is a T2D-like training snp but is not in the T2D-like training dictionary."
+		if (snp not in lipidTrainingSnps) and (snp not in lipidTestingSnps) and (snp not in T2DLikeTrainingSnps) and (snp not in T2DLikeTestingSnps):
+			print snp, "not found in any of the dictionaries."
+
+
+	# for snp in snpTypeDict:
+	# 	snpCategory = snpTypeDict[snp][2]
+	# 	if (snpCategory == "lipidTesting") and (snp not in lipidTestingSnps):
+	# 		print snp, "is a lipid testing snp but is not in the lipid testing dictionary."
+	# 	elif (snpCategory == "lipidTraining") and (snp not in lipidTrainingSnps):
+	# 		print snp, "is a lipid training snp but is not in the lipid training dictionary."
+	# 	elif (snpCategory == "T2DLikeTesting") and (snp not in T2DLikeTestingSnps):
+	# 		print snp, "is a T2D-like testing snp but is not in the T2D-like testing dictionary."
+	# 	elif (snpCategory == "T2DLikeTraining") and (snp not in T2DLikeTrainingSnps):
+	# 		print snp, "is a T2D-like training snp but is not in the T2D-like training dictionary."
 
 print "Creating an output file for each of the four types of snp."
 # create output files
