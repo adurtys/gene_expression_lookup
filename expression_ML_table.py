@@ -15,8 +15,12 @@ groupedSnpTypesFile = open(groupedSnpTypesFilename, 'r')
 # create dictionary containing snp type for each group of snps --> key = snp group, value = vector containing snp group, snp type, and snp source
 snpTypeDict = {}
 
+# create dictionary for snps in multiple categories
+snpsWithMultipleCategories = {}
+
 # ignore header line in groupedSnpTypesFilename
 groupedSnpTypesFile.readline()
+
 
 numSnps = 0
 for line in groupedSnpTypesFile:
@@ -33,7 +37,11 @@ for line in groupedSnpTypesFile:
 	info.append(snpType)
 	info.append(snpCategory)
 
-	snpTypeDict[snpGroup] = info
+	if snpGroup in snpTypeDict:
+		# snp has multiple categories
+		snpsWithMultipleCategories[snpGroup] = info
+	else:
+		snpTypeDict[snpGroup] = info
 
 print "Finished reading in the", groupedSnpTypesFilename, "file, which contained", numSnps, "snps."
 groupedSnpTypesFile.close()
@@ -86,6 +94,21 @@ for line in expressionVectorTableFile:
 			T2DLikeTestingSnps[snp] = vector
 		else: # snpCategory == "T2DLikeTraining"
 			T2DLikeTrainingSnps[snp] = vector
+
+		# add snps with multiple categories to both dictionaries
+		if snp in snpsWithMultipleCategories:
+			secondSnpCategory = snpsWithMultipleCategories[snp][2]
+
+			# snp category determines the dictionary in which the snp will be stored
+			if (secondSnpCategory == "lipidTesting"):
+				lipidTestingSnps[snp] = vector
+			elif (secondSnpCategory == "lipidTraining"):
+				lipidTrainingSnps[snp] = vector
+			elif (secondSnpCategory == "T2DLikeTesting"):
+				T2DLikeTestingSnps[snp] = vector
+			else: # secondSnpCategory == "T2DLikeTraining"
+				T2DLikeTrainingSnps[snp] = vector
+
 	else: # snp not in snpTypeDict
 		snpsNotInSnpTypeDict[snp] = -1
 
@@ -95,25 +118,11 @@ print "There were", len(lipidTestingSnps), "lipid testing snps."
 print "There were", len(lipidTrainingSnps), "lipid training snps."
 print "There were", len(T2DLikeTestingSnps), "T2D-like testing snps."
 print "There were", len(T2DLikeTrainingSnps), "T2D-like training snps."
+print "There were", len(snpsWithMultipleCategories), "snps in multiple categories."
 print "There were", len(snpsNotInSnpTypeDict), "snps that did not have a snp type specified in the input file. These snps were discarded."
 
 if numSnps != totalNumSnps:
-	print "ERROR: some snps are being lost!" # TODO: deal with this
-	for snp in snpTypeDict:
-		if (snp not in lipidTrainingSnps) and (snp not in lipidTestingSnps) and (snp not in T2DLikeTrainingSnps) and (snp not in T2DLikeTestingSnps):
-			print snp, "not found in any of the dictionaries."
-
-
-	# for snp in snpTypeDict:
-	# 	snpCategory = snpTypeDict[snp][2]
-	# 	if (snpCategory == "lipidTesting") and (snp not in lipidTestingSnps):
-	# 		print snp, "is a lipid testing snp but is not in the lipid testing dictionary."
-	# 	elif (snpCategory == "lipidTraining") and (snp not in lipidTrainingSnps):
-	# 		print snp, "is a lipid training snp but is not in the lipid training dictionary."
-	# 	elif (snpCategory == "T2DLikeTesting") and (snp not in T2DLikeTestingSnps):
-	# 		print snp, "is a T2D-like testing snp but is not in the T2D-like testing dictionary."
-	# 	elif (snpCategory == "T2DLikeTraining") and (snp not in T2DLikeTrainingSnps):
-	# 		print snp, "is a T2D-like training snp but is not in the T2D-like training dictionary."
+	print "ERROR: some snps are being lost." # deal with this!
 
 print "Creating an output file for each of the four types of snp."
 # create output files
