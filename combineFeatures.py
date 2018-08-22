@@ -36,7 +36,7 @@ for line in onlyExpressionMLTableFile:
 	snpGroup = columns[0]
 	snpType = columns[1]
 
-	for i in range(len(numExpressionHeaders)):
+	for i in range(numExpressionHeaders):
 		vector.append(columns[i])
 
 	onlyExpressionDict[snpGroup] = vector
