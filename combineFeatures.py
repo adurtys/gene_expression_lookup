@@ -36,14 +36,8 @@ for line in onlyExpressionMLTableFile:
 	snpGroup = columns[0]
 	snpType = columns[1]
 
-	vector.append(snpGroup)
-	vector.append(snpType)
-
-	for i in range(numTissues):
-		vector.append(columns[i + 2])
-
-	if len(vector) != numExpressionHeaders:
-		print "ERROR: something is wrong."
+	for i in range(len(numExpressionHeaders)):
+		vector.append(columns[i])
 
 	onlyExpressionDict[snpGroup] = vector
 onlyExpressionMLTableFile.close()
@@ -56,7 +50,7 @@ noExpressionHeaderLine = noExpressionMLTableFile.readline()
 noExpressionHeaderLine = noExpressionHeaderLine.rstrip('\r\n')
 noExpressionHeaders = noExpressionHeaderLine.split('\t')
 
-numFeatures_noExpression = len(noExpressionHeaders) - 2 # excludes first two columns
+numHeaders_noExpression = len(noExpressionHeaders)
 
 # store each vetor in dictionary
 noExpressionDict = {}
@@ -70,14 +64,8 @@ for line in noExpressionMLTableFile:
 	snpGroup = columns[0]
 	snpType = columns[1]
 
-	vector.append(snpGroup)
-	vector.append(snpType)
-
-	for i in range(numFeatures_noExpression):
-		vector.append(columns[i + 2])
-
-	if len(vector) != (numFeatures_noExpression + 2):
-		print "ERROR: something is wrong."
+	for i in range(numHeaders_noExpression):
+		vector.append(columns[i])
 
 	noExpressionDict[snpGroup] = vector
 noExpressionMLTableFile.close()
@@ -89,7 +77,7 @@ for snp in noExpressionDict:
 	noExpressionVector = noExpressionDict[snp]
 	onlyExpressionVector = onlyExpressionDict[snp]
 
-	# check to make sure snpType is the same
+	# check to make sure snpType is the same --> snp type is in second column (snp group is in first column - index 0)
 	if noExpressionDict[snp][1] != onlyExpressionDict[snp][1]:
 		print "ERROR: snp types aren't the same!"
 
@@ -97,8 +85,8 @@ for snp in noExpressionDict:
 	combinedVector = noExpressionVector
 
 	# remove first two columns of onlyExpressionVector when appending
-	for i in range(len(onlyExpressionVector) - 2):
-		combinedVector.append(onlyExpressionVector[i + 2])
+	for i in range(2, len(onlyExpressionVector)):
+		combinedVector.append(onlyExpressionVector[i])
 
 	combinedFeaturesDict[snp] = combinedVector
 
@@ -110,14 +98,14 @@ tab = "\t"
 newline = "\n"
 
 # create new header line by combining previous two header lines
-newHeaderLine = noExpressionHeaderLine
-for i in range(numTissues):
-	if i < (numTissues - 2):
-		newHeaderLine += expressionHeaders[i + 2] + tab
+newHeaderLine = noExpressionHeaderLine + tab
+for i in range(2, numExpressionHeaders):
+	if i < (numExpressionHeaders - 1):
+		newHeaderLine += expressionHeaders[i] + tab
 	else: # add new line at end
-		newHeaderLine += expressionHeaders[i + 2] + newline
+		newHeaderLine += expressionHeaders[i] + newline
 
-output = newHeaderLine + tab
+output = newHeaderLine
 
 for snp in combinedFeaturesDict:
 	vector = combinedFeaturesDict[snp]
