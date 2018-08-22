@@ -52,7 +52,7 @@ onlyExpressionMLTableFile.close()
 noExpressionMLTableFile = open(noExpressionMLTableFilename, 'r')
 
 # store header labels
-noExpressionHeaderLine = noExpressionHeaderLine.readline()
+noExpressionHeaderLine = noExpressionMLTableFile.readline()
 noExpressionHeaderLine = noExpressionHeaderLine.rstrip('\r\n')
 noExpressionHeaders = noExpressionHeaderLine.split('\t')
 
@@ -98,7 +98,7 @@ for snp in noExpressionDict:
 
 	# remove first two columns of onlyExpressionVector when appending
 	for i in range(len(onlyExpressionVector) - 2):
-		combinedVector.append(onlyExpressionVector[snp][i + 2])
+		combinedVector.append(onlyExpressionVector[i + 2])
 
 	combinedFeaturesDict[snp] = combinedVector
 
@@ -124,9 +124,9 @@ for snp in combinedFeaturesDict:
 
 	for i in range(len(vector)):
 		if i < (len(vector) - 1):
-			output += vector + tab
+			output += vector[i] + tab
 		else: # add new line at the end
-			output += vector + newline
+			output += vector[i] + newline
 
 outFile.write(output)
 outFile.close()
