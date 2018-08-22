@@ -1,6 +1,8 @@
 # Date Created: 22 August 2018
 # Date Last Modified: 22 August 2018
 # Execution: python combineFeatures.py onlyExpressionMLTableFilename noExpressionMLTableFilename
+# argv1: filename for file containing ML table that contains only gene expression features
+# argv2: filename for file containing ML table that lacks gene expression features
 # Description: TODO
 # Run Time: TODO
 
@@ -50,7 +52,7 @@ onlyExpressionMLTableFile.close()
 noExpressionMLTableFile = open(noExpressionMLTableFilename, 'r')
 
 # store header labels
-noExpressionHeaderLine = noExpressionMLTableFilename.readline()
+noExpressionHeaderLine = noExpressionHeaderLine.readline()
 noExpressionHeaderLine = noExpressionHeaderLine.rstrip('\r\n')
 noExpressionHeaders = noExpressionHeaderLine.split('\t')
 
@@ -128,21 +130,3 @@ for snp in combinedFeaturesDict:
 
 outFile.write(output)
 outFile.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
